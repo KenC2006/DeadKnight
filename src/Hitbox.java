@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.util.Collection;
+import java.util.Collections;
 
 public class Hitbox {
     private Coordinate p1, p2;
@@ -11,6 +13,16 @@ public class Hitbox {
     }
 
     public Hitbox(int x1, int y1, int x2, int y2) {
+        if (x1 > x2) {
+            int temp = x1;
+            x1 = x2;
+            x2 = temp;
+        }
+        if (y1 > y2) {
+            int temp = y1;
+            y1 = y2;
+            y2 = temp;
+        }
         p1 = new Coordinate(x1, y1);
         p2 = new Coordinate(x2, y2);
         width = p1.getXDistance(p2);
@@ -25,9 +37,16 @@ public class Hitbox {
         this.colour = colour;
     }
 
+    public void resize(Coordinate p1, Coordinate p2) {
+        this.p1.copy(p1);
+        this.p2.copy(p2);
+        width = p1.getXDistance(p2);
+        height = p2.getYDistance(p2);
+    }
+
     public void setX(double x) {
-        p1.setX(x);
-        p2.setX(x + width);
+        double dist = x - p1.getX();
+        changeX(dist);
     }
 
     public void changeX(double dx) {
@@ -36,8 +55,8 @@ public class Hitbox {
     }
 
     public void setY(double y) {
-        p1.setY(y);
-        p2.setY(y + height);
+        double dist = y - p1.getY();
+        changeY(dist);
     }
 
     public void changeY(double dy) {

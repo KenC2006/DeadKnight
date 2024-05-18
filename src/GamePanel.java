@@ -3,6 +3,7 @@ import java.awt.*;
 
 public class GamePanel extends JPanel{
     private ActionManager manager = new ActionManager();
+    private RoomManager roomManager = new RoomManager();
     private Player player = new Player(10, 10);
     private Camera camera = new Camera(10);
     private boolean isRunning = true;
@@ -25,10 +26,13 @@ public class GamePanel extends JPanel{
         camera.setGraphics(g);
         player.paint(camera);
         tempCharacter.paint(camera);
+        roomManager.drawRooms(camera);
         camera.paint();
     }
 
     public void update() {
+
+
         camera.updateKeyPresses(manager);
         player.updateKeyPresses(manager);
 
