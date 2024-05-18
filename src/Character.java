@@ -1,3 +1,4 @@
+import java.awt.*;
 
 public class Character {
     private Coordinate position, velocity;
@@ -13,6 +14,18 @@ public class Character {
     public void paint(Camera c) {
         c.drawHitbox(hitbox);
 
+    }
+
+    public boolean collidesWith(Character other) {
+        boolean intersects = hitbox.intersects(other.hitbox);
+        if (intersects) {
+            hitbox.setColour(Color.RED);
+            other.hitbox.setColour(Color.RED);
+        } else {
+            hitbox.setColour(Color.GREEN);
+            other.hitbox.setColour(Color.GREEN);
+        }
+        return intersects;
     }
 
     public void setX(double x) {

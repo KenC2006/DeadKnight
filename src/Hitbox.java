@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class Hitbox {
     private Coordinate p1, p2;
-    private Color colour = Color.BLACK;
+    private Color colour = Color.GREEN;
     private double width, height;
 
     public Hitbox(Coordinate topLeft, Coordinate bottomRight) {
@@ -15,6 +15,10 @@ public class Hitbox {
         p2 = new Coordinate(x2, y2);
         width = p1.getXDistance(p2);
         height = p2.getYDistance(p2);
+    }
+
+    public Color getColour() {
+        return colour;
     }
 
     public void setColour(Color colour) {
@@ -41,6 +45,14 @@ public class Hitbox {
         p2.changeY(dy);
     }
 
+    public Coordinate getTopLeft() {
+        return p1;
+    }
+
+    public Coordinate getBottomRight() {
+        return p2;
+    }
+
     public double getTop() {
         return p1.getY();
     }
@@ -63,5 +75,11 @@ public class Hitbox {
 
     public double getHeight() {
         return p1.getYDistance(p2);
+    }
+
+    public boolean intersects(Hitbox hitbox) {
+        boolean xIntercept = (hitbox.getLeft() <= getLeft() && getLeft() <= hitbox.getRight()) || (hitbox.getLeft() <= getRight() && getRight() <= hitbox.getRight());
+        boolean yIntercept = (hitbox.getTop() <= getTop() && getTop() <= hitbox.getBottom()) || (hitbox.getTop() <= getBottom() && getBottom() <= hitbox.getBottom());
+        return xIntercept && yIntercept;
     }
 }

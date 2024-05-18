@@ -4,6 +4,8 @@ import java.awt.event.KeyEvent;
  * WASD TO MOVE PLAYER
  */
 public class Player extends Character {
+    private boolean isColliding;
+
     public Player(double x, double y){
         super(x, y, 2, 5);
     }
@@ -29,4 +31,6 @@ public class Player extends Character {
 
     public void drop(){
     }
+
+
 }

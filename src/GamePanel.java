@@ -25,11 +25,16 @@ public class GamePanel extends JPanel{
         camera.setGraphics(g);
         player.paint(camera);
         tempCharacter.paint(camera);
+        camera.paint();
     }
 
     public void update() {
         camera.updateKeyPresses(manager);
         player.updateKeyPresses(manager);
+
+        if (player.collidesWith(tempCharacter)) {
+
+        }
     }
 
     public void start() {
