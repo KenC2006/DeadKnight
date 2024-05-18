@@ -37,12 +37,29 @@ public class Coordinate {
         y += dy;
     }
 
+    /**
+     * Returns the vertical distance from the current point to the compared point
+     * Positive values are downwards, negative are upwards
+     * @param p the point to compare
+     * @return the horizontal distance between the points
+     */
     public double getYDistance(Coordinate p) {
         return p.getY() - getY();
     }
 
+    /**
+     * Returns the horizontal distance from the current point to the compared point
+     * Positive values are to the right, negative are to the left
+     * @param p the point to compare
+     * @return the horizontal distance between the points
+     */
     public double getXDistance(Coordinate p) {
         return p.getX() - getX();
+    }
+
+    public void copy(Coordinate c) {
+        x = c.getX();
+        y = c.getY();
     }
 
 

@@ -7,7 +7,7 @@ public class Player extends Character {
     private boolean isColliding;
 
     public Player(double x, double y){
-        super(x, y, 2, 5);
+        super(x, y, 2, 5,100);
     }
 
     public void updateKeyPresses(ActionManager manager) {
@@ -26,11 +26,9 @@ public class Player extends Character {
     }
 
     public void jump(){
-        setVY(getX()+5);
+        setVY(getVY()+5);
     }
 
     public void drop(){
     }
-
-
 }

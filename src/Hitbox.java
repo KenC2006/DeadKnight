@@ -82,4 +82,8 @@ public class Hitbox {
         boolean yIntercept = (hitbox.getTop() <= getTop() && getTop() <= hitbox.getBottom()) || (hitbox.getTop() <= getBottom() && getBottom() <= hitbox.getBottom());
         return xIntercept && yIntercept;
     }
+
+    public boolean collides(HitboxGroup group) {
+        return group.collides(this);
+    }
 }

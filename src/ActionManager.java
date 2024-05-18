@@ -3,20 +3,9 @@ import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActionManager extends JPanel implements KeyListener, ActionListener, MouseListener, MouseMotionListener {
-    private final int TICKS = 10;
-    private Timer timer;
+public class ActionManager implements KeyListener, MouseListener, MouseMotionListener {
     private final Map<Integer, Boolean> pressed = new HashMap<>();
 
-    public ActionManager(){
-        timer=new Timer(TICKS,this);
-        timer.start();
-    }
-
-    /**
-     *
-     * @param panel
-     */
     public void addPanel(JPanel panel) {
         panel.addKeyListener(this);
         panel.addMouseListener(this);
@@ -65,14 +54,6 @@ public class ActionManager extends JPanel implements KeyListener, ActionListener
 
     @Override
     public void mouseExited(MouseEvent e) {
-
-    }
-
-    /**
-     * @param e the event to be processed
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
 
     }
 
