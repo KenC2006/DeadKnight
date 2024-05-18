@@ -1,4 +1,6 @@
-public class Enemy extends Character {
+
+
+public class Enemy extends GameCharacter {
 
     private int phase;
     private double sightRadius;

@@ -1,6 +1,4 @@
 import java.awt.*;
-import java.util.Collection;
-import java.util.Collections;
 
 public class Hitbox {
     private Coordinate p1, p2;

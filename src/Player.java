@@ -3,7 +3,7 @@ import java.awt.event.KeyEvent;
 /**
  * WASD TO MOVE PLAYER
  */
-public class Player extends Character {
+public class Player extends GameCharacter {
     private boolean isColliding;
 
     public Player(double x, double y){

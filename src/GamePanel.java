@@ -7,7 +7,7 @@ public class GamePanel extends JPanel{
     private Player player = new Player(10, 10);
     private Camera camera = new Camera(10);
     private boolean isRunning = true;
-    private Character tempCharacter = new Character(20, 20, 3, 4,100);
+    private GameCharacter tempCharacter = new GameCharacter(20, 20, 3, 4,100);
 
     public GamePanel() {
         this.setLayout(null);
