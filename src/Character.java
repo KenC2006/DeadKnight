@@ -3,17 +3,18 @@ import java.awt.*;
 public class Character {
     private Coordinate position, velocity;
     private Hitbox hitbox;
+    private int health;
 
 
-    public Character(double x, double y, double width, double height) {
+    public Character(double x, double y, double width, double height,int health) {
         position = new Coordinate(x, y);
         velocity = new Coordinate();
         hitbox = new Hitbox(position, new Coordinate(x + width, y + height));
+        this.health = health;
     }
 
     public void paint(Camera c) {
         c.drawHitbox(hitbox);
-
     }
 
     public boolean collidesWith(Character other) {
