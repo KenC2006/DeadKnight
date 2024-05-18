@@ -4,7 +4,6 @@ public class DeadKnight {
     public static void main(String []args){
         JFrame frame = new JFrame();
         GamePanel game = new GamePanel();
-
         frame.add(game);
         frame.setTitle("DeadKnight");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
