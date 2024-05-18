@@ -42,6 +42,7 @@ public class Camera {
 
     }
 
+
     public void drawRect(int x, int y, int w, int h) {
         graphics.drawRect(x, y, w, h);
     }
