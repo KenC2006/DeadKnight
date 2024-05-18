@@ -1,35 +1,45 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-public class ActionManager extends JPanel implements KeyListener, ActionListener, MouseListener {
-        Timer timer=new Timer(10,this);
+import java.util.HashMap;
+import java.util.Map;
+
+public class ActionManager extends JPanel implements KeyListener, ActionListener, MouseListener, MouseMotionListener {
+    private Timer timer = new Timer(10,this);
+    private final Map<Integer, Boolean> pressed = new HashMap<>();
 
     public ActionManager(){
         timer.start();
     }
 
+    /**
+     *
+     * @param panel
+     */
+    public void addPanel(JPanel panel) {
+        panel.addKeyListener(this);
+        panel.addMouseListener(this);
+        panel.addMouseMotionListener(this);
+    }
+
+    public boolean getPressed(int code) {
+        return pressed.getOrDefault(code, false);
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
-        System.out.print("f");
 
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.print("kc");
-        if (e.getKeyCode()==KeyEvent.VK_W){
-            System.out.print("k");
-        }
+        pressed.put(e.getKeyCode(), true);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        //  ASIODASIOJDIOASJDIOJASIODJSA
+        pressed.put(e.getKeyCode(), false);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -53,6 +63,30 @@ public class ActionManager extends JPanel implements KeyListener, ActionListener
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    /**
+     * @param e the event to be processed
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    /**
+     * @param e the event to be processed
+     */
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    /**
+     * @param e the event to be processed
+     */
+    @Override
+    public void mouseMoved(MouseEvent e) {
 
     }
 }

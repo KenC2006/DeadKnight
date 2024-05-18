@@ -1,38 +1,57 @@
-import java.awt.*;
 
 public class Character {
+    private Coordinate position, velocity;
+    private Hitbox hitbox;
 
-    private int x,y,vX,vY;
-    public void paint(Graphics g){
 
-    }
-
-    public void setX(int x){
-        this.x=x;
-    }
-    public void setY(int y){
-        this.y=y;
-    }
-    public int getX(){
-        return x;
-    }
-    public int getY(){
-        return y;
+    public Character(double x, double y, double width, double height) {
+        position = new Coordinate(x, y);
+        velocity = new Coordinate();
+        hitbox = new Hitbox(position, new Coordinate(x + width, y + height));
     }
 
-    public int getVX() {
-        return vX;
+    public void paint(Camera c) {
+        c.drawHitbox(hitbox);
+
     }
 
-    public int getVY() {
-        return vY;
+    public void setX(double x) {
+        hitbox.setX(x);
     }
 
-    public void setVX(int vX) {
-        this.vX = vX;
+    public void setY(double y) {
+        hitbox.setY(y);
     }
 
-    public void setVY(int vY) {
-        this.vY = vY;
+    public void changeX(double dx) {
+        hitbox.changeX(dx);
+    }
+
+    public void changeY(double dy) {
+        hitbox.changeY(dy);
+    }
+
+    public double getX() {
+        return position.getX();
+    }
+
+    public double getY() {
+        return position.getY();
+    }
+
+    public double getVX() {
+        return velocity.getX();
+    }
+
+    public double getVY() {
+        return velocity.getY();
+    }
+
+    public void setVX(double vX) {
+        velocity.setX(vX);
+    }
+
+    public void setVY(double vY) {
+        velocity.setY(vY);
     }
 }

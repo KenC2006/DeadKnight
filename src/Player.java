@@ -1,21 +1,32 @@
-import java.awt.*;
+import java.awt.event.KeyEvent;
 
+/**
+ * WASD TO MOVE PLAYER
+ */
 public class Player extends Character {
-    Rectangle test=new Rectangle();
-    public Player(){
-        test.x=getX();
-        test.y=getY();
+    public Player(double x, double y){
+        super(x, y, 2, 5);
     }
-    private ActionManager actionManager=new ActionManager();
-    public void moveForward(){
-        setX(getX()+5);
+
+    public void updateKeyPresses(ActionManager manager) {
+        if (manager.getPressed(KeyEvent.VK_W)) {
+            changeY(-1);
+        }
+        if (manager.getPressed(KeyEvent.VK_D)) {
+            changeX(1);
+        }
+        if (manager.getPressed(KeyEvent.VK_S)) {
+            changeY(1);
+        }
+        if (manager.getPressed(KeyEvent.VK_A)) {
+            changeX(-1);
+        }
     }
-    public void moveBackwards(){
-        setX(getX()-5);
-    }
+
     public void jump(){
         setVY(getX()+5);
     }
+
     public void drop(){
     }
 }
