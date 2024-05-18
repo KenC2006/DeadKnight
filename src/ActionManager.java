@@ -24,7 +24,7 @@ public class ActionManager extends JPanel implements KeyListener, ActionListener
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        System.out.println("ASDASDSAD");
     }
 
     @Override
