@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActionManager extends JPanel implements KeyListener, ActionListener, MouseListener, MouseMotionListener {
-    private final int TICKS=10;
+    private final int TICKS = 10;
     private Timer timer;
     private final Map<Integer, Boolean> pressed = new HashMap<>();
 
