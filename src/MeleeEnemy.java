@@ -1,7 +1,9 @@
 public class MeleeEnemy extends Enemy {
 
-    public MeleeEnemy(double x, double y, double width, double height, int health, double sightRadius) {
-        super(x, y, width, height, health, sightRadius);
+    public final static double defaultHeight = 5, defaultWidth = 2;
+
+    public MeleeEnemy(double x, double y, int health) {
+        super(x, y, 2, 5, health, 10);
     }
 
     // need weapon implementation for sword
