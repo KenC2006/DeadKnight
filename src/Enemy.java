@@ -15,6 +15,10 @@ public class Enemy extends GameCharacter {
         enemyCount++;
     }
 
+    public String getType() {
+        return "";
+    }
+
     public int getId() {
         return id;
     }
