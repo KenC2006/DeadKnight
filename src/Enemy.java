@@ -27,9 +27,13 @@ public class Enemy extends GameCharacter {
         setVX(getVX() + xChange);
     }
 
-    public Player lookForPlayer() {
-        // to be implemented with dda algorithm
-        return new Player(0, 0);
+    public void stopXMovement() {
+        setVX(0);
+    }
+
+    public boolean canSeePlayer(Player player) {
+        // need a way to access wall location
+        return true;
     }
 
     public void jump() {
