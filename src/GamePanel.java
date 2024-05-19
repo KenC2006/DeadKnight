@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel{
     private ActionManager manager = new ActionManager();
@@ -8,6 +9,8 @@ public class GamePanel extends JPanel{
     private Camera camera = new Camera(10);
     private boolean isRunning = true;
     private GameCharacter tempCharacter = new GameCharacter(20, 20, 3, 4,100);
+    private Line test = new Line(0, 0, 100, 100);
+    private ArrayList<Coordinate> intersections = new ArrayList<>();
 
     public GamePanel() {
         this.setLayout(null);
@@ -27,6 +30,10 @@ public class GamePanel extends JPanel{
         player.paint(camera);
         tempCharacter.paint(camera);
         roomManager.drawRooms(camera);
+        camera.drawLine(test);
+        for (Coordinate c: intersections) {
+            camera.drawCoordinate(c);
+        }
         camera.paint();
     }
 
@@ -35,6 +42,10 @@ public class GamePanel extends JPanel{
 
         camera.updateKeyPresses(manager);
         player.updateKeyPresses(manager);
+
+        intersections = test.getIntercepts(player.getHitbox());
+//        tempCharacter.update();
+//        player.update();
 
         if (player.collidesWith(tempCharacter)) {
 

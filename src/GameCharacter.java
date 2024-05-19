@@ -29,6 +29,22 @@ public class GameCharacter {
         return intersects;
     }
 
+    public void update() {
+        updateVelocity();
+        updatePosition();
+    }
+
+    private void updateVelocity() {
+        // Gravity
+        velocity.changeY(0.1);
+    }
+
+    private void updatePosition() {
+        Coordinate currentPosition = position;
+        Coordinate nextPosition = new Coordinate(position.getX() + velocity.getX(), position.getY() + velocity.getY());
+        Line intersectLine = new Line(currentPosition, nextPosition);
+    }
+
     public void setX(double x) {
         hitbox.setX(x);
     }
@@ -67,5 +83,9 @@ public class GameCharacter {
 
     public void setVY(double vY) {
         velocity.setY(vY);
+    }
+
+    public Hitbox getHitbox() {
+        return hitbox;
     }
 }

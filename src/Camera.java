@@ -42,6 +42,21 @@ public class Camera {
 
     }
 
+    public void drawLine(Coordinate p1, Coordinate p2) {
+        graphics.setColor(Color.BLACK);
+        graphics.setStroke(new BasicStroke(2f));
+        double x1 = scaleAndShiftX(p1.getX());
+        double y1 = scaleAndShiftY(p1.getY());
+        double x2 = scaleAndShiftX(p2.getX());
+        double y2 = scaleAndShiftY(p2.getY());
+        graphics.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
+        graphics.setStroke(new BasicStroke((float) scaling));
+    }
+
+    public void drawLine(Line l) {
+        drawLine(l.getStart(), l.getEnd());
+    }
+
 
     public void drawRect(int x, int y, int w, int h) {
         graphics.drawRect(x, y, w, h);
