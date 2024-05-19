@@ -1,12 +1,12 @@
 import java.awt.*;
 
-public class Character {
+public class GameCharacter {
     private Coordinate position, velocity;
     private Hitbox hitbox;
     private int health;
 
 
-    public Character(double x, double y, double width, double height,int health) {
+    public GameCharacter(double x, double y, double width, double height, int health) {
         position = new Coordinate(x, y);
         velocity = new Coordinate();
         hitbox = new Hitbox(position, new Coordinate(x + width, y + height));
@@ -17,7 +17,7 @@ public class Character {
         c.drawHitbox(hitbox);
     }
 
-    public boolean collidesWith(Character other) {
+    public boolean collidesWith(GameCharacter other) {
         boolean intersects = hitbox.intersects(other.hitbox);
         if (intersects) {
             hitbox.setColour(Color.RED);
