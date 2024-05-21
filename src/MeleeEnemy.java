@@ -1,10 +1,10 @@
 public class MeleeEnemy extends Enemy {
 
-    public final static double defaultHeight = 5;
-    public final static double defaultWidth = 2;
-    public final static double defaultWalkSpeed = 5;
+    public final static int defaultHeight = 5;
+    public final static int defaultWidth = 2;
+    public final static int defaultWalkSpeed = 5;
 
-    public MeleeEnemy(double x, double y, int health) {
+    public MeleeEnemy(int x, int y, int health) {
         super(x, y, 2, 5, health, 10);
     }
 

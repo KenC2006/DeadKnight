@@ -8,7 +8,7 @@ public class Enemy extends GameCharacter {
 
     private static int enemyCount;
 
-    public Enemy(double x, double y, double width, double height, int health, double sightRadius) {
+    public Enemy(int x, int y, int width, int height, int health, double sightRadius) {
         super(x, y, width, height, health);
         this.sightRadius = sightRadius;
         id = enemyCount;
@@ -35,11 +35,11 @@ public class Enemy extends GameCharacter {
         phase = newPhase;
     }
 
-    public void moveLeft(double xChange) {
+    public void moveLeft(int xChange) {
         setVX(getVX() - xChange);
     }
 
-    public void moveRight(double xChange) {
+    public void moveRight(int xChange) {
         setVX(getVX() + xChange);
     }
 
