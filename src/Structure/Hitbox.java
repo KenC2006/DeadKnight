@@ -3,6 +3,7 @@ package Structure;
 import java.awt.*;
 
 public class Hitbox {
+    private ConvexShape shape;
     private Coordinate p1, p2;
     private Color colour = Color.GREEN;
     private double width, height;
@@ -44,22 +45,22 @@ public class Hitbox {
         height = p2.getYDistance(p2);
     }
 
-    public void setX(double x) {
-        double dist = x - p1.getX();
+    public void setX(int x) {
+        int dist = x - p1.getX();
         changeX(dist);
     }
 
-    public void changeX(double dx) {
+    public void changeX(int dx) {
         p1.changeX(dx);
         p2.changeX(dx);
     }
 
-    public void setY(double y) {
-        double dist = y - p1.getY();
+    public void setY(int y) {
+        int dist = y - p1.getY();
         changeY(dist);
     }
 
-    public void changeY(double dy) {
+    public void changeY(int dy) {
         p1.changeY(dy);
         p2.changeY(dy);
     }
@@ -72,27 +73,27 @@ public class Hitbox {
         return p2;
     }
 
-    public double getTop() {
+    public int getTop() {
         return p1.getY();
     }
 
-    public double getBottom() {
+    public int getBottom() {
         return p2.getY();
     }
 
-    public double getLeft() {
+    public int getLeft() {
         return p1.getX();
     }
 
-    public double getRight() {
+    public int getRight() {
         return p2.getX();
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return p1.getXDistance(p2);
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return p1.getYDistance(p2);
     }
 

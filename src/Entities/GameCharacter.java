@@ -13,7 +13,7 @@ public class GameCharacter {
     private int health;
 
 
-    public GameCharacter(double x, double y, double width, double height, int health) {
+    public GameCharacter(int x, int y, int width, int height, int health) {
         position = new Coordinate(x, y);
         velocity = new Coordinate();
         hitbox = new Hitbox(position, new Coordinate(x + width, y + height));
@@ -43,7 +43,7 @@ public class GameCharacter {
 
     private void updateVelocity() {
         // Gravity
-        velocity.changeY(0.1);
+        velocity.changeY(1);
     }
 
     private void updatePosition() {
@@ -52,43 +52,43 @@ public class GameCharacter {
         Line intersectLine = new Line(currentPosition, nextPosition);
     }
 
-    public void setX(double x) {
+    public void setX(int x) {
         hitbox.setX(x);
     }
 
-    public void setY(double y) {
+    public void setY(int y) {
         hitbox.setY(y);
     }
 
-    public void changeX(double dx) {
+    public void changeX(int dx) {
         hitbox.changeX(dx);
     }
 
-    public void changeY(double dy) {
+    public void changeY(int dy) {
         hitbox.changeY(dy);
     }
 
-    public double getX() {
+    public int getX() {
         return position.getX();
     }
 
-    public double getY() {
+    public int getY() {
         return position.getY();
     }
 
-    public double getVX() {
+    public int getVX() {
         return velocity.getX();
     }
 
-    public double getVY() {
+    public int getVY() {
         return velocity.getY();
     }
 
-    public void setVX(double vX) {
+    public void setVX(int vX) {
         velocity.setX(vX);
     }
 
-    public void setVY(double vY) {
+    public void setVY(int vY) {
         velocity.setY(vY);
     }
 

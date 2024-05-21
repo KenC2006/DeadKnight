@@ -16,7 +16,7 @@ public class EnemyManager {
         return null;
     }
     // preset height and widths
-    public Enemy createEnemy(double x, double y, int health, String type) {
+    public Enemy createEnemy(int x, int y, int health, String type) {
         switch(type) {
             case "MELEE": return new MeleeEnemy(x, y, health);
             case "RANGE":
@@ -25,7 +25,7 @@ public class EnemyManager {
         }
     }
 
-    public ArrayList<Enemy> createEnemyLine(int numEnemies, double x, double y, double width, int health, String type) {
+    public ArrayList<Enemy> createEnemyLine(int numEnemies, int x, int y, int width, int health, String type) {
         double xSpace;
         ArrayList<Enemy> enemies = new ArrayList<Enemy> ();
         xSpace = width / numEnemies;
@@ -38,7 +38,7 @@ public class EnemyManager {
                     return null;
                 }
                 // seperate x into equal ranges depending on numEnemies and randomly put enemy within each range
-                enemies.add(createEnemy(x + (xSpace * i) + (Math.random() * (xSpace - MeleeEnemy.defaultWidth)), y, health, "MELEE"));
+//                enemies.add(createEnemy(x + (xSpace * i) + (Math.random() * (xSpace - MeleeEnemy.defaultWidth)), y, health, "MELEE"));
             }
             else if (type == "RANGE") {
 

@@ -27,7 +27,7 @@ public class Line {
         }
     }
 
-    public Line(double x1, double y1, double x2, double y2) {
+    public Line(int x1, int y1, int x2, int y2) {
         this(new Coordinate(x1, y1), new Coordinate(x2, y2));
     }
 
@@ -37,29 +37,29 @@ public class Line {
      * @return an arraylist of all points of intersection
      */
     public ArrayList<Coordinate> getIntercepts(Hitbox h) {
-        double x, y;
+        int x, y;
         ArrayList<Coordinate> intersectionPoints = new ArrayList<>();
         x = h.getLeft();
-        y = slope * x + b;
+        y = (int)(slope * x + b);
         if (h.getTop() <=  y && y <= h.getBottom()) {
             intersectionPoints.add(new Coordinate(x, y));
         }
 
         x = h.getRight();
-        y = slope * x + b;
+        y = (int) (slope * x + b);
         if (h.getTop() <= y && y <= h.getBottom()) {
             intersectionPoints.add(new Coordinate(x, y));
         }
 
         y = h.getTop();
-        x = (y - b) / slope;
+        x = (int) ((y - b) / slope);
         if (h.getLeft() <= x && x <= h.getRight()) {
             intersectionPoints.add(new Coordinate(x, y));
 
         }
 
         y = h.getBottom();
-        x = (y - b) / slope;
+        x = (int) ((y - b) / slope);
         if (h.getLeft() <= x && x <= h.getRight()) {
             intersectionPoints.add(new Coordinate(x, y));
 
