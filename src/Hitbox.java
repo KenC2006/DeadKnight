@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Hitbox {
     private Coordinate p1, p2;
@@ -62,6 +63,16 @@ public class Hitbox {
         p2.changeY(dy);
     }
 
+    public ArrayList<Coordinate> getCorners() {
+        ArrayList<Coordinate> corners = new ArrayList<>();
+        corners.add(new Coordinate(p1.getX(), p1.getY()));
+        corners.add(new Coordinate(p1.getX(), p2.getY()));
+        corners.add(new Coordinate(p2.getX(), p1.getY()));
+        corners.add(new Coordinate(p2.getX(), p2.getY()));
+
+        return corners;
+    }
+
     public Coordinate getTopLeft() {
         return p1;
     }
@@ -95,8 +106,8 @@ public class Hitbox {
     }
 
     public boolean intersects(Hitbox hitbox) {
-        boolean xIntercept = (hitbox.getLeft() <= getLeft() && getLeft() <= hitbox.getRight()) || (hitbox.getLeft() <= getRight() && getRight() <= hitbox.getRight());
-        boolean yIntercept = (hitbox.getTop() <= getTop() && getTop() <= hitbox.getBottom()) || (hitbox.getTop() <= getBottom() && getBottom() <= hitbox.getBottom());
+        boolean xIntercept = (hitbox.getLeft() <= getLeft() && getLeft() <= hitbox.getRight()) || (hitbox.getLeft() <= getRight() && getRight() <= hitbox.getRight()) || (getLeft() <= hitbox.getLeft() && hitbox.getLeft() <= getRight()) || (getLeft() <= hitbox.getRight() && hitbox.getRight() <= getRight());
+        boolean yIntercept = (hitbox.getTop() <= getTop() && getTop() <= hitbox.getBottom()) || (hitbox.getTop() <= getBottom() && getBottom() <= hitbox.getBottom()) || (getTop() <= hitbox.getBottom() && hitbox.getBottom() <= getBottom()) || (getTop() <= hitbox.getTop() && hitbox.getTop() <= getBottom());
         return xIntercept && yIntercept;
     }
 

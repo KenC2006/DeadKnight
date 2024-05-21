@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Room {
     private HitboxGroup walls;
 
@@ -12,6 +14,10 @@ public class Room {
 
     public void drawRoom(Camera c) {
         walls.draw(c);
+    }
+
+    public ArrayList<Coordinate> getCollisions(Line l) {
+        return walls.getCollisions(l);
     }
 
 }

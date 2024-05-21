@@ -1,12 +1,10 @@
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Line {
     double slope, b;
     private Coordinate start, end;
-    public Line(double slope, double b) {
-        this.slope = slope;
-        this.b = b;
-    }
+    private boolean verticalLine;
 
     public Line(Coordinate start, Coordinate end) {
         double dx = start.getXDistance(end);
@@ -17,11 +15,10 @@ public class Line {
         // (dy/dx) (x - cx) = y - cy
         // y = (dy/dx)x - (dy * cx) / dx + cy
         if (dx == 0) {
-            slope = 0;
-            b = start.getY();
+            verticalLine = true;
         } else {
             slope = dy/dx;
-            b = (dy * start.getX()) / dx + start.getY();
+            b = -(dy * start.getX()) / dx + start.getY();
         }
     }
 
@@ -37,30 +34,48 @@ public class Line {
     public ArrayList<Coordinate> getIntercepts(Hitbox h) {
         double x, y;
         ArrayList<Coordinate> intersectionPoints = new ArrayList<>();
-        x = h.getLeft();
-        y = slope * x + b;
-        if (h.getTop() <=  y && y <= h.getBottom()) {
-            intersectionPoints.add(new Coordinate(x, y));
-        }
 
-        x = h.getRight();
-        y = slope * x + b;
-        if (h.getTop() <= y && y <= h.getBottom()) {
-            intersectionPoints.add(new Coordinate(x, y));
-        }
+        if (verticalLine) {
+            if (h.getLeft() <= start.getX() && start.getX() <= h.getRight()) {
+                if (Math.min(start.getY(), end.getY()) <= h.getTop() && Math.max(start.getY(), end.getY()) >= h.getTop()) {
+                    intersectionPoints.add(new Coordinate(start.getX(), h.getTop()));
+                }
+                if (Math.min(start.getY(), end.getY()) <= h.getBottom() && Math.max(start.getY(), end.getY()) >= h.getBottom()) {
+                    intersectionPoints.add(new Coordinate(start.getX(), h.getBottom()));
+                }
+            }
+        } else {
+            x = h.getLeft();
+            y = slope * x + b;
+            if (h.getTop() <=  y && y <= h.getBottom()) {
+                if (Math.min(start.getX(), end.getX()) <= x && Math.max(start.getX(), end.getX()) >= x && Math.min(start.getY(), end.getY()) <= y && Math.max(start.getY(), end.getY()) >= y) {
+                    intersectionPoints.add(new Coordinate(x, y));
+                }
+            }
 
-        y = h.getTop();
-        x = (y - b) / slope;
-        if (h.getLeft() <= x && x <= h.getRight()) {
-            intersectionPoints.add(new Coordinate(x, y));
+            x = h.getRight();
+            y = slope * x + b;
+            if (h.getTop() <= y && y <= h.getBottom()) {
+                if (Math.min(start.getX(), end.getX()) <= x && Math.max(start.getX(), end.getX()) >= x && Math.min(start.getY(), end.getY()) <= y && Math.max(start.getY(), end.getY()) >= y) {
+                    intersectionPoints.add(new Coordinate(x, y));
+                }
+            }
 
-        }
+            y = h.getTop();
+            x = (y - b) / slope;
+            if (h.getLeft() <= x && x <= h.getRight()) {
+                if (Math.min(start.getX(), end.getX()) <= x && Math.max(start.getX(), end.getX()) >= x && Math.min(start.getY(), end.getY()) <= y && Math.max(start.getY(), end.getY()) >= y) {
+                    intersectionPoints.add(new Coordinate(x, y));
+                }
+            }
 
-        y = h.getBottom();
-        x = (y - b) / slope;
-        if (h.getLeft() <= x && x <= h.getRight()) {
-            intersectionPoints.add(new Coordinate(x, y));
-
+            y = h.getBottom();
+            x = (y - b) / slope;
+            if (h.getLeft() <= x && x <= h.getRight()) {
+                if (Math.min(start.getX(), end.getX()) <= x && Math.max(start.getX(), end.getX()) >= x && Math.min(start.getY(), end.getY()) <= y && Math.max(start.getY(), end.getY()) >= y) {
+                    intersectionPoints.add(new Coordinate(x, y));
+                }
+            }
         }
 
         return intersectionPoints;

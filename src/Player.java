@@ -4,24 +4,24 @@ import java.awt.event.KeyEvent;
  * WASD TO MOVE PLAYER
  */
 public class Player extends GameCharacter {
-    private boolean isColliding;
-
     public Player(double x, double y){
         super(x, y, 2, 5,100);
     }
 
     public void updateKeyPresses(ActionManager manager) {
         if (manager.getPressed(KeyEvent.VK_W)) {
-            changeY(-1);
+            setVY(-2);
+        } else if (manager.getPressed(KeyEvent.VK_S)) {
+//            setVY(1);
+        } else {
+//            setVY(0);
         }
         if (manager.getPressed(KeyEvent.VK_D)) {
-            changeX(1);
-        }
-        if (manager.getPressed(KeyEvent.VK_S)) {
-            changeY(1);
-        }
-        if (manager.getPressed(KeyEvent.VK_A)) {
-            changeX(-1);
+            setVX(1);
+        } else if (manager.getPressed(KeyEvent.VK_A)) {
+            setVX(-1);
+        } else {
+            setVX(0);
         }
     }
 

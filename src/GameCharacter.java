@@ -1,9 +1,11 @@
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GameCharacter {
     private Coordinate position, velocity;
     private Hitbox hitbox;
     private int health;
+    private boolean colliding;
 
 
     public GameCharacter(double x, double y, double width, double height, int health) {
@@ -14,35 +16,41 @@ public class GameCharacter {
     }
 
     public void paint(Camera c) {
+        hitbox.setColour(colliding ? Color.RED : Color.GREEN);
         c.drawHitbox(hitbox);
     }
 
     public boolean collidesWith(GameCharacter other) {
-        boolean intersects = hitbox.intersects(other.hitbox);
-        if (intersects) {
-            hitbox.setColour(Color.RED);
-            other.hitbox.setColour(Color.RED);
-        } else {
-            hitbox.setColour(Color.GREEN);
-            other.hitbox.setColour(Color.GREEN);
-        }
-        return intersects;
+        return hitbox.intersects(other.hitbox);
     }
 
     public void update() {
         updateVelocity();
-        updatePosition();
+    }
+
+    public void updatePosition() {
+        changeX(velocity.getX());
+        changeY(velocity.getY());
     }
 
     private void updateVelocity() {
         // Gravity
-        velocity.changeY(0.1);
+        if (velocity.getY() < 3) {
+            velocity.changeY(0.05);
+        }
     }
 
-    private void updatePosition() {
-        Coordinate currentPosition = position;
-        Coordinate nextPosition = new Coordinate(position.getX() + velocity.getX(), position.getY() + velocity.getY());
-        Line intersectLine = new Line(currentPosition, nextPosition);
+    public Coordinate getPosition() {
+        return position;
+    }
+
+
+    public Coordinate getVelocity() {
+        return velocity;
+    }
+
+    public ArrayList<Coordinate> getCorners() {
+        return hitbox.getCorners();
     }
 
     public void setX(double x) {
@@ -87,5 +95,9 @@ public class GameCharacter {
 
     public Hitbox getHitbox() {
         return hitbox;
+    }
+
+    public void setColliding(boolean colliding) {
+        this.colliding = colliding;
     }
 }

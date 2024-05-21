@@ -62,6 +62,10 @@ public class Coordinate {
         y = c.getY();
     }
 
+    public Coordinate translated(Coordinate vector) {
+        return new Coordinate(getX() + vector.getX(), getY() + vector.getY());
+    }
+
 
     public double getEuclideanDistance(Coordinate p) {
         double dx = getYDistance(p);

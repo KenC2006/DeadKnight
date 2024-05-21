@@ -5,12 +5,9 @@ import java.util.ArrayList;
 public class GamePanel extends JPanel{
     private ActionManager manager = new ActionManager();
     private RoomManager roomManager = new RoomManager();
-    private Player player = new Player(10, 10);
+    private EntityManager entityManager = new EntityManager();
     private Camera camera = new Camera(10);
     private boolean isRunning = true;
-    private GameCharacter tempCharacter = new GameCharacter(20, 20, 3, 4,100);
-    private Line test = new Line(0, 0, 100, 100);
-    private ArrayList<Coordinate> intersections = new ArrayList<>();
 
     public GamePanel() {
         this.setLayout(null);
@@ -27,35 +24,21 @@ public class GamePanel extends JPanel{
     public void draw(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
         camera.setGraphics(g);
-        player.paint(camera);
-        tempCharacter.paint(camera);
+        entityManager.draw(camera);
         roomManager.drawRooms(camera);
-        camera.drawLine(test);
-        for (Coordinate c: intersections) {
-            camera.drawCoordinate(c);
-        }
         camera.paint();
     }
 
     public void update() {
-
-
+        entityManager.update(manager, roomManager);
+        roomManager.update();
         camera.updateKeyPresses(manager);
-        player.updateKeyPresses(manager);
-
-        intersections = test.getIntercepts(player.getHitbox());
-//        tempCharacter.update();
-//        player.update();
-
-        if (player.collidesWith(tempCharacter)) {
-
-        }
     }
 
     public void start() {
         Thread gameLoop = new Thread(() -> { // TEMPORARY FOR NOW https://stackoverflow.com/questions/65907092/where-should-i-put-the-game-loop-in-the-swing-app
             // how many frames should be drawn in a second
-            final int FRAMES_PER_SECOND = 60;
+            final int FRAMES_PER_SECOND = 6;
             // calculate how many nano seconds each frame should take for our target frames per second.
             final long TIME_BETWEEN_UPDATES = 1000000000 / FRAMES_PER_SECOND;
             // track number of frames

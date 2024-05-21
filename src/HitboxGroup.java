@@ -45,4 +45,15 @@ public class HitboxGroup {
         }
         return false;
     }
+
+    public ArrayList<Coordinate> getCollisions(Line l) {
+        ArrayList<Coordinate> collisions = new ArrayList<>();
+        for (Hitbox h: hitboxes) {
+            collisions.addAll(l.getIntercepts(h));
+
+        }
+
+        return collisions;
+    }
+
 }
