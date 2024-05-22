@@ -1,3 +1,8 @@
+package Managers;
+
+import Camera.Camera;
+import Structure.Room;
+
 import java.util.ArrayList;
 
 public class RoomManager {

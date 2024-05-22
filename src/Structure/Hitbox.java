@@ -1,3 +1,5 @@
+package Structure;
+
 import java.awt.*;
 
 public class Hitbox {

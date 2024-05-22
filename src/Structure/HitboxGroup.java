@@ -1,3 +1,7 @@
+package Structure;
+
+import Camera.Camera;
+
 import java.util.ArrayList;
 
 public class HitboxGroup {

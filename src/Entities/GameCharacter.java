@@ -1,3 +1,10 @@
+package Entities;
+
+import Camera.Camera;
+import Structure.Coordinate;
+import Structure.Hitbox;
+import Structure.Line;
+
 import java.awt.*;
 
 public class GameCharacter {

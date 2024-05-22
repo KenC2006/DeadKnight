@@ -1,4 +1,6 @@
+package Entities;
 
+import Camera.Camera;
 
 public class Enemy extends GameCharacter {
 

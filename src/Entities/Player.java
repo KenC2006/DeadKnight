@@ -1,3 +1,8 @@
+package Entities;
+
+import Entities.GameCharacter;
+import Managers.ActionManager;
+
 import java.awt.event.KeyEvent;
 
 /**
