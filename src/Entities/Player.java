@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 public class Player extends GameCharacter {
     private boolean isColliding;
 
-    public Player(int x, int y){
+    public Player(double x, double y){
         super(x, y, 2, 5,100);
     }
 

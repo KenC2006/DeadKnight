@@ -1,10 +1,10 @@
 import Camera.Camera;
-import Structure.Coordinate;
 import Structure.Line;
 import Entities.GameCharacter;
 import Entities.Player;
 import Managers.ActionManager;
 import Managers.RoomManager;
+import Structure.Vector2F;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class GamePanel extends JPanel{
     private boolean isRunning = true;
     private GameCharacter tempCharacter = new GameCharacter(20, 20, 3, 4,100);
     private Line test = new Line(0, 0, 100, 100);
-    private ArrayList<Coordinate> intersections = new ArrayList<>();
+    private ArrayList<Vector2F> intersections = new ArrayList<>();
 
     public GamePanel() {
         this.setLayout(null);
@@ -39,7 +39,7 @@ public class GamePanel extends JPanel{
         tempCharacter.paint(camera);
         roomManager.drawRooms(camera);
         camera.drawLine(test);
-        for (Coordinate c: intersections) {
+        for (Vector2F c: intersections) {
             camera.drawCoordinate(c);
         }
         camera.paint();

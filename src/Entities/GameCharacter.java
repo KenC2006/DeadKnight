@@ -1,24 +1,21 @@
 package Entities;
 
 import Camera.Camera;
-import Structure.Coordinate;
 import Structure.Hitbox;
-import Structure.Line;
-import Structure.Vector2f;
+import Structure.Vector2F;
 
 import java.awt.*;
 
 public class GameCharacter {
-    private Coordinate position;
-    private Vector2f velocity;
+    private Vector2F position, velocity;
     private Hitbox hitbox;
     private int health;
 
 
-    public GameCharacter(double x, double y, int width, int height, int health) {
-        position = new Coordinate((int) x, (int) y);
-        velocity = new Vector2f();
-        hitbox = new Hitbox(position, new Coordinate((int) x + width, (int) y + height));
+    public GameCharacter(double x, double y, double width, double height, int health) {
+        position = new Vector2F(x, y);
+        velocity = new Vector2F();
+        hitbox = new Hitbox(x, y, x + width, y + height);
         this.health = health;
     }
 
@@ -49,48 +46,48 @@ public class GameCharacter {
     }
 
     private void updatePosition() {
-        Coordinate currentPosition = position;
-        Coordinate nextPosition = new Coordinate((int) (position.getX() + velocity.getX()), (int) (position.getY() + velocity.getY()));
-        Line intersectLine = new Line(currentPosition, nextPosition);
+        Vector2F currentPosition = position;
+        Vector2F nextPosition = new Vector2F(position.getX() + velocity.getX(), position.getY() + velocity.getY());
+//        Line intersectLine = new Line(currentPosition, nextPosition);
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         hitbox.setX(x);
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         hitbox.setY(y);
     }
 
-    public void changeX(int dx) {
+    public void changeX(double dx) {
         hitbox.changeX(dx);
     }
 
-    public void changeY(int dy) {
+    public void changeY(double dy) {
         hitbox.changeY(dy);
     }
 
-    public int getX() {
+    public double getX() {
         return position.getX();
     }
 
-    public int getY() {
+    public double getY() {
         return position.getY();
     }
 
-    public int getVX() {
-        return (int) velocity.getX();
+    public double getVX() {
+        return velocity.getX();
     }
 
-    public int getVY() {
-        return (int) velocity.getY();
+    public double getVY() {
+        return velocity.getY();
     }
 
-    public void setVX(int vX) {
+    public void setVX(double vX) {
         velocity.setX(vX);
     }
 
-    public void setVY(int vY) {
+    public void setVY(double vY) {
         velocity.setY(vY);
     }
 

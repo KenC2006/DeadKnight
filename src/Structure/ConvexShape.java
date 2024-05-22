@@ -1,18 +1,18 @@
 package Structure;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class ConvexShape {
-    private ArrayList<Coordinate> points;
-    private Coordinate topLeft = new Coordinate(), bottomRight = new Coordinate();
-    // TODO implement https://github.com/upasee/Chan-s-Algorithm/blob/master/chan/Point.java
+    private ArrayList<Vector2F> points;
+    private Vector2F topLeft = new Vector2F(), bottomRight = new Vector2F();
+    // SOURCE https://github.com/upasee/Chan-s-Algorithm/blob/master/chan/Point.java
+    // SOURCE https://github.com/ClaymoreAdrendamar/Separating-Axis-Theorem/blob/master/Java/Collisions.java
 
-    public ConvexShape(ArrayList<Coordinate> points) {
+    public ConvexShape(ArrayList<Vector2F> points) {
         this.points = jarvisMarch(points);
         topLeft.copy(points.getFirst());
         bottomRight.copy(points.getFirst());
-        for (Coordinate c : points) {
+        for (Vector2F c : points) {
             topLeft.setX(Math.min(topLeft.getX(), c.getX()));
             topLeft.setY(Math.min(topLeft.getY(), c.getY()));
             bottomRight.setX(Math.max(bottomRight.getX(), c.getX()));
@@ -20,18 +20,18 @@ public class ConvexShape {
         }
     }
 
-    public ArrayList<Coordinate> getPoints() {
+    public ArrayList<Vector2F> getPoints() {
         return points;
     }
 
-    private ArrayList<Coordinate> jarvisMarch(ArrayList<Coordinate> points) {
-        ArrayList<Coordinate> results = new ArrayList<>();
-        Coordinate maxPoint = findFurthestPoint(points);
-        results.add(new Coordinate(maxPoint));
-        Coordinate pivot = new Coordinate(maxPoint), best = new Coordinate(maxPoint);
+    private ArrayList<Vector2F> jarvisMarch(ArrayList<Vector2F> points) {
+        ArrayList<Vector2F> results = new ArrayList<>();
+        Vector2F maxPoint = findFurthestPoint(points);
+        results.add(new Vector2F(maxPoint));
+        Vector2F pivot = new Vector2F(maxPoint), best = new Vector2F(maxPoint);
         while (true) {
 //            System.out.printf("Pivot at %d %d\n", pivot.getX(), pivot.getY());
-            for (Coordinate candidate: points) {
+            for (Vector2F candidate: points) {
                 if (candidate.getX() == pivot.getX() && candidate.getY() == pivot.getY()) continue; // Skip if comparing to pivot point
                 int rotation = orientation(pivot, best, candidate); // Check if points are cw (-1), ccw (1), or colinear (0) (checking if candidate is further cw than best)
                 int dist = compare(pivot.getEuclideanDistance(candidate), pivot.getEuclideanDistance(best));
@@ -39,7 +39,7 @@ public class ConvexShape {
                 if (rotation == -1 || rotation == 0 && dist == 1) best.copy(candidate); // get the point furthest most rotated point from the pivot (if same rotation get closest)
             }
             if (best.getX() == maxPoint.getX() && best.getY() == maxPoint.getY()) break; // Done when made a full loop back to starting point
-            results.add(new Coordinate(best));
+            results.add(new Vector2F(best));
             pivot.copy(best); // Set next pivot to candidate
 //            System.out.printf("Best is %d %d\n", best.getX(), best.getY());
         }
@@ -51,14 +51,14 @@ public class ConvexShape {
         return a > b ? 1 : -1;
     }
 
-    private int orientation(Coordinate a, Coordinate b, Coordinate c) {
+    private int orientation(Vector2F a, Vector2F b, Vector2F c) {
         return compare(((b.getX()-a.getX())*(c.getY()-a.getY())) - ((b.getY()-a.getY())*(c.getX()-a.getX())),0);
 
     }
 
-    private Coordinate findFurthestPoint(ArrayList<Coordinate> points) {
-        Coordinate max = new Coordinate(points.getFirst());
-        for (Coordinate p: points) {
+    private Vector2F findFurthestPoint(ArrayList<Vector2F> points) {
+        Vector2F max = new Vector2F(points.getFirst());
+        for (Vector2F p: points) {
             if (max.getX() < p.getX() || (max.getX() == p.getX() && max.getY() < p.getY())) max.copy(p);
         }
         return max;
@@ -73,11 +73,11 @@ public class ConvexShape {
     }
 
     public boolean intersects(ConvexShape other) {
-        ArrayList<Vector2f> axis = new ArrayList<>();
+        ArrayList<Vector2F> axis = new ArrayList<>();
         axis.addAll(getAxis());
         axis.addAll(other.getAxis());
 
-        for (Vector2f v: axis) {
+        for (Vector2F v: axis) {
             Projection pA = getProjection(v);
             Projection pB = other.getProjection(v);
 //            System.out.printf("On axis %f %f, overlap ? %b\n", v.getX(), v.getY(), pA.overlap(pB));
@@ -87,7 +87,7 @@ public class ConvexShape {
         return true;
     }
 
-    private Projection getProjection(Vector2f axis) {
+    private Projection getProjection(Vector2F axis) {
         double min = axis.dotProduct(points.getFirst());
         double max = min;
         for (int i =  1; i < points.size(); i++) {
@@ -98,21 +98,21 @@ public class ConvexShape {
         return new Projection(min, max);
     }
 
-    public ArrayList<Vector2f> getAxis() {
-        ArrayList<Vector2f> axis = new ArrayList<>();
+    public ArrayList<Vector2F> getAxis() {
+        ArrayList<Vector2F> axis = new ArrayList<>();
         for (int i = 0; i < points.size(); i++) {
-            Vector2f c = new Vector2f(points.get(i).getX() - points.get((i + 1) % points.size()).getX(), points.get(i).getY() - points.get((i + 1) % points.size()).getY());
+            Vector2F c = new Vector2F(points.get(i).getX() - points.get((i + 1) % points.size()).getX(), points.get(i).getY() - points.get((i + 1) % points.size()).getY());
             axis.add(c.normal().normalize());
         }
 //        System.out.printf("Axis %d\n", axis.size());
         return axis;
     }
 
-    public Coordinate getTopLeft() {
+    public Vector2F getTopLeft() {
         return topLeft;
     }
 
-    public Coordinate getBottomRight() {
+    public Vector2F getBottomRight() {
         return bottomRight;
     }
 }
