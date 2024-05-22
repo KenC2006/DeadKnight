@@ -4,6 +4,7 @@ import Entities.GameCharacter;
 import Entities.Player;
 import Managers.ActionManager;
 import Managers.RoomManager;
+import Structure.RoomEditor;
 import Structure.Vector2F;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class GamePanel extends JPanel{
         this.setFocusable(true);
         this.setVisible(true);
         manager.addPanel(this);
+        new RoomEditor();
     }
 
     public void paintComponent(Graphics g) {
