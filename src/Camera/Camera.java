@@ -1,9 +1,9 @@
 package Camera;
 
-import Structure.Coordinate;
 import Structure.Hitbox;
 import Structure.Line;
 import Managers.ActionManager;
+import Structure.Vector2F;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
  * ARROW KEYS TO MOVE CAMERA
  */
 public class Camera {
-    private Coordinate offset = new Coordinate(-1, -1);
+    private Vector2F offset = new Vector2F(-1, -1);
     private Graphics2D graphics;
     private double scaling;
     private Rectangle screenBounds;
@@ -23,7 +23,7 @@ public class Camera {
 
     public void setGraphics(Graphics g) {
         graphics = (Graphics2D) g;
-        graphics.setStroke(new BasicStroke((float) scaling));
+        graphics.setStroke(new BasicStroke(1f));
         screenBounds = graphics.getClipBounds();
     }
 
@@ -32,7 +32,7 @@ public class Camera {
         graphics.setColor(h.getColour());
         x1 = scaleAndShiftX(h.getLeft());
         y1 = scaleAndShiftY (h.getTop());
-        x2 = scaleAndShiftX(h.getRight() );
+        x2 = scaleAndShiftX(h.getRight());
         y2 = scaleAndShiftY(h.getBottom());
         graphics.drawRect((int) x1, (int) y1, (int) (x2 - x1), (int) (y2 - y1));
 
@@ -41,7 +41,7 @@ public class Camera {
         //        System.out.printf("%f %f %f %f\n", x1, x2, (x2 - x1), (y2 - y1));
     }
 
-    public void drawCoordinate(Coordinate c) {
+    public void drawCoordinate(Vector2F c) {
         graphics.setColor(Color.BLACK);
         double x1 = scaleAndShiftX(c.getX());
         double y1 = scaleAndShiftY(c.getY());
@@ -49,7 +49,7 @@ public class Camera {
 
     }
 
-    public void drawLine(Coordinate p1, Coordinate p2) {
+    public void drawLine(Vector2F p1, Vector2F p2) {
         graphics.setColor(Color.BLACK);
         graphics.setStroke(new BasicStroke(2f));
         double x1 = scaleAndShiftX(p1.getX());
@@ -57,7 +57,7 @@ public class Camera {
         double x2 = scaleAndShiftX(p2.getX());
         double y2 = scaleAndShiftY(p2.getY());
         graphics.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
-        graphics.setStroke(new BasicStroke((float) scaling));
+        graphics.setStroke(new BasicStroke(1f));
     }
 
     public void drawLine(Line l) {
@@ -102,13 +102,12 @@ public class Camera {
         double y3 = scaleAndShiftY(offset.getY() + 1);
         graphics.drawLine((int) x1, (int) y2, (int) x3, (int) y2);
         graphics.drawLine((int) x2, (int) y1, (int) x2, (int) y3);
-        graphics.setStroke(new BasicStroke((float) scaling));
+        graphics.setStroke(new BasicStroke(1f));
     }
 
     public void changeScaling(double change) {
         if (scaling + change < 1) return;
         scaling += change;
-        graphics.setStroke(new BasicStroke((float) scaling));
     }
 
     private double scaleAndShiftX(double x) {

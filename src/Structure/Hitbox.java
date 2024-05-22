@@ -7,17 +7,17 @@ public class Hitbox {
     private ConvexShape shape;
     private Color colour = Color.GREEN;
 
-    public Hitbox(Coordinate topLeft, Coordinate bottomRight) {
-        ArrayList<Coordinate> points = new ArrayList<>();
-        points.add(new Coordinate(topLeft));
-        points.add(new Coordinate(topLeft.getX(), bottomRight.getY()));
-        points.add(new Coordinate(bottomRight.getX(), topLeft.getY()));
-        points.add(new Coordinate(bottomRight));
+    public Hitbox(Vector2F topLeft, Vector2F bottomRight) {
+        ArrayList<Vector2F> points = new ArrayList<>();
+        points.add(new Vector2F(topLeft));
+        points.add(new Vector2F(topLeft.getX(), bottomRight.getY()));
+        points.add(new Vector2F(bottomRight.getX(), topLeft.getY()));
+        points.add(new Vector2F(bottomRight));
         shape = new ConvexShape(points);
     }
 
-    public Hitbox(int x1, int y1, int x2, int y2) {
-        this(new Coordinate(x1, y1), new Coordinate(x2, y2));
+    public Hitbox(double x1, double y1, double x2, double y2) {
+        this(new Vector2F(x1, y1), new Vector2F(x2, y2));
     }
 
     public Color getColour() {
@@ -28,65 +28,69 @@ public class Hitbox {
         this.colour = colour;
     }
 
-    public void setX(int x) {
-        int dist = x - getTopLeft().getX();
+    public void setX(double x) {
+        double dist = x - getTopLeft().getX();
         changeX(dist);
     }
 
-    public void changeX(int dx) {
-        for (Coordinate point : shape.getPoints()) {
+    public void changeX(double dx) {
+        for (Vector2F point : shape.getPoints()) {
             point.changeX(dx);
         }
         getTopLeft().changeX(dx);
         getBottomRight().changeX(dx);
     }
 
-    public void setY(int y) {
-        int dist = y - getTopLeft().getY();
+    public void setY(double y) {
+        double dist = y - getTopLeft().getY();
         changeY(dist);
     }
 
-    public void changeY(int dy) {
-        for (Coordinate point : shape.getPoints()) {
+    public void changeY(double dy) {
+        for (Vector2F point : shape.getPoints()) {
             point.changeY(dy);
         }
         getTopLeft().changeY(dy);
         getBottomRight().changeY(dy);
     }
 
-    public Coordinate getTopLeft() {
+    public Vector2F getTopLeft() {
         return shape.getTopLeft();
     }
 
-    public Coordinate getBottomRight() {
+    public Vector2F getBottomRight() {
         return shape.getBottomRight();
     }
 
-    public int getTop() {
+    public double getTop() {
         return getTopLeft().getY();
     }
 
-    public int getBottom() {
+    public double getBottom() {
         return getBottomRight().getY();
     }
 
-    public int getLeft() {
+    public double getLeft() {
         return getTopLeft().getX();
     }
 
-    public int getRight() {
+    public double getRight() {
         return getBottomRight().getX();
     }
 
-    public int getWidth() {
+    public double getWidth() {
         return getRight() - getLeft();
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return getBottom() - getTop();
     }
 
     public boolean intersects(Hitbox hitbox) {
         return shape.intersects(hitbox.shape);
+    }
+
+    public ArrayList<Vector2F> getPoints() {
+        return shape.getPoints();
     }
 }
