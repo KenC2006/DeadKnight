@@ -49,27 +49,6 @@ public class EnemyManager {
         // update health, movement, phase
     }
 
-    public static void wanderEnemy(Enemy enemy) {
-        if (enemy.getType().equals("MELEE")) {
-            if (Math.random() >= 0.5) {
-                enemy.moveLeft(MeleeEnemy.defaultWalkSpeed);
-            }
-            else {
-                enemy.moveRight(MeleeEnemy.defaultWalkSpeed);
-            }
-        }
-        if (enemy.getType().equals("RANGE")) {
-            if (Math.random() >= 0.5) {
-
-            }
-        }
-        if (enemy.getType().equals("MAGIC")) {
-            if (Math.random() >= 0.5) {
-
-            }
-        }
-    }
-
     public void drawEnemy(Camera c, Enemy e) {
         e.drawEnemy(c);
     }
@@ -82,7 +61,6 @@ public class EnemyManager {
         EnemyManager em = new EnemyManager();
         for (Enemy e : em.createEnemyLine(5, 0, 5, 20, 100, "MELEE")) {
             System.out.printf("enemy at x = %f, y = %f\n", e.getX(), e.getY());
-            wanderEnemy(e);
             System.out.printf("enemy velocity %f\n", e.getVX());
         }
     }

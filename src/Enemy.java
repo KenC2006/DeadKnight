@@ -2,7 +2,11 @@
 
 public class Enemy extends GameCharacter {
 
-    private int phase;
+    public final static double defaultHeight = 5;
+    public final static double defaultWidth = 2;
+    public final static double defaultWalkSpeed = 5;
+
+    private int phase, prevPhase;
     private int id;
     private double sightRadius;
 
@@ -13,6 +17,19 @@ public class Enemy extends GameCharacter {
         this.sightRadius = sightRadius;
         id = enemyCount;
         enemyCount++;
+    }
+
+    public void startWander() {
+        if (Math.random() >= 0.5) {
+            moveLeft(defaultWalkSpeed);
+        }
+        else {
+            moveRight(defaultWalkSpeed);
+        }
+    }
+
+    public void updateEnemy() {
+
     }
 
     public String getType() {
@@ -31,8 +48,17 @@ public class Enemy extends GameCharacter {
         return phase;
     }
 
+    public int getPrevPhase() {
+        return prevPhase;
+    }
+
     public void updatePhase(int newPhase) {
+        prevPhase = phase;
         phase = newPhase;
+    }
+
+    public void updatePrevPhase() {
+        prevPhase = phase;
     }
 
     public void moveLeft(double xChange) {
@@ -48,8 +74,12 @@ public class Enemy extends GameCharacter {
     }
 
     public boolean canSeePlayer(Player player) {
-        // need a way to access wall location
+        // need a way to access wall location and player location
         return true;
+    }
+
+    public int getPlayerDistance(Player player) {
+        return 0;
     }
 
     public void jump() {
