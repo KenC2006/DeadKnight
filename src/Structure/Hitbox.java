@@ -1,33 +1,23 @@
 package Structure;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Hitbox {
     private ConvexShape shape;
-    private Coordinate p1, p2;
     private Color colour = Color.GREEN;
-    private double width, height;
 
     public Hitbox(Coordinate topLeft, Coordinate bottomRight) {
-        p1 = topLeft;
-        p2 = bottomRight;
+        ArrayList<Coordinate> points = new ArrayList<>();
+        points.add(new Coordinate(topLeft));
+        points.add(new Coordinate(topLeft.getX(), bottomRight.getY()));
+        points.add(new Coordinate(bottomRight.getX(), topLeft.getY()));
+        points.add(new Coordinate(bottomRight));
+        shape = new ConvexShape(points);
     }
 
     public Hitbox(int x1, int y1, int x2, int y2) {
-        if (x1 > x2) {
-            int temp = x1;
-            x1 = x2;
-            x2 = temp;
-        }
-        if (y1 > y2) {
-            int temp = y1;
-            y1 = y2;
-            y2 = temp;
-        }
-        p1 = new Coordinate(x1, y1);
-        p2 = new Coordinate(x2, y2);
-        width = p1.getXDistance(p2);
-        height = p2.getYDistance(p2);
+        this(new Coordinate(x1, y1), new Coordinate(x2, y2));
     }
 
     public Color getColour() {
@@ -38,72 +28,65 @@ public class Hitbox {
         this.colour = colour;
     }
 
-    public void resize(Coordinate p1, Coordinate p2) {
-        this.p1.copy(p1);
-        this.p2.copy(p2);
-        width = p1.getXDistance(p2);
-        height = p2.getYDistance(p2);
-    }
-
     public void setX(int x) {
-        int dist = x - p1.getX();
+        int dist = x - getTopLeft().getX();
         changeX(dist);
     }
 
     public void changeX(int dx) {
-        p1.changeX(dx);
-        p2.changeX(dx);
+        for (Coordinate point : shape.getPoints()) {
+            point.changeX(dx);
+        }
+        getTopLeft().changeX(dx);
+        getBottomRight().changeX(dx);
     }
 
     public void setY(int y) {
-        int dist = y - p1.getY();
+        int dist = y - getTopLeft().getY();
         changeY(dist);
     }
 
     public void changeY(int dy) {
-        p1.changeY(dy);
-        p2.changeY(dy);
+        for (Coordinate point : shape.getPoints()) {
+            point.changeY(dy);
+        }
+        getTopLeft().changeY(dy);
+        getBottomRight().changeY(dy);
     }
 
     public Coordinate getTopLeft() {
-        return p1;
+        return shape.getTopLeft();
     }
 
     public Coordinate getBottomRight() {
-        return p2;
+        return shape.getBottomRight();
     }
 
     public int getTop() {
-        return p1.getY();
+        return getTopLeft().getY();
     }
 
     public int getBottom() {
-        return p2.getY();
+        return getBottomRight().getY();
     }
 
     public int getLeft() {
-        return p1.getX();
+        return getTopLeft().getX();
     }
 
     public int getRight() {
-        return p2.getX();
+        return getBottomRight().getX();
     }
 
     public int getWidth() {
-        return p1.getXDistance(p2);
+        return getRight() - getLeft();
     }
 
     public int getHeight() {
-        return p1.getYDistance(p2);
+        return getBottom() - getTop();
     }
 
     public boolean intersects(Hitbox hitbox) {
-        boolean xIntercept = (hitbox.getLeft() <= getLeft() && getLeft() <= hitbox.getRight()) || (hitbox.getLeft() <= getRight() && getRight() <= hitbox.getRight());
-        boolean yIntercept = (hitbox.getTop() <= getTop() && getTop() <= hitbox.getBottom()) || (hitbox.getTop() <= getBottom() && getBottom() <= hitbox.getBottom());
-        return xIntercept && yIntercept;
-    }
-
-    public boolean collides(HitboxGroup group) {
-        return group.collides(this);
+        return shape.intersects(hitbox.shape);
     }
 }

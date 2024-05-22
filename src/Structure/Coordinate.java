@@ -1,8 +1,5 @@
 package Structure;
 
-/**
- *
- */
 public class Coordinate {
     private int x, y;
     public Coordinate() {
