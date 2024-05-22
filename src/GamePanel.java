@@ -1,3 +1,11 @@
+import Camera.Camera;
+import Structure.Coordinate;
+import Structure.Line;
+import Entities.GameCharacter;
+import Entities.Player;
+import Managers.ActionManager;
+import Managers.RoomManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;

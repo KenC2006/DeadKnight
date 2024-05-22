@@ -1,4 +1,6 @@
+package Entities;
 
+import Camera.Camera;
 
 public class Enemy extends GameCharacter {
 
@@ -12,7 +14,7 @@ public class Enemy extends GameCharacter {
 
     private static int enemyCount;
 
-    public Enemy(double x, double y, double width, double height, int health, double sightRadius) {
+    public Enemy(double x, double y, int width, int height, int health, double sightRadius) {
         super(x, y, width, height, health);
         this.sightRadius = sightRadius;
         id = enemyCount;
@@ -62,11 +64,11 @@ public class Enemy extends GameCharacter {
     }
 
     public void moveLeft(double xChange) {
-        setVX(getVX() - xChange);
+        setVX((int) (getVX() - xChange));
     }
 
     public void moveRight(double xChange) {
-        setVX(getVX() + xChange);
+        setVX((int) (getVX() + xChange));
     }
 
     public void stopXMovement() {

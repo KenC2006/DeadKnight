@@ -1,3 +1,7 @@
+package Structure;
+
+import Camera.Camera;
+
 public class Room {
     private HitboxGroup walls;
 

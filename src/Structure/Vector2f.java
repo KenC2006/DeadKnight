@@ -1,16 +1,24 @@
-/**
- *
- */
-public class Coordinate {
+package Structure;
+
+public class Vector2f {
     private double x, y;
-    public Coordinate() {
+    public Vector2f() {
         x = 0;
         y = 0;
     }
 
-    public Coordinate(double x, double y) {
+    public Vector2f(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Vector2f(Vector2f c) {
+        this.x = c.x;
+        this.y = c.y;
+    }
+
+    public Vector2f(Coordinate c) {
+        this(c.getX(), c.getY());
     }
 
     public double getX() {
@@ -43,7 +51,7 @@ public class Coordinate {
      * @param p the point to compare
      * @return the horizontal distance between the points
      */
-    public double getYDistance(Coordinate p) {
+    public double getYDistance(Vector2f p) {
         return p.getY() - getY();
     }
 
@@ -53,23 +61,37 @@ public class Coordinate {
      * @param p the point to compare
      * @return the horizontal distance between the points
      */
-    public double getXDistance(Coordinate p) {
+    public double getXDistance(Vector2f p) {
         return p.getX() - getX();
     }
 
-    public void copy(Coordinate c) {
+    public void copy(Vector2f c) {
         x = c.getX();
         y = c.getY();
     }
 
-
-    public double getEuclideanDistance(Coordinate p) {
-        double dx = getYDistance(p);
-        double dy = getXDistance(p);
-        return Math.sqrt(dx * dx + dy * dy);
+    public double getLength() {
+        return x * x + y * y;
     }
 
-    public double getManhattanDistance(Coordinate p) {
-        return Math.abs(getXDistance(p)) + Math.abs(getYDistance(p));
+    public double dotProduct(Vector2f p) {
+        return x * p.x + y * p.y;
+    }
+
+    public double dotProduct(Coordinate p) {
+        return x * p.getX() + y * p.getY();
+    }
+
+
+    public Vector2f normal() {
+        return new Vector2f(-getY(), getX());
+    }
+
+    public Vector2f normalize() {
+        double d = Math.sqrt(x * x + y * y);
+        if (d == 0) {
+            d = 1;
+        }
+        return new Vector2f(x / d, y / d);
     }
 }

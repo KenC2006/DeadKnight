@@ -1,3 +1,10 @@
+package Camera;
+
+import Structure.Coordinate;
+import Structure.Hitbox;
+import Structure.Line;
+import Managers.ActionManager;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 

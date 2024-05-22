@@ -1,3 +1,8 @@
+package Entities;
+
+import Entities.Enemy;
+import Entities.Player;
+
 public class MeleeEnemy extends Enemy {
 
     public MeleeEnemy(double x, double y, int health) {
