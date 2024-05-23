@@ -7,6 +7,10 @@ public class Hitbox {
     private ConvexShape shape;
     private Color colour = Color.GREEN;
 
+    public Hitbox(ArrayList<Vector2F> points) {
+        shape = new ConvexShape(points);
+    }
+
     public Hitbox(Vector2F topLeft, Vector2F bottomRight) {
         ArrayList<Vector2F> points = new ArrayList<>();
         points.add(new Vector2F(topLeft));
@@ -14,6 +18,7 @@ public class Hitbox {
         points.add(new Vector2F(bottomRight.getX(), topLeft.getY()));
         points.add(new Vector2F(bottomRight));
         shape = new ConvexShape(points);
+
     }
 
     public Hitbox(double x1, double y1, double x2, double y2) {
@@ -54,8 +59,18 @@ public class Hitbox {
         getBottomRight().changeY(dy);
     }
 
+    public void translateInPlace(Vector2F v) {
+        for (Vector2F point: shape.getPoints()) {
+            point.translateInPlace(v);
+        }
+    }
+
     public Vector2F getTopLeft() {
         return shape.getTopLeft();
+    }
+
+    public int pointCount() {
+        return shape.getPointCount();
     }
 
     public Vector2F getBottomRight() {
@@ -88,6 +103,18 @@ public class Hitbox {
 
     public boolean intersects(Hitbox hitbox) {
         return shape.intersects(hitbox.shape);
+    }
+
+    public boolean intersects(HitboxGroup hitbox) {
+        return hitbox.intersects(this);
+    }
+
+    public boolean quickIntersect(Hitbox hitbox) {
+        return !(hitbox.getLeft() > getRight() || hitbox.getRight() < getLeft() || hitbox.getTop() > getBottom() || hitbox.getBottom() < getTop());
+    }
+
+    public boolean quickIntersect(HitboxGroup hitbox) {
+        return hitbox.quickIntersect(this);
     }
 
     public ArrayList<Vector2F> getPoints() {

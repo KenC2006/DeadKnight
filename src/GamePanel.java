@@ -1,4 +1,5 @@
 import Camera.Camera;
+import Managers.EntityManager;
 import Structure.Line;
 import Entities.GameCharacter;
 import Entities.Player;
@@ -13,13 +14,9 @@ import java.util.ArrayList;
 
 public class GamePanel extends JPanel{
     private ActionManager manager = new ActionManager();
-    private RoomManager roomManager = new RoomManager();
-    private Player player = new Player(10, 10);
+    private EntityManager entityManager = new EntityManager();
     private Camera camera = new Camera(10);
     private boolean isRunning = true;
-    private GameCharacter tempCharacter = new GameCharacter(20, 20, 3, 4,100);
-    private Line test = new Line(0, 0, 100, 100);
-    private ArrayList<Vector2F> intersections = new ArrayList<>();
 
     public GamePanel() {
         this.setLayout(null);
@@ -37,29 +34,15 @@ public class GamePanel extends JPanel{
     public void draw(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
         camera.setGraphics(g);
-        player.paint(camera);
-        tempCharacter.paint(camera);
-        roomManager.drawRooms(camera);
-        camera.drawLine(test);
-        for (Vector2F c: intersections) {
-            camera.drawCoordinate(c);
-        }
+        entityManager.draw(camera);
         camera.paint();
     }
 
     public void update() {
-
-
         camera.updateKeyPresses(manager);
-        player.updateKeyPresses(manager);
-
-        intersections = test.getIntercepts(player.getHitbox());
-//        tempCharacter.update();
-//        player.update();
-
-        if (player.collidesWith(tempCharacter)) {
-
-        }
+        entityManager.updateKeyPresses(manager);
+        entityManager.update();
+        entityManager.followPlayer(camera);
     }
 
     public void start() {

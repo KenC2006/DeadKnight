@@ -34,7 +34,15 @@ public class HitboxGroup {
         }
     }
 
-    public boolean collides(HitboxGroup group) {
+    public boolean quickIntersect(Hitbox other) {
+        return boundingBox.quickIntersect(other);
+    }
+
+    public boolean quickIntersect(HitboxGroup other) {
+        return boundingBox.quickIntersect(other.boundingBox);
+    }
+
+    public boolean intersects(HitboxGroup group) {
         for (Hitbox h1 : hitboxes) {
             for (Hitbox h2: group.hitboxes) {
                 if (h1.intersects(h2)) return true;
@@ -43,7 +51,7 @@ public class HitboxGroup {
         return false;
     }
 
-    public boolean collides(Hitbox hitbox) {
+    public boolean intersects(Hitbox hitbox) {
         for (Hitbox h1 : hitboxes) {
             if (h1.intersects(hitbox)) return true;
         }

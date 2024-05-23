@@ -3,37 +3,54 @@ package Entities;
 import Entities.GameCharacter;
 import Managers.ActionManager;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
  * WASD TO MOVE PLAYER
  */
 public class Player extends GameCharacter {
-    private boolean isColliding;
+    private boolean immune;
+    private boolean upPressed, leftRightPressed;
+    private int framesSinceTouchedGround = 0, dx;
 
     public Player(double x, double y){
         super(x, y, 2, 5,100);
     }
 
     public void updateKeyPresses(ActionManager manager) {
+        dx = 0;
+        framesSinceTouchedGround++;
+        if (isGrounded()) framesSinceTouchedGround = 0;
         if (manager.getPressed(KeyEvent.VK_W)) {
-            changeY(-1);
+            if (framesSinceTouchedGround < 10) setVY(-1.4 - (10 - framesSinceTouchedGround) / 10.0 * 1);
+        } else {
+            if (!isGrounded()) {
+                setVY(Math.max(-0, getVY()));
+                framesSinceTouchedGround = 30;
+            }
         }
+
         if (manager.getPressed(KeyEvent.VK_D)) {
-            changeX(1);
+            dx += 1;
         }
-        if (manager.getPressed(KeyEvent.VK_S)) {
-            changeY(1);
-        }
+
         if (manager.getPressed(KeyEvent.VK_A)) {
-            changeX(-1);
+            dx += -1;
+        }
+
+        setVX(dx);
+    }
+
+    public void resolveEntityCollision(GameCharacter e) {
+        if (e.collidesWithPlayer(this)) {
+            e.setColliding(true);
+            setColliding(true);
+        } else {
+            e.setColliding(false);
         }
     }
-
-    public void jump(){
-        setVY(getVY()+5);
-    }
-
-    public void drop(){
-    }
+//
+//    public void jump(){
+//    }
 }
