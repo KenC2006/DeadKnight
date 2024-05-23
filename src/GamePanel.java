@@ -39,8 +39,8 @@ public class GamePanel extends JPanel{
     public void update() {
         camera.updateKeyPresses(manager);
         entityManager.updateKeyPresses(manager);
-
         entityManager.update();
+        entityManager.followPlayer(camera);
     }
 
     public void start() {

@@ -85,18 +85,23 @@ public class Camera {
         }
     }
 
+    public void setPosition(Vector2F p) {
+        offset.copy(p);
+//        System.out.printf("%f %f\n", offset.getX(), offset.getY());
+    }
+
     public void paint() {
         // DRAW CAMERA CROSSHAIR
-        graphics.setColor(Color.BLACK);
-        graphics.setStroke(new BasicStroke(2f));
-        double x1 = scaleAndShiftX(offset.getX() - 1);
-        double y1 = scaleAndShiftY(offset.getY() - 1);
-        double x2 = scaleAndShiftX(offset.getX());
-        double y2 = scaleAndShiftY(offset.getY());
-        double x3 = scaleAndShiftX(offset.getX() + 1);
-        double y3 = scaleAndShiftY(offset.getY() + 1);
-        graphics.drawLine((int) x1, (int) y2, (int) x3, (int) y2);
-        graphics.drawLine((int) x2, (int) y1, (int) x2, (int) y3);
+//        graphics.setColor(Color.BLACK);
+//        graphics.setStroke(new BasicStroke(2f));
+//        double x1 = scaleAndShiftX(offset.getX() - 1);
+//        double y1 = scaleAndShiftY(offset.getY() - 1);
+//        double x2 = scaleAndShiftX(offset.getX());
+//        double y2 = scaleAndShiftY(offset.getY());
+//        double x3 = scaleAndShiftX(offset.getX() + 1);
+//        double y3 = scaleAndShiftY(offset.getY() + 1);
+//        graphics.drawLine((int) x1, (int) y2, (int) x3, (int) y2);
+//        graphics.drawLine((int) x2, (int) y1, (int) x2, (int) y3);
         graphics.setStroke(new BasicStroke(1f));
     }
 

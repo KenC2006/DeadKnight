@@ -81,7 +81,7 @@ public class GameCharacter {
 
     private Vector2F binarySearchVelocity(Vector2F startingVelocity, ArrayList<Room> roomList) {
         double minTime = 0, maxTime = 1;
-        while (maxTime - minTime > 0.01) {
+        while (maxTime - minTime > 0.001) {
             double mid = (minTime + maxTime) / 2.0;
             Hitbox movementBox = createMovementBox(startingVelocity.multiply(mid));
             boolean collides = false;
@@ -92,7 +92,7 @@ public class GameCharacter {
                 }
             }
             if (collides) {
-                maxTime = mid - 0.01;
+                maxTime = mid - 0.001;
             } else {
                 minTime = mid;
             }
@@ -101,9 +101,9 @@ public class GameCharacter {
         return startingVelocity.multiply(minTime);
     }
 
-    public void updateVelocity() {
+    private void updateVelocity() {
         // Gravity
-        if (affectedByGravity) velocity.changeY(0.05);
+        if (affectedByGravity) velocity.changeY(0.1);
     }
 
     public HitboxGroup getLastMovement() {
@@ -157,22 +157,27 @@ public class GameCharacter {
     }
 
     private void updatePosition(Vector2F velocity) {
+        position.translateInPlace(velocity);
         hitbox.translateInPlace(velocity);
     }
 
     public void setX(double x) {
+        position.setX(x);
         hitbox.setX(x);
     }
 
     public void setY(double y) {
+        position.setX(y);
         hitbox.setY(y);
     }
 
     public void changeX(double dx) {
+        position.changeX(dx);
         hitbox.changeX(dx);
     }
 
     public void changeY(double dy) {
+        position.changeY(dy);
         hitbox.changeY(dy);
     }
 

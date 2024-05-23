@@ -47,7 +47,7 @@ public class ConvexShape {
 //                System.out.printf("%f %f %d %d\n", candidate.getX(), candidate.getY(), rotation, dist);
                 if (rotation == -1 || rotation == 0 && dist == 1) best.copy(candidate); // get the point furthest most rotated point from the pivot (if same rotation get closest)
             }
-            if (best.getManhattanDistance(maxPoint) < 0.001) break; // Done when made a full loop back to starting point
+            if (best.getManhattanDistance(maxPoint) < 0.0001) break; // Done when made a full loop back to starting point
 //            System.out.printf("best (%f, %f) max (%f, %f) %f %b\n", best.getX(), best.getY(), maxPoint.getX(), maxPoint.getY(), best.getManhattanDistance(maxPoint), best.getManhattanDistance(maxPoint) == 0);
             if (count > 100) {
                 System.out.println("BROKEN");

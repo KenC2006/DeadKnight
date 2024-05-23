@@ -4,6 +4,7 @@ import Entities.GameCharacter;
 import Entities.Player;
 import Camera.Camera;
 import Structure.Room;
+import Structure.Vector2F;
 
 import java.util.ArrayList;
 
@@ -42,6 +43,9 @@ public class EntityManager {
         }
     }
 
+    public void followPlayer(Camera c) {
+        c.setPosition(new Vector2F(player.getX(), player.getY()));
+    }
 
     public void draw(Camera c) {
         player.paint(c);

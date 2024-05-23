@@ -11,32 +11,35 @@ import java.awt.event.KeyEvent;
  */
 public class Player extends GameCharacter {
     private boolean immune;
-    private boolean movementInput;
+    private boolean upPressed, leftRightPressed;
+    private int framesSinceTouchedGround = 0, dx;
 
     public Player(double x, double y){
         super(x, y, 2, 5,100);
     }
 
     public void updateKeyPresses(ActionManager manager) {
-        movementInput = false;
+        dx = 0;
+        framesSinceTouchedGround++;
+        if (isGrounded()) framesSinceTouchedGround = 0;
         if (manager.getPressed(KeyEvent.VK_W)) {
-            jump();
+            if (framesSinceTouchedGround < 10) setVY(-1.4 - (10 - framesSinceTouchedGround) / 10.0 * 1);
+        } else {
+            if (!isGrounded()) {
+                setVY(Math.max(-0, getVY()));
+                framesSinceTouchedGround = 30;
+            }
         }
+
         if (manager.getPressed(KeyEvent.VK_D)) {
-            movementInput = true;
-            setVX(1);
+            dx += 1;
         }
-        if (manager.getPressed(KeyEvent.VK_S)) {
-            movementInput = true;
-            setVY(1);
-        }
+
         if (manager.getPressed(KeyEvent.VK_A)) {
-            movementInput = true;
-            setVX(-1);
+            dx += -1;
         }
-        if (!movementInput) {
-            setVX(0);
-        }
+
+        setVX(dx);
     }
 
     public void resolveEntityCollision(GameCharacter e) {
@@ -47,10 +50,7 @@ public class Player extends GameCharacter {
             e.setColliding(false);
         }
     }
-
-    public void jump(){
-        if (isGrounded()) {
-            setVY(-2.1);
-        }
-    }
+//
+//    public void jump(){
+//    }
 }
