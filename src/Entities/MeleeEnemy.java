@@ -2,11 +2,16 @@ package Entities;
 
 import Entities.Enemy;
 import Entities.Player;
+import Items.Sword;
 
 public class MeleeEnemy extends Enemy {
 
+    private boolean isDashing, isAttacking;
+    private Sword sword;
+
     public MeleeEnemy(double x, double y, int health) {
         super(x, y, 2, 5, health, 10);
+        sword = new Sword((int)x, (int)y, 3, 1, 10);
     }
 
     // need weapon implementation for sword
@@ -15,43 +20,20 @@ public class MeleeEnemy extends Enemy {
         return "MELEE";
     }
 
-    /**
-     * phase 0 is to stop movment (debugging phase)
-     * phase 1 is wandering phase
-     * phase 2 is following and attack player phase
-     * phase 3 is returning to room phase
-     */
-    public void updateEnemy(Player player) {
-        if (getPhase() == 0) {
-            updatePrevPhase();
-            stopXMovement();
-        }
-        if (getPhase() == 1) {
-            if (getPrevPhase() != getPhase()) {
-                updatePrevPhase();
-                startWander();
-            }
-            if (canSeePlayer(player)) {
-                updatePhase(2);
-            }
-        }
-        if (getPhase() == 2) {
-
-        }
-
-    }
-
     public void followPlayer(Player player) {
         // a* to go to player's last known location
     }
 
-    public void dashLeft() {
-
+    public void startDashLeft() {
+        isDashing = true;
+        setVX(getVX() + 10);
     }
-    public void dashRight() {
-
+    public void startDashRight() {
+        isDashing = true;
+        setVX(getVX() - 10);
     }
     public void swingSword() {
-
+        isAttacking = true;
+        sword.swing();
     }
 }

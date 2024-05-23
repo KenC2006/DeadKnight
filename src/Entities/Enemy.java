@@ -1,6 +1,7 @@
 package Entities;
 
 import Camera.Camera;
+import Structure.Room;
 
 public class Enemy extends GameCharacter {
 
@@ -8,7 +9,7 @@ public class Enemy extends GameCharacter {
     public final static double defaultWidth = 2;
     public final static double defaultWalkSpeed = 5;
 
-    private int phase, prevPhase;
+    private int state, prevState;
     private int id;
     private double sightRadius;
 
@@ -46,21 +47,21 @@ public class Enemy extends GameCharacter {
         return enemyCount;
     }
 
-    public int getPhase() {
-        return phase;
+    public int getState() {
+        return state;
     }
 
-    public int getPrevPhase() {
-        return prevPhase;
+    public int getPrevState() {
+        return prevState;
     }
 
     public void updatePhase(int newPhase) {
-        prevPhase = phase;
-        phase = newPhase;
+        prevState = state;
+        state = newPhase;
     }
 
     public void updatePrevPhase() {
-        prevPhase = phase;
+        prevState = state;
     }
 
     public void moveLeft(double xChange) {
@@ -75,8 +76,8 @@ public class Enemy extends GameCharacter {
         setVX(0);
     }
 
-    public boolean canSeePlayer(Player player) {
-        // need a way to access wall location and player location
+    public boolean canSeePlayer(Player player, Room room) {
+
         return true;
     }
 

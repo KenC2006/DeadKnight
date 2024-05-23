@@ -12,7 +12,7 @@ public class EnemyManager {
     }
 
     public ArrayList<Enemy> findNearEnemies(Player player) {
-        // bfs in coordinate system D:
+        // bfs
         return null;
     }
     // preset height and widths
@@ -52,6 +52,32 @@ public class EnemyManager {
 
     public void updateEnemies(ArrayList<Room> rooms) {
         // update health, movement, phase
+    }
+
+    /**
+     * phase 0 is to stop movment (debugging phase)
+     * phase 1 is wandering phase
+     * phase 2 is following and attack player phase
+     * phase 3 is returning to room phase
+     */
+    public void updateEnemy(Enemy enemy, Player player, ArrayList<Room> loadedRooms) {
+        // how does each loaded room connect to others
+        if (enemy.getPrevState() != enemy.getState()) {
+            enemy.updatePrevPhase();
+            switch (enemy.getState()) {
+                case 0:
+                    break;
+                case 1:
+                    enemy.startWander();
+                    break;
+            }
+        }
+
+        for (Room r : loadedRooms) {
+            if (enemy.canSeePlayer(player, r)) {
+                enemy.updatePhase(2);
+            }
+        }
     }
 
     public void drawEnemy(Camera c, Enemy e) {

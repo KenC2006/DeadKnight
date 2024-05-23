@@ -10,7 +10,6 @@ public class Sword extends GameItem {
     }
 
     public void swing() {
-
     }
 
 
