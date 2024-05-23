@@ -11,7 +11,7 @@ public class ConvexShape {
 
     public ConvexShape(ArrayList<Vector2F> points) {
         this.points = jarvisMarch(points);
-        System.out.printf("Shape made with %d points\n", this.points.size());
+//        System.out.printf("Shape made with %d points\n", this.points.size());
         topLeft.copy(points.getFirst());
         bottomRight.copy(points.getFirst());
         for (Vector2F c : points) {
