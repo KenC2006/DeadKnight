@@ -80,6 +80,19 @@ public class Vector2F {
         return Math.abs(getXDistance(p)) + Math.abs(getYDistance(p));
     }
 
+    public Vector2F getTranslated(Vector2F change) {
+        return new Vector2F(getX() + change.getX(), getY() + change.getY());
+    }
+
+    public void translateInPlace(Vector2F change) {
+        changeX(change.getX());
+        changeY(change.getY());
+    }
+
+    public Vector2F multiply(double factor) {
+        return new Vector2F(getX() * factor, getY() * factor);
+    }
+
     public double getLength() {
         return getX() * getX() + getY() * getY();
     }

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 public class ConvexShape {
     private ArrayList<Vector2F> points;
     private Vector2F topLeft = new Vector2F(), bottomRight = new Vector2F();
+    private int pointCount = 0;
     // SOURCE https://github.com/upasee/Chan-s-Algorithm/blob/master/chan/Point.java
     // SOURCE https://github.com/ClaymoreAdrendamar/Separating-Axis-Theorem/blob/master/Java/Collisions.java
 
     public ConvexShape(ArrayList<Vector2F> points) {
         this.points = jarvisMarch(points);
+        System.out.printf("Shape made with %d points\n", this.points.size());
         topLeft.copy(points.getFirst());
         bottomRight.copy(points.getFirst());
         for (Vector2F c : points) {
@@ -17,11 +19,16 @@ public class ConvexShape {
             topLeft.setY(Math.min(topLeft.getY(), c.getY()));
             bottomRight.setX(Math.max(bottomRight.getX(), c.getX()));
             bottomRight.setY(Math.max(bottomRight.getY(), c.getY()));
+            pointCount++;
         }
     }
 
     public ArrayList<Vector2F> getPoints() {
         return points;
+    }
+
+    public int getPointCount() {
+        return pointCount;
     }
 
     private ArrayList<Vector2F> jarvisMarch(ArrayList<Vector2F> points) {
@@ -62,14 +69,6 @@ public class ConvexShape {
             if (max.getX() < p.getX() || (max.getX() == p.getX() && max.getY() < p.getY())) max.copy(p);
         }
         return max;
-    }
-
-    private long exponentiate(long base, long exp) {
-        long ans = 1;
-        for (int i = 1; i <= exp; i++) {
-            ans *= base;
-        }
-        return ans;
     }
 
     public boolean intersects(ConvexShape other) {

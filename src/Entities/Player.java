@@ -17,16 +17,16 @@ public class Player extends GameCharacter {
 
     public void updateKeyPresses(ActionManager manager) {
         if (manager.getPressed(KeyEvent.VK_W)) {
-            changeY(-1);
+            setVY(-1);
         }
         if (manager.getPressed(KeyEvent.VK_D)) {
-            changeX(1);
+            setVX(1);
         }
         if (manager.getPressed(KeyEvent.VK_S)) {
-            changeY(1);
+            setVY(1);
         }
         if (manager.getPressed(KeyEvent.VK_A)) {
-            changeX(-1);
+            setVX(-1);
         }
     }
 

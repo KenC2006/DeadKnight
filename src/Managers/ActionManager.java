@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class ActionManager implements KeyListener, MouseListener, MouseMotionListener {
     private final Map<Integer, Boolean> pressed = new HashMap<>();
+    private int pressedCount = 0;
 
     public void addPanel(JPanel panel) {
         panel.addKeyListener(this);
@@ -18,6 +19,10 @@ public class ActionManager implements KeyListener, MouseListener, MouseMotionLis
         return pressed.getOrDefault(code, false);
     }
 
+    public boolean anyKeyPressed() {
+        return pressedCount > 0;
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -25,11 +30,13 @@ public class ActionManager implements KeyListener, MouseListener, MouseMotionLis
 
     @Override
     public void keyPressed(KeyEvent e) {
+        pressedCount += 1;
         pressed.put(e.getKeyCode(), true);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        pressedCount -= 1;
         pressed.put(e.getKeyCode(), false);
     }
 

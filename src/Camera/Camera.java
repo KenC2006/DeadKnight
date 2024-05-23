@@ -28,17 +28,9 @@ public class Camera {
     }
 
     public void drawHitbox(Hitbox h) {
-        double x1, y1, x2, y2;
-        graphics.setColor(h.getColour());
-        x1 = scaleAndShiftX(h.getLeft());
-        y1 = scaleAndShiftY (h.getTop());
-        x2 = scaleAndShiftX(h.getRight());
-        y2 = scaleAndShiftY(h.getBottom());
-        graphics.drawRect((int) x1, (int) y1, (int) (x2 - x1), (int) (y2 - y1));
-
-        drawCoordinate(h.getTopLeft());
-        drawCoordinate(h.getBottomRight());
-        //        System.out.printf("%f %f %f %f\n", x1, x2, (x2 - x1), (y2 - y1));
+        for (int i = 0; i < h.pointCount(); i++) {
+            drawLine(new Line(h.getPoints().get(i), h.getPoints().get((i + 1) % h.pointCount())), h.getColour());
+        }
     }
 
     public void drawCoordinate(Vector2F c) {
@@ -49,8 +41,8 @@ public class Camera {
 
     }
 
-    public void drawLine(Vector2F p1, Vector2F p2) {
-        graphics.setColor(Color.BLACK);
+    public void drawLine(Vector2F p1, Vector2F p2, Color c) {
+        graphics.setColor(c);
         graphics.setStroke(new BasicStroke(2f));
         double x1 = scaleAndShiftX(p1.getX());
         double y1 = scaleAndShiftY(p1.getY());
@@ -60,8 +52,11 @@ public class Camera {
         graphics.setStroke(new BasicStroke(1f));
     }
 
+    public void drawLine(Line l, Color c) {
+        drawLine(l.getStart(), l.getEnd(), c);
+    }
     public void drawLine(Line l) {
-        drawLine(l.getStart(), l.getEnd());
+        drawLine(l.getStart(), l.getEnd(), Color.BLACK);
     }
 
 
@@ -83,10 +78,10 @@ public class Camera {
             offset.changeX(-3);
         }
         if (manager.getPressed(KeyEvent.VK_PERIOD)) {
-            changeScaling(1);
+            changeScaling(scaling * 0.1);
         }
         if (manager.getPressed(KeyEvent.VK_COMMA)) {
-            changeScaling(-1);
+            changeScaling(-scaling * 0.1);
         }
     }
 
@@ -106,7 +101,7 @@ public class Camera {
     }
 
     public void changeScaling(double change) {
-        if (scaling + change < 1) return;
+        if (scaling + change < 0.2) return;
         scaling += change;
     }
 
