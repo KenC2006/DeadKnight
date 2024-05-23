@@ -6,6 +6,7 @@ import Camera.Camera;
 import Structure.Room;
 import Structure.Vector2F;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class EntityManager {
@@ -13,7 +14,7 @@ public class EntityManager {
     private ArrayList<GameCharacter> entityList = new ArrayList<>();
     private RoomManager roomManager = new RoomManager();
 
-    public EntityManager() {
+    public EntityManager() throws FileNotFoundException {
         player = new Player(10, 10);
         entityList.add(player);
         entityList.add(new GameCharacter(20, 20, 3, 4,100));
