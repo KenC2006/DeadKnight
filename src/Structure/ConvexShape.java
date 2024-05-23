@@ -36,16 +36,28 @@ public class ConvexShape {
         Vector2F maxPoint = findFurthestPoint(points);
         results.add(new Vector2F(maxPoint));
         Vector2F pivot = new Vector2F(maxPoint), best = new Vector2F(maxPoint);
+        int count = 0;
         while (true) {
-//            System.out.printf("Pivot at %d %d\n", pivot.getX(), pivot.getY());
+            count++;
+//            System.out.printf("Pivot at %f %f\n", pivot.getX(), pivot.getY());
             for (Vector2F candidate: points) {
                 if (candidate.getX() == pivot.getX() && candidate.getY() == pivot.getY()) continue; // Skip if comparing to pivot point
                 int rotation = orientation(pivot, best, candidate); // Check if points are cw (-1), ccw (1), or colinear (0) (checking if candidate is further cw than best)
                 int dist = compare(pivot.getEuclideanDistance(candidate), pivot.getEuclideanDistance(best));
-//                System.out.printf("%d %d %d %d\n", candidate.getX(), candidate.getY(), rotation, dist);
+//                System.out.printf("%f %f %d %d\n", candidate.getX(), candidate.getY(), rotation, dist);
                 if (rotation == -1 || rotation == 0 && dist == 1) best.copy(candidate); // get the point furthest most rotated point from the pivot (if same rotation get closest)
             }
-            if (best.getX() == maxPoint.getX() && best.getY() == maxPoint.getY()) break; // Done when made a full loop back to starting point
+            if (best.getManhattanDistance(maxPoint) < 0.001) break; // Done when made a full loop back to starting point
+//            System.out.printf("best (%f, %f) max (%f, %f) %f %b\n", best.getX(), best.getY(), maxPoint.getX(), maxPoint.getY(), best.getManhattanDistance(maxPoint), best.getManhattanDistance(maxPoint) == 0);
+            if (count > 100) {
+                System.out.println("BROKEN");
+                for (Vector2F p: points) {
+                    System.out.printf("%f %f\n", p.getX(), p.getY());
+                }
+                System.exit(-1);
+
+            }
+
             results.add(new Vector2F(best));
             pivot.copy(best); // Set next pivot to candidate
 //            System.out.printf("Best is %d %d\n", best.getX(), best.getY());

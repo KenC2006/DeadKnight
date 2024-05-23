@@ -15,6 +15,7 @@ public class GameCharacter {
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
     private int health;
+    private boolean affectedByGravity = true, colliding, grounded;
 
 
     public GameCharacter(double x, double y, double width, double height, int health) {
@@ -28,16 +29,23 @@ public class GameCharacter {
         c.drawHitbox(hitbox);
     }
 
-    public boolean collidesWith(GameCharacter other) {
-        boolean intersects = hitbox.intersects(other.hitbox);
-        if (intersects) {
+    public void updateValues() {
+        updateVelocity();
+        colliding = false;
+    }
+
+    public void updateData() {
+        if (colliding) {
             hitbox.setColour(Color.RED);
-            other.hitbox.setColour(Color.RED);
         } else {
             hitbox.setColour(Color.GREEN);
-            other.hitbox.setColour(Color.GREEN);
         }
-        return intersects;
+    }
+
+    public boolean collidesWithPlayer(Player p) {
+        if (!lastMovement.quickIntersect(p.getLastMovement())) return false;
+        return lastMovement.intersects(p.getLastMovement());
+
     }
 
     private boolean collidesWithRoom(Room r, Hitbox movementBox) {
@@ -54,26 +62,21 @@ public class GameCharacter {
 
         double remainingX = velocity.getX() - newVelocity.getX();
         double remainingY = velocity.getY() - newVelocity.getY();
-        if (onFloor(roomList)) {
+        if ((onFloor(roomList) && remainingY > 0) || (onCeiling(roomList) && remainingY < 0)) {
             velocity.setY(0);
-            remainingY = Math.min(0, remainingY);
+            remainingY = 0;
         }
-        if (onCeiling(roomList)) {
-            velocity.setY(0);
-            remainingY = Math.max(0, remainingY);
-        }
-        if (onLeftWall(roomList)) {
+
+        if ((onLeftWall(roomList) && remainingX < 0) || (onRightWall(roomList) && remainingX > 0)) {
             velocity.setX(0);
-            remainingX = Math.max(0, remainingX);
-        }
-        if (onRightWall(roomList)) {
-            velocity.setX(0);
-            remainingX = Math.min(0, remainingX);
+            remainingX = 0;
         }
 
         newVelocity = binarySearchVelocity(new Vector2F(remainingX, remainingY), roomList);
         lastMovement.addHitbox(createMovementBox(newVelocity));
         updatePosition(newVelocity);
+
+        movementCheck(roomList);
     }
 
     private Vector2F binarySearchVelocity(Vector2F startingVelocity, ArrayList<Room> roomList) {
@@ -98,13 +101,17 @@ public class GameCharacter {
         return startingVelocity.multiply(minTime);
     }
 
-    public void update() {
-        updateVelocity();
+    public void updateVelocity() {
+        // Gravity
+        if (affectedByGravity) velocity.changeY(0.05);
     }
 
-    private void updateVelocity() {
-        // Gravity
-        velocity.changeY(0.05);
+    public HitboxGroup getLastMovement() {
+        return lastMovement;
+    }
+
+    private void movementCheck(ArrayList<Room> roomList) {
+        grounded = onFloor(roomList);
     }
 
     private boolean onFloor(ArrayList<Room> roomList) {
@@ -144,8 +151,8 @@ public class GameCharacter {
         for (Vector2F p: hitbox.getPoints()) {
             points.add(new Vector2F(p));
             points.add(p.getTranslated(velocity));
+//            System.out.printf("Adding point %f %f\n", p.getX(), p.getY());
         }
-
         return new Hitbox(points);
     }
 
@@ -195,5 +202,17 @@ public class GameCharacter {
 
     public Hitbox getHitbox() {
         return hitbox;
+    }
+
+    public void setAffectedByGravity(boolean affectedByGravity) {
+        this.affectedByGravity = affectedByGravity;
+    }
+
+    public void setColliding(boolean colliding) {
+        this.colliding = colliding;
+    }
+
+    public boolean isGrounded() {
+        return grounded;
     }
 }

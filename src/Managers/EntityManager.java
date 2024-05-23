@@ -24,12 +24,21 @@ public class EntityManager {
     }
 
     public void update() {
-        for (GameCharacter g: entityList) {
-            g.update();
+        for (GameCharacter g: entityList) { // Set pre conditions and intital values
+            g.updateValues();
         }
 
-        for (GameCharacter g: entityList) {
+        for (GameCharacter g: entityList) { // Manage collisions with walls
             g.resolveRoomCollisions(roomManager.getLoadedRooms());
+        }
+
+        for (GameCharacter g: entityList) { // Manage collisions with player
+            if (g.equals(player)) continue;
+            player.resolveEntityCollision(g);
+        }
+
+        for (GameCharacter g: entityList) { // Update visuals based on data
+            g.updateData();
         }
     }
 

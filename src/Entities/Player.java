@@ -3,13 +3,14 @@ package Entities;
 import Entities.GameCharacter;
 import Managers.ActionManager;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
  * WASD TO MOVE PLAYER
  */
 public class Player extends GameCharacter {
-    private boolean isColliding;
+    private boolean immune;
     private boolean movementInput;
 
     public Player(double x, double y){
@@ -19,8 +20,7 @@ public class Player extends GameCharacter {
     public void updateKeyPresses(ActionManager manager) {
         movementInput = false;
         if (manager.getPressed(KeyEvent.VK_W)) {
-            movementInput = true;
-            setVY(-1);
+            jump();
         }
         if (manager.getPressed(KeyEvent.VK_D)) {
             movementInput = true;
@@ -39,16 +39,18 @@ public class Player extends GameCharacter {
         }
     }
 
-    @Override
-    public void update() {
-        super.update();
-
+    public void resolveEntityCollision(GameCharacter e) {
+        if (e.collidesWithPlayer(this)) {
+            e.setColliding(true);
+            setColliding(true);
+        } else {
+            e.setColliding(false);
+        }
     }
 
     public void jump(){
-        setVY(getVY()+5);
-    }
-
-    public void drop(){
+        if (isGrounded()) {
+            setVY(-2.1);
+        }
     }
 }
