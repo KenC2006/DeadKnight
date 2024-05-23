@@ -1,5 +1,6 @@
 package Managers;
 
+import Entities.Enemy;
 import Entities.GameCharacter;
 import Entities.Player;
 import Camera.Camera;
@@ -16,7 +17,8 @@ public class EntityManager {
     public EntityManager() {
         player = new Player(10, 10);
         entityList.add(player);
-        entityList.add(new GameCharacter(20, 20, 3, 4,100));
+//        entityList.add(new GameCharacter(20, 20, 3, 4,100));
+        entityList.add(new Enemy(20, 20, 3, 4, 100, 10));
 
     }
 
