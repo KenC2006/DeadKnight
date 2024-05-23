@@ -77,13 +77,13 @@ public class Enemy extends GameCharacter {
     }
 
     public boolean canSeePlayer(Player player, Room room) {
-
+        //todo
         return true;
     }
 
     public int getPlayerDistance(Player player) {
         return 0;
-    }
+    } // to be done
 
     public void jump() {
         setVY(getVY() + 5);

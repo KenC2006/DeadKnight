@@ -1,7 +1,5 @@
 package Entities;
 
-import Entities.Enemy;
-import Entities.Player;
 import Items.Sword;
 
 public class MeleeEnemy extends Enemy {
@@ -11,7 +9,7 @@ public class MeleeEnemy extends Enemy {
 
     public MeleeEnemy(double x, double y, int health) {
         super(x, y, 2, 5, health, 10);
-        sword = new Sword((int)x, (int)y, 3, 1, 10);
+        sword = new Sword(10);
     }
 
     // need weapon implementation for sword
@@ -34,6 +32,6 @@ public class MeleeEnemy extends Enemy {
     }
     public void swingSword() {
         isAttacking = true;
-        sword.swing();
+        sword.swingUp();
     }
 }
