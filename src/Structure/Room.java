@@ -26,8 +26,7 @@ public class Room {
             int y=Integer.parseInt(temp[1]);
             int width=Integer.parseInt(temp[2]);
             int height=Integer.parseInt(temp[3]);
-            System.out.println(x+" "+y+" "+width+" "+height);
-            //walls.addHitbox(new Hitbox(x ,y ,width ,height));
+            walls.addHitbox(new Hitbox(x ,y ,x+width ,y+height));
         }
     }
 
