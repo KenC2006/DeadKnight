@@ -1,5 +1,6 @@
 package Managers;
 
+import Entities.Enemy;
 import Entities.GameCharacter;
 import Entities.Player;
 import Camera.Camera;
@@ -17,7 +18,7 @@ public class EntityManager {
     public EntityManager() throws FileNotFoundException {
         player = new Player(10, 10);
         entityList.add(player);
-        entityList.add(new GameCharacter(20, 20, 3, 4,100));
+        entityList.add(new Enemy(20, 20, 3, 4, 100, 10));
 
     }
 
@@ -42,10 +43,17 @@ public class EntityManager {
         for (GameCharacter g: entityList) { // Update visuals based on data
             g.updateData();
         }
+
+        ArrayList<GameCharacter> newEntityList = new ArrayList<>();
+        for (GameCharacter e: entityList) {
+            if (e.getToDelete()) continue;
+            newEntityList.add(e);
+        }
+        entityList = newEntityList;
     }
 
     public void followPlayer(Camera c) {
-        c.setPosition(new Vector2F(player.getX(), player.getY()));
+        c.setPosition(player.getCenterVector());
     }
 
     public void draw(Camera c) {

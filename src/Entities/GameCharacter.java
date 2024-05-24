@@ -15,7 +15,8 @@ public class GameCharacter {
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
     private int health;
-    private boolean affectedByGravity = true, colliding, grounded;
+    private boolean affectedByGravity = true, colliding, grounded, destroyedOnWallImpact;
+    private boolean toDelete;
 
 
     public GameCharacter(double x, double y, double width, double height, int health) {
@@ -23,6 +24,17 @@ public class GameCharacter {
         velocity = new Vector2F();
         hitbox = new Hitbox(x, y, x + width, y + height);
         this.health = health;
+    }
+
+    public GameCharacter(Vector2F position, Vector2F size, Vector2F velocity) {
+        this.position = new Vector2F(position);
+        this.velocity = new Vector2F(velocity);
+        hitbox = new Hitbox(position, position.getTranslated(size));
+
+    }
+
+    public GameCharacter(Vector2F position, Vector2F size) {
+        this(position, size, new Vector2F(0, 0));
     }
 
     public void paint(Camera c) {
@@ -55,13 +67,30 @@ public class GameCharacter {
 
     public void resolveRoomCollisions(ArrayList<Room> roomList) { // TODO add the binary search
         lastMovement = new HitboxGroup();
+        Hitbox initialTest = createMovementBox(velocity);
+        boolean collides = false;
+        for (Room r: roomList) {
+            if (collidesWithRoom(r, initialTest)) {
+                collides = true;
+                break;
+            }
+        }
 
-        Vector2F newVelocity = binarySearchVelocity(velocity, roomList);
+        Vector2F newVelocity = velocity;
+        if (collides) {
+            newVelocity = binarySearchVelocity(velocity, roomList);
+
+        }
         updatePosition(newVelocity);
         lastMovement.addHitbox(createMovementBox(newVelocity));
 
         double remainingX = velocity.getX() - newVelocity.getX();
         double remainingY = velocity.getY() - newVelocity.getY();
+
+        if (destroyedOnWallImpact && Math.abs(remainingX) + Math.abs(remainingY) > 0) {
+            markToDelete(true);
+            return;
+        }
         if ((onFloor(roomList) && remainingY > 0) || (onCeiling(roomList) && remainingY < 0)) {
             velocity.setY(0);
             remainingY = 0;
@@ -219,5 +248,29 @@ public class GameCharacter {
 
     public boolean isGrounded() {
         return grounded;
+    }
+
+    public void setDestroyedOnWallImpact(boolean destroyed) {
+        destroyedOnWallImpact = destroyed;
+    }
+
+    public void markToDelete(boolean delete) {
+        toDelete = true;
+    }
+
+    public boolean getToDelete() {
+        return toDelete;
+    }
+
+    public double getCenterX() {
+        return hitbox.getLeft() + hitbox.getWidth() / 2.0;
+    }
+
+    public double getCenterY() {
+        return hitbox.getTop() + hitbox.getHeight() / 2.0;
+    }
+
+    public Vector2F getCenterVector() {
+        return new Vector2F(getCenterX(), getCenterY());
     }
 }
