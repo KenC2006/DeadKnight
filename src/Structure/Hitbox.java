@@ -63,6 +63,8 @@ public class Hitbox {
         for (Vector2F point: shape.getPoints()) {
             point.translateInPlace(v);
         }
+        getTopLeft().translateInPlace(v);
+        getBottomRight().translateInPlace(v);
     }
 
     public Vector2F getTopLeft() {
