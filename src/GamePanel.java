@@ -5,10 +5,13 @@ import Entities.GameCharacter;
 import Entities.Player;
 import Managers.ActionManager;
 import Managers.RoomManager;
+import Structure.RoomEditor;
 import Structure.Vector2F;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GamePanel extends JPanel{
@@ -17,11 +20,12 @@ public class GamePanel extends JPanel{
     private Camera camera = new Camera(10);
     private boolean isRunning = true;
 
-    public GamePanel() {
+    public GamePanel() throws IOException {
         this.setLayout(null);
         this.setFocusable(true);
         this.setVisible(true);
         manager.addPanel(this);
+        new RoomEditor();
     }
 
     public void paintComponent(Graphics g) {

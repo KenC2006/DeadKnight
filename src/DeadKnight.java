@@ -1,7 +1,8 @@
 import javax.swing.*;
+import java.io.IOException;
 
 public class DeadKnight {
-    public static void main(String []args){
+    public static void main(String []args) throws IOException {
         JFrame frame = new JFrame();
         GamePanel game = new GamePanel();
         frame.add(game);
