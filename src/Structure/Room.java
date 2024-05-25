@@ -22,11 +22,13 @@ public class Room {
         Scanner fReader=new Scanner(file);
         while(fReader.hasNextLine()) {
             String[] temp=fReader.nextLine().split(" ");
-            int x=Integer.parseInt(temp[0]);
-            int y=Integer.parseInt(temp[1]);
-            int width=Integer.parseInt(temp[2]);
-            int height=Integer.parseInt(temp[3]);
-            walls.addHitbox(new Hitbox(x ,y ,x+width ,y+height));
+            if (!temp[0].equals("Entrance:")) {
+                int x = Integer.parseInt(temp[0]);
+                int y = Integer.parseInt(temp[1]);
+                int width = Integer.parseInt(temp[2]);
+                int height = Integer.parseInt(temp[3]);
+                walls.addHitbox(new Hitbox(x, y, x + width, y + height));
+            }
         }
     }
 

@@ -19,8 +19,8 @@ public class RoomManager {
         createRectangleRoom();
         for (int i=0;i<fileNum;i++) {
             createRoom(listOfRooms[i]);
-        }
 
+        }
     }
 
     public void createRectangleRoom() {

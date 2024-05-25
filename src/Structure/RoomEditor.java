@@ -15,7 +15,7 @@ public class RoomEditor extends JFrame {
     private final Grid grid;
     private static final File roomStorage = new File("src/Rooms");
 
-    public RoomEditor() throws IOException {
+    public RoomEditor() {
         grid = new Grid(ROW, COL);
         add(grid);
         setLayout(new BorderLayout());
@@ -28,27 +28,50 @@ public class RoomEditor extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_Z) {
-                    grid.getWalls().removeLast();
-                }
-                if (e.getKeyCode() == KeyEvent.VK_S) {
-                    int fileNum=(Objects.requireNonNull(roomStorage.list()).length);
-                    File file=new File("src/Rooms/room" + (fileNum + 1) + ".txt");
-                    try {
-                        FileWriter fw=new FileWriter(file);
-                        for (int i=0;i<grid.getWalls().size();i++) {
-                            fw.write(grid.getWalls().get(i).x+" "+grid.getWalls().get(i).y+" "+grid.getWalls().get(i).width+" "+grid.getWalls().get(i).height+"\n");
-                        }
-                        fw.close();
-                        grid.getWalls().clear();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                if (!grid.getWalls().isEmpty() || !grid.getEntrances().isEmpty()) {
+                    if (e.getKeyCode() == KeyEvent.VK_F) {
+                        grid.setHorizontalEntranceMode(true);
+                        grid.setVerticalEntranceMode(false);
                     }
+                    else if (e.getKeyCode() == KeyEvent.VK_G) {
+                        grid.setVerticalEntranceMode(true);
+                        grid.setHorizontalEntranceMode(false);
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_Z) {
+                        if (!grid.getEntrances().isEmpty() && grid.getStack().pop().equals(grid.getEntrances().getLast())){
+                            grid.getEntrances().removeLast();
+                        }
+                        else{
+                            grid.getWalls().removeLast();
+                        }
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_S) {
+                        int fileNum = (Objects.requireNonNull(roomStorage.list()).length);
+                        File file = new File("src/Rooms/room" + (fileNum + 1) + ".txt");
+                        try {
+                            FileWriter fw = new FileWriter(file);
+                            for (int i = 0; i < grid.getWalls().size(); i++) {
+                                fw.write(grid.getWalls().get(i).x/grid.getBoxWidth()-grid.getLeftMostPoint() + " " + grid.getWalls().get(i).y/grid.getBoxHeight() + " " + grid.getWalls().get(i).width/grid.getBoxWidth() + " " + grid.getWalls().get(i).height/grid.getBoxHeight() + "\n");
+                            }
+                            for (int i=0;i<grid.getEntrances().size();i++){
+                                fw.write("Entrance: ");
+                                fw.write(grid.getEntrances().get(i).x/grid.getBoxWidth()-grid.getLeftMostPoint() + " " + grid.getEntrances().get(i).y/grid.getBoxHeight() + " " + grid.getEntrances().get(i).width/grid.getBoxWidth() + " " + grid.getEntrances().get(i).height/grid.getBoxHeight() + "\n");
+                            }
+                            fw.close();
+                            grid.getWalls().clear();
+                            grid.getEntrances().clear();
+                            grid.getStack().clear();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    if (e.getKeyCode() == KeyEvent.VK_R) {
+                        grid.getWalls().clear();
+                        grid.getEntrances().clear();
+                        grid.getStack().clear();
+                    }
+                    grid.repaint();
                 }
-                if (e.getKeyCode() == KeyEvent.VK_R) {
-                    grid.getWalls().clear();
-                }
-                grid.repaint();
             }
         });
     }
