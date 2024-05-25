@@ -3,6 +3,8 @@ package Entities;
 import Camera.Camera;
 import Structure.Room;
 
+import java.util.ArrayList;
+
 public class Enemy extends GameCharacter {
 
     public final static double defaultHeight = 5;
@@ -55,6 +57,7 @@ public class Enemy extends GameCharacter {
         return prevState;
     }
 
+    // use this method to change agro of enemy
     public void updatePhase(int newPhase) {
         prevState = state;
         state = newPhase;
@@ -75,15 +78,6 @@ public class Enemy extends GameCharacter {
     public void stopXMovement() {
         setVX(0);
     }
-
-    public boolean canSeePlayer(Player player, Room room) {
-        //todo
-        return true;
-    }
-
-    public int getPlayerDistance(Player player) {
-        return 0;
-    } // to be done
 
     public void jump() {
         setVY(getVY() + 5);

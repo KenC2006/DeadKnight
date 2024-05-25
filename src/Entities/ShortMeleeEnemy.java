@@ -1,13 +1,13 @@
 package Entities;
 
 import Items.Sword;
-
-public class MeleeEnemy extends Enemy {
+// finish updating ShortMeleeEnemy, GameItem, and Sword classes since changes didnt save
+public class ShortMeleeEnemy extends Enemy {
 
     private boolean isDashing, isAttacking;
     private Sword sword;
 
-    public MeleeEnemy(double x, double y, int health) {
+    public ShortMeleeEnemy(double x, double y, int health) {
         super(x, y, 2, 5, health, 10);
         sword = new Sword(10);
     }

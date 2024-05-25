@@ -11,47 +11,14 @@ public class EnemyManager {
 
     }
 
-    public ArrayList<Enemy> findNearEnemies(Player player) {
-        // bfs
-        return null;
-    }
     // preset height and widths
     public Enemy createEnemy(int x, int y, int health, String type) {
         switch(type) {
-            case "MELEE": return new MeleeEnemy(x, y, health);
+            case "MELEE": return new ShortMeleeEnemy(x, y, health);
             case "RANGE":
             case "MAGIC":
             default: return null;
         }
-    }
-
-    public ArrayList<Enemy> createEnemyLine(int numEnemies, int x, int y, int width, int health, String type) {
-        double xSpace;
-        ArrayList<Enemy> enemies = new ArrayList<Enemy> ();
-        xSpace = width / numEnemies;
-
-//        System.out.printf("%.2f\n", xSpace);
-
-        for (int i = 0; i < numEnemies; i++) {
-            if (type == "MELEE") {
-                if (xSpace - MeleeEnemy.defaultWidth < MeleeEnemy.defaultWidth) {
-                    return null;
-                }
-                // seperate x into equal ranges depending on numEnemies and randomly put enemy within each range
-//                enemies.add(createEnemy(x + (xSpace * i) + (Math.random() * (xSpace - MeleeEnemy.defaultWidth)), y, health, "MELEE"));
-            }
-            else if (type == "RANGE") {
-
-            }
-            else if (type == "MAGIC") {
-
-            }
-        }
-        return enemies;
-    }
-
-    public void updateEnemies(ArrayList<Room> rooms) {
-        // update health, movement, phase
     }
 
     /**
@@ -60,39 +27,15 @@ public class EnemyManager {
      * phase 2 is following and attack player phase
      * phase 3 is returning to room phase
      */
-    public void updateEnemy(Enemy enemy, Player player, ArrayList<Room> loadedRooms) {
-        // how does each loaded room connect to others
-        if (enemy.getPrevState() != enemy.getState()) {
-            enemy.updatePrevPhase();
-            switch (enemy.getState()) {
-                case 0:
-                    break;
-                case 1:
-                    enemy.startWander();
-                    break;
-            }
-        }
+    public void startEnemyAgro(Enemy enemy) {
+        enemy.updatePhase(2);
+    }
 
-        for (Room r : loadedRooms) {
-            if (enemy.canSeePlayer(player, r)) {
-                enemy.updatePhase(2);
-            }
-        }
+    public void wanderEnemy(Enemy enemy) {
+        enemy.updatePhase(1);
     }
 
     public void drawEnemy(Camera c, Enemy e) {
         e.drawEnemy(c);
-    }
-
-    public void drawEnemies(Room room) {
-
-    }
-
-    public static void main(String[] args) {
-        EnemyManager em = new EnemyManager();
-        for (Enemy e : em.createEnemyLine(5, 0, 5, 20, 100, "MELEE")) {
-            System.out.printf("enemy at x = %f, y = %f\n", e.getX(), e.getY());
-            System.out.printf("enemy velocity %f\n", e.getVX());
-        }
     }
 }
