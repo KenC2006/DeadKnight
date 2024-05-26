@@ -4,10 +4,12 @@ import Camera.Camera;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Room {
-    private HitboxGroup walls=new HitboxGroup();
+    private HitboxGroup walls = new HitboxGroup();
+    private ArrayList<Vector2F> entrances = new ArrayList<>();
 
     public Room(int x, int y, int width, int height) {
 //        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
@@ -18,10 +20,11 @@ public class Room {
         walls.addHitbox(new Hitbox(x, y + height / 2.0, x + width * 3.0 / 4.0, y + height / 2.0 + 1));
 
     }
+
     public Room(File file) throws FileNotFoundException {
-        Scanner fReader=new Scanner(file);
+        Scanner fReader = new Scanner(file);
         while(fReader.hasNextLine()) {
-            String[] temp=fReader.nextLine().split(" ");
+            String[] temp = fReader.nextLine().split(" ");
             if (!temp[0].equals("Entrance:")) {
                 int x = Integer.parseInt(temp[0]);
                 int y = Integer.parseInt(temp[1]);
