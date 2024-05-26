@@ -41,6 +41,14 @@ public class GameCharacter {
         c.drawHitbox(hitbox);
     }
 
+    public String getType() {
+        return "";
+    }
+
+    public GameCharacter getSwing() {
+        return null;
+    }
+
     public void updateValues() {
         updateVelocity();
         colliding = false;

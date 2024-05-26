@@ -9,7 +9,7 @@ public class Enemy extends GameCharacter {
 
     public final static double defaultHeight = 5;
     public final static double defaultWidth = 2;
-    public final static double defaultWalkSpeed = 5;
+    public final static double defaultWalkSpeed = 0.01;
 
     private int state, prevState;
     private int id;
@@ -22,23 +22,33 @@ public class Enemy extends GameCharacter {
         this.sightRadius = sightRadius;
         id = enemyCount;
         enemyCount++;
+        startWander();
     }
 
     public void startWander() {
+        setVX(0);
         if (Math.random() >= 0.5) {
-            moveLeft(defaultWalkSpeed);
+            moveLeft(defaultWalkSpeed * 2);
         }
         else {
-            moveRight(defaultWalkSpeed);
+            moveRight(defaultWalkSpeed * 2);
         }
     }
 
-    public void updateEnemy() {
+    public void updateData() {
+        if (Math.random() < 0.01) {
+            startWander();
+        }
+        setX(getVX() + getX());
+//        System.out.printf("%f\n", getVX());
+    }
 
+    public GameCharacter getSwing() {
+        return null;
     }
 
     public String getType() {
-        return "";
+        return "Enemy";
     }
 
     public int getId() {
@@ -68,11 +78,11 @@ public class Enemy extends GameCharacter {
     }
 
     public void moveLeft(double xChange) {
-        setVX((int) (getVX() - xChange));
+        setVX((getVX() - xChange));
     }
 
     public void moveRight(double xChange) {
-        setVX((int) (getVX() + xChange));
+        setVX((getVX() + xChange));
     }
 
     public void stopXMovement() {
@@ -80,10 +90,11 @@ public class Enemy extends GameCharacter {
     }
 
     public void jump() {
-        setVY(getVY() + 5);
+        setVY(getVY() - 2);
     }
 
     public void drawEnemy(Camera c) {
         super.paint(c);
     }
+
 }

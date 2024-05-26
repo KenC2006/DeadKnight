@@ -4,6 +4,7 @@ import Entities.Enemy;
 import Entities.GameCharacter;
 import Entities.Player;
 import Camera.Camera;
+import Entities.ShortMeleeEnemy;
 import Structure.Room;
 import Structure.Vector2F;
 
@@ -18,8 +19,9 @@ public class EntityManager {
     public EntityManager() throws FileNotFoundException {
         player = new Player(10, 10);
         entityList.add(player);
-        entityList.add(new Enemy(20, 20, 3, 4, 100, 10));
-
+        entityList.add(new GameCharacter(20, 20, 3, 4,100));
+        entityList.add(new ShortMeleeEnemy(20, 20, 2, player));
+        entityList.add(entityList.get(2).getSwing());
     }
 
     public void updateKeyPresses(ActionManager manager) {

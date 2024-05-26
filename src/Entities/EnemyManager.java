@@ -14,7 +14,7 @@ public class EnemyManager {
     // preset height and widths
     public Enemy createEnemy(int x, int y, int health, String type) {
         switch(type) {
-            case "MELEE": return new ShortMeleeEnemy(x, y, health);
+//            case "MELEE": return new ShortMeleeEnemy(x, y, health);
             case "RANGE":
             case "MAGIC":
             default: return null;
