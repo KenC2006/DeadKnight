@@ -36,11 +36,16 @@ public class Enemy extends GameCharacter {
     }
 
     public void updateData() {
+    super.updateData();
+    }
+
+    public void updateValues() {
+        super.updateValues();
         if (Math.random() < 0.01) {
             startWander();
+            System.out.println("jumping!");
+            jump();
         }
-        setX(getVX() + getX());
-//        System.out.printf("%f\n", getVX());
     }
 
     public GameCharacter getSwing() {
