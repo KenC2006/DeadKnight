@@ -11,15 +11,10 @@ import java.util.Objects;
 public class RoomManager {
     private ArrayList<Room> allRooms = new ArrayList<>();
     private ArrayList<Room> loadedRooms = new ArrayList<>();
-    private static final File roomStorage = new File("src/Rooms");
-    private int fileNum=(Objects.requireNonNull(roomStorage.list()).length);
-    File[] listOfRooms = roomStorage.listFiles();
 
     public RoomManager() throws FileNotFoundException {
-        createRectangleRoom();
-        for (int i=0;i<fileNum;i++) {
-            createRoom(listOfRooms[i]);
-
+        for (File f: Objects.requireNonNull(new File("src/Rooms").listFiles())) {
+             createRoom(f);
         }
     }
 
@@ -40,9 +35,7 @@ public class RoomManager {
         Room newRoom=new Room(file);
         allRooms.add(newRoom);
         loadedRooms.add(newRoom);
-
     }
-
 
     public ArrayList<Room> getLoadedRooms() {
         return loadedRooms;
