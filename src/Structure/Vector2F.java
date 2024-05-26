@@ -112,4 +112,11 @@ public class Vector2F {
         }
         return new Vector2F(getX() / d, getY() / d);
     }
+
+    public int compareTo(Vector2F other) {
+        if (other.getX() == getX() && other.getY() == getY()) return 0;
+        if (other.getX() < getX()) return 1;
+        if (other.getX() == getX() && other.getY() < getY()) return 1;
+        return -1;
+    }
 }
