@@ -5,12 +5,14 @@ import Camera.Camera;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Room {
+    private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup();
-    private ArrayList<Vector2F> verticalEntrances = new ArrayList<>();
-    private ArrayList<Vector2F> horizontalEntrances = new ArrayList<>();
+    private HitboxGroup entranceHitboxes = new HitboxGroup();
+    private ArrayList<Entrance> entrances = new ArrayList<>();
 
     public Room(int x, int y, int width, int height) {
 //        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
@@ -20,6 +22,16 @@ public class Room {
         walls.addHitbox(new Hitbox(x + width / 2.0, y + height * 3.0 / 4.0, x + width / 2.0 + 1, y + height));
         walls.addHitbox(new Hitbox(x, y + height / 2.0, x + width * 3.0 / 4.0, y + height / 2.0 + 1));
 
+    }
+
+    public Room(Room copy) {
+        center = new Vector2F(copy.center);
+        drawLocation = new Vector2F(copy.drawLocation);
+        walls = new HitboxGroup(copy.walls);
+        entranceHitboxes = new HitboxGroup(copy.entranceHitboxes);
+        for (Entrance e: copy.entrances) {
+            entrances.add(new Entrance(e));
+        }
     }
 
     public Room(File file) throws FileNotFoundException {
@@ -43,17 +55,72 @@ public class Room {
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
 
-            if (x1 + 1 == x2) verticalEntrances.add(new Vector2F(x2, y2));
-            else if (y1 + 1 == y2) horizontalEntrances.add(new Vector2F(x2, y2));
+            entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
+            entranceHitboxes.addHitbox(entrances.getLast().getHitbox());
+
         }
     }
 
+    public Vector2F getCenterRelativeToRoom() {
+        return walls.getCenter().getTranslated(drawLocation.getNegative());
+    }
+
+    public void setDrawLocation(Vector2F newDrawLocation) {
+        walls.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
+        entranceHitboxes.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
+        for (Entrance e: entrances) {
+            e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
+        }
+        drawLocation.copy(newDrawLocation);
+    }
+
+    public void centerAroundPointInRoom(Vector2F newCenter) {
+        walls.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+        entranceHitboxes.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+
+        for (Entrance e: entrances) {
+            e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+        }
+        center.copy(newCenter);
+    }
 
     public void drawRoom(Camera c) {
         walls.draw(c);
+//        entranceHitboxes.draw(c);
+        for (Entrance e: entrances) {
+            e.draw(c);
+
+        }
+    }
+
+    public void closeEntrances() {
+        for (Entrance e: entrances) {
+            if (e.isConnected()) continue;
+            walls.addHitbox(e.getHitbox());
+        }
     }
 
     public HitboxGroup getHitbox() {
         return walls;
+    }
+
+    public ArrayList<Entrance> getEntrances() {
+        return entrances;
+    }
+
+    public Vector2F getDrawLocation() {
+        return drawLocation;
+    }
+
+    public Vector2F getCenterLocation() {
+        return center;
+    }
+
+    public boolean quickIntersect(Room other) {
+        return walls.quickIntersect(other.walls);
+    }
+
+    public boolean intersects(Room other) {
+        return walls.intersects(other.walls) || walls.intersects(other.entranceHitboxes) || entranceHitboxes.intersects(other.walls) || entranceHitboxes.intersects(other.entranceHitboxes);
     }
 }

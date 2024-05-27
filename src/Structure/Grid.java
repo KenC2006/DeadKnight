@@ -11,8 +11,8 @@ public class Grid extends JPanel implements MouseListener {
     private Vector2F p1 = null, p2 = null;
     private int boxSize;
     private final ArrayList<Rectangle> walls = new ArrayList<>();
-    private final ArrayList<Rectangle> entrances = new ArrayList<>();
-    private final Stack<Rectangle> stack = new Stack<>();
+    private final ArrayList<Entrance> entrances = new ArrayList<>();
+    private final Stack<Integer> stack = new Stack<>();
     private final int VERTICAL_ENTRANCE_LENGTH = 7;
     private final int HORIZONTAL_ENTRANCE_LENGTH = 5;
     private Vector2F topLeftPoint = new Vector2F(999, 999);
@@ -31,11 +31,11 @@ public class Grid extends JPanel implements MouseListener {
         return walls;
     }
 
-    public Stack<Rectangle> getStack() {
+    public Stack<Integer> getStack() {
         return stack;
     }
 
-    public ArrayList<Rectangle> getEntrances() {
+    public ArrayList<Entrance> getEntrances() {
         return entrances;
     }
 
@@ -50,8 +50,8 @@ public class Grid extends JPanel implements MouseListener {
             g.fillRect(wall.x * boxSize, wall.y * boxSize, wall.width * boxSize, wall.height * boxSize);
         }
         g.setColor(Color.BLUE);
-        for (Rectangle entrance : entrances) {
-            g.fillRect(entrance.x * boxSize, entrance.y * boxSize, entrance.width * boxSize, entrance.height * boxSize);
+        for (Entrance entrance : entrances) {
+            entrance.draw(g, boxSize);
         }
         g.setColor(Color.GREEN);
         if (p2 == null && p1 != null) {
@@ -70,7 +70,7 @@ public class Grid extends JPanel implements MouseListener {
 
     public void undoLastMove() {
         if (stack.isEmpty()) return;
-        if (!getEntrances().isEmpty() && stack.getLast().equals(getEntrances().getLast())){
+        if (stack.getLast() == 1){
             getEntrances().removeLast();
         } else {
             getWalls().removeLast();
@@ -80,18 +80,11 @@ public class Grid extends JPanel implements MouseListener {
         repaint();
     }
 
-    public void addVerticalEntrance() {
-        if (p1 == null) return;
-        entrances.add(new Rectangle((int) p1.getX() - (HORIZONTAL_ENTRANCE_LENGTH / 2), (int) p1.getY(), HORIZONTAL_ENTRANCE_LENGTH, 1));
-        stack.add(entrances.getLast());
-        p1 = null;
-        repaint();
-    }
 
-    public void addHorizontalEntrance() {
+    public void addEntrance(int xOffset, int yOffset) {
         if (p1 == null) return;
-        entrances.add(new Rectangle((int) p1.getX(), (int) p1.getY() - (VERTICAL_ENTRANCE_LENGTH / 2), 1, VERTICAL_ENTRANCE_LENGTH));
-        stack.add(entrances.getLast());
+        entrances.add(new Entrance(p1, p1.getTranslated(new Vector2F(xOffset, yOffset))));
+        stack.add(1);
         p1 = null;
         repaint();
     }
@@ -122,7 +115,7 @@ public class Grid extends JPanel implements MouseListener {
         }
 
         walls.add(new Rectangle((int) p1.getX(), (int) p1.getY(), (int) p1.getXDistance(p2) + 1, (int) p1.getYDistance(p2) + 1));
-        stack.add(walls.getLast());
+        stack.add(2);
 
         p1 = null;
         p2 = null;

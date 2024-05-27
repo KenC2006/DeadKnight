@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Hitbox {
     private ConvexShape shape;
     private Color colour = Color.GREEN;
+    private boolean enabled = true;
 
     public Hitbox(ArrayList<Vector2F> points) {
         shape = new ConvexShape(points);
@@ -23,6 +24,14 @@ public class Hitbox {
 
     public Hitbox(double x1, double y1, double x2, double y2) {
         this(new Vector2F(x1, y1), new Vector2F(x2, y2));
+    }
+
+    public Hitbox(Hitbox copy) {
+        ArrayList<Vector2F> points = new ArrayList<>();
+        for (Vector2F p: copy.shape.getPoints()) {
+            points.add(new Vector2F(p));
+        }
+        shape = new ConvexShape(points);
     }
 
     public Color getColour() {
@@ -103,23 +112,35 @@ public class Hitbox {
         return getBottom() - getTop();
     }
 
+    public Vector2F getCenter() {
+        return new Vector2F(getLeft() + getWidth() / 2, getTop() + getHeight() / 2);
+    }
+
     public boolean intersects(Hitbox hitbox) {
+        if (!enabled) return false;
         return shape.intersects(hitbox.shape);
     }
 
     public boolean intersects(HitboxGroup hitbox) {
+        if (!enabled) return false;
         return hitbox.intersects(this);
     }
 
     public boolean quickIntersect(Hitbox hitbox) {
+        if (!enabled) return false;
         return !(hitbox.getLeft() > getRight() || hitbox.getRight() < getLeft() || hitbox.getTop() > getBottom() || hitbox.getBottom() < getTop());
     }
 
     public boolean quickIntersect(HitboxGroup hitbox) {
+        if (!enabled) return false;
         return hitbox.quickIntersect(this);
     }
 
     public ArrayList<Vector2F> getPoints() {
         return shape.getPoints();
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

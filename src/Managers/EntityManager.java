@@ -17,7 +17,7 @@ public class EntityManager {
     private RoomManager roomManager = new RoomManager();
 
     public EntityManager() throws FileNotFoundException {
-        player = new Player(10, 10);
+        player = new Player(0, 0);
         entityList.add(player);
         entityList.add(new GameCharacter(20, 20, 3, 4,100));
         entityList.add(new ShortMeleeEnemy(20, 20, 2, player));
