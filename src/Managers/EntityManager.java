@@ -24,7 +24,6 @@ public class EntityManager {
             entityList.add(new ShortMeleeEnemy(0, 0, 2, player));
 
         }
-        entityList.add(entityList.get(2).getSwing());
     }
 
     public void updateKeyPresses(ActionManager manager) {

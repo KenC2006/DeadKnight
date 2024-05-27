@@ -20,6 +20,10 @@ public class HitboxGroup {
         }
     }
 
+    public ArrayList<Hitbox> getHitboxes() {
+        return hitboxes;
+    }
+
     public void addHitbox(Hitbox h) {
         hitboxes.add(h);
         if (boundingBox.getTopLeft().getXDistance(h.getTopLeft()) < 0) {
@@ -75,5 +79,9 @@ public class HitboxGroup {
             if (h1.intersects(hitbox)) return true;
         }
         return false;
+    }
+
+    public Hitbox getBoundingBox() {
+        return boundingBox;
     }
 }
