@@ -6,7 +6,6 @@ import Structure.HitboxGroup;
 import Structure.Room;
 import Structure.Vector2F;
 
-import javax.lang.model.element.VariableElement;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -15,7 +14,7 @@ public class GameCharacter {
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
     private int health;
-    private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, destroyedOnWallImpact;
+    private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, onLeft, onRight, destroyedOnWallImpact;
     private boolean toDelete;
 
 
@@ -150,6 +149,8 @@ public class GameCharacter {
     private void movementCheck(ArrayList<Room> roomList) {
         grounded = onFloor(roomList);
         hittingCeiling = onCeiling(roomList);
+        onLeft = onLeftWall(roomList);
+        onRight = onRightWall(roomList);
     }
 
     private boolean onFloor(ArrayList<Room> roomList) {
@@ -269,6 +270,14 @@ public class GameCharacter {
 
     public boolean isHittingCeiling() {
         return hittingCeiling;
+    }
+
+    public boolean getOnLeft() {
+        return onLeft;
+    }
+
+    public boolean getOnRight() {
+        return onRight;
     }
 
     public void setDestroyedOnWallImpact(boolean destroyed) {

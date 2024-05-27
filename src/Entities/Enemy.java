@@ -10,7 +10,7 @@ public class Enemy extends GameCharacter {
 
     public final static double defaultHeight = 5;
     public final static double defaultWidth = 2;
-    public final static double defaultWalkSpeed = 0.01;
+    public final static double defaultWalkSpeed = 0.05;
 
     private int state, prevState;
     private int id;
@@ -29,12 +29,32 @@ public class Enemy extends GameCharacter {
     }
 
     private void startWander() {
-        setVX(0);
-        if (Math.random() >= 0.5) {
-            moveLeft(defaultWalkSpeed * 2);
-        }
-        else {
-            moveRight(defaultWalkSpeed * 2);
+        if (getOnLeft()) {
+            stopXMovement();
+
+            if (Math.random() < 0.2 && isGrounded()) {
+                jump();
+            } else {
+                moveRight(defaultWalkSpeed * 10);
+
+            }
+
+        } else if (getOnRight()) {
+            stopXMovement();
+
+            if (Math.random() < 0.2 && isGrounded()) {
+                jump();
+            } else {
+                moveLeft(defaultWalkSpeed * 10);
+
+            }
+        } else if (Math.random() < 0.01){
+            stopXMovement();
+            if (Math.random() < 0.5) {
+                moveLeft(defaultWalkSpeed * 5);
+            } else {
+                moveRight(defaultWalkSpeed * 5);
+            }
         }
     }
 
@@ -58,10 +78,17 @@ public class Enemy extends GameCharacter {
             followPlayer();
         }
         else {
-            if (Math.random() < 0.01) {
-                startWander();
+            startWander();
 //                System.out.println("jumping!");
-                jump();
+//                jump();
+//            } else if (getVX() < 0 && getOnLeft()) {
+//                startWander();
+//            } else if (getVX() > 0 && getOnRight()) {
+//                startWander();
+//            }
+
+            if (Math.random() < 0.02) {
+                if (isGrounded()) jump();
             }
         }
     }

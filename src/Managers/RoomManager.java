@@ -47,7 +47,7 @@ public class RoomManager {
         loadRoom(randomRoom);
 
         toGenerateNeighbours.add(randomRoom);
-        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 1000) {
+        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 100) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
 

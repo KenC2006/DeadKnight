@@ -31,13 +31,13 @@ public class Entrance {
         }
         if (location.getY() < connection.getY()) {
             type = EntranceType.DOWN;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F(-(int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
 
         }
 
         if (location.getY() > connection.getY()) {
             type = EntranceType.UP;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F(-(int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
 
         }
         System.out.println("new at " + location + " " + connection);
