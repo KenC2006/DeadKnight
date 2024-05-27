@@ -16,9 +16,10 @@ import java.util.HashMap;
  */
 public class Player extends GameCharacter {
     private boolean immune;
-    private boolean upPressed, leftRightPressed;
-    private int framesSinceTouchedGround = 0;
+    private boolean upPressed, leftRightPressed, jumping;
+    private int framesSinceTouchedGround = 0, framesSinceStartedJumping;
     private int framesSinceFiredProjectile = 0;
+    private int framesPassed, lastUpPressed;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
 
     public Player(double x, double y){
@@ -27,25 +28,52 @@ public class Player extends GameCharacter {
 
     public void updateKeyPresses(ActionManager manager) {
         double dx = 0;
-        framesSinceTouchedGround++;
+        framesPassed++;
         framesSinceFiredProjectile++;
-        if (isGrounded()) framesSinceTouchedGround = 0;
-        if (isHittingCeiling()) framesSinceTouchedGround = 30;
+        if (isGrounded()) framesSinceTouchedGround = framesPassed;
+        if (isHittingCeiling()) framesSinceStartedJumping -= 10;
+
         if (manager.getPressed(KeyEvent.VK_W)) {
-            if (framesSinceTouchedGround < 10) setVY(-1 - (10 - framesSinceTouchedGround) / 10.0 * 0.5);
-        } else {
-            if (!isGrounded()) {
-                setVY(Math.max(-0, getVY()));
-                framesSinceTouchedGround = 30;
+            if (!upPressed) {
+                upPressed = true;
+                if (framesPassed - framesSinceTouchedGround < 7) {
+                    jumping = true;
+                    framesSinceTouchedGround -= 10;
+                    framesSinceStartedJumping = framesPassed;
+
+                } else {
+                    lastUpPressed = framesPassed;
+                }
+            } else {
+                if (framesPassed - framesSinceTouchedGround < 7 && framesPassed - lastUpPressed < 20) {
+                    jumping = true;
+                    framesSinceStartedJumping = framesPassed;
+                    framesSinceTouchedGround -= 10;
+                    lastUpPressed -= 10;
+                }
             }
+        } else {
+            jumping = false;
+            upPressed = false;
+        }
+
+        if (jumping) {
+            if (framesPassed - framesSinceStartedJumping < 10) {
+                setVY(-1 - (10 - (framesPassed - framesSinceStartedJumping)) / 10.0);
+            } else {
+                jumping = false;
+            }
+        } else if (!isGrounded()) {
+            setVY(Math.max(-0, getVY()));
+
         }
 
         if (manager.getPressed(KeyEvent.VK_D)) {
-            dx += 0.5;
+            dx += 0.7;
         }
 
         if (manager.getPressed(KeyEvent.VK_A)) {
-            dx += -0.5;
+            dx += -0.7;
         }
 
         if (framesSinceFiredProjectile > 10 && (manager.getPressed(KeyEvent.VK_RIGHT) || manager.getPressed(KeyEvent.VK_LEFT) || manager.getPressed(KeyEvent.VK_UP) || manager.getPressed(KeyEvent.VK_DOWN))) {
