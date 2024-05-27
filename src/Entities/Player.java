@@ -101,6 +101,7 @@ public class Player extends GameCharacter {
         } else {
             e.setColliding(false);
         }
+        e.updateEnemy(this);
     }
 
     @Override

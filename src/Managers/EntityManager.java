@@ -20,11 +20,10 @@ public class EntityManager {
         player = new Player(0, 0);
         entityList.add(player);
         entityList.add(new GameCharacter(20, 20, 3, 4,100));
-        for (int i = 0; i < 100; i++) {
-            entityList.add(new ShortMeleeEnemy(0, 0, 2, player));
+        for (int i = 0; i < 1; i++) {
+            entityList.add(new ShortMeleeEnemy(0, 0, 2));
 
         }
-        entityList.add(entityList.get(2).getSwing());
     }
 
     public void updateKeyPresses(ActionManager manager) {

@@ -61,6 +61,10 @@ public class GameCharacter {
         }
     }
 
+    public void updateEnemy(Player player) {
+
+    }
+
     public boolean collidesWithPlayer(Player p) {
         if (!lastMovement.quickIntersect(p.getLastMovement())) return false;
         return lastMovement.intersects(p.getLastMovement());

@@ -34,8 +34,4 @@ public class EnemyManager {
     public void wanderEnemy(Enemy enemy) {
         enemy.updatePhase(1);
     }
-
-    public void drawEnemy(Camera c, Enemy e) {
-        e.drawEnemy(c);
-    }
 }

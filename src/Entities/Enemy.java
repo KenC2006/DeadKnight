@@ -15,14 +15,12 @@ public class Enemy extends GameCharacter {
     private int state, prevState;
     private int id;
     private double sightRadius;
-    private Player player;
 
     private static int enemyCount;
 
-    public Enemy(double x, double y, int width, int height, int health, double sightRadius, Player player) {
+    public Enemy(double x, double y, int width, int height, int health, double sightRadius) {
         super(x, y, width, height, health);
         this.sightRadius = sightRadius;
-        this.player = player;
         id = enemyCount;
         enemyCount++;
         startWander();
@@ -58,7 +56,7 @@ public class Enemy extends GameCharacter {
         }
     }
 
-    private void followPlayer() {
+    private void followPlayer(Player player) {
         if (player.getX() - getX() < 0) {
             setVX(-0.1);
         }
@@ -67,25 +65,12 @@ public class Enemy extends GameCharacter {
         }
     }
 
-    public void updateData() {
-        super.updateData();
-    }
-
-    public void updateValues() {
-        super.updateValues();
-
-        if (getSquareDistToPlayer() < sightRadius) {
-            followPlayer();
+    public void updateEnemy(Player player) {
+        if (getSquareDistToPlayer(player) < sightRadius) {
+            followPlayer(player);
         }
         else {
             startWander();
-//                System.out.println("jumping!");
-//                jump();
-//            } else if (getVX() < 0 && getOnLeft()) {
-//                startWander();
-//            } else if (getVX() > 0 && getOnRight()) {
-//                startWander();
-//            }
 
             if (Math.random() < 0.02) {
                 if (isGrounded()) jump();
@@ -93,7 +78,7 @@ public class Enemy extends GameCharacter {
         }
     }
 
-    public double getSquareDistToPlayer() {
+    public double getSquareDistToPlayer(Player player) {
         Vector2F playerPos = new Vector2F(player.getX(), player.getY());
         Vector2F enemyPos = new Vector2F(getX(), getY());
         return playerPos.getEuclideanDistance(enemyPos);
@@ -153,7 +138,8 @@ public class Enemy extends GameCharacter {
         setVY(getVY() - 2);
     }
 
-    public void drawEnemy(Camera c) {
+    @Override
+    public void paint(Camera c) {
         super.paint(c);
     }
 
