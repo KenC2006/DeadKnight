@@ -21,7 +21,7 @@ public class Grid extends JPanel implements MouseListener {
         this.addMouseListener(this);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
-                boxSize = Math.min(getHeight(), getWidth()) / 100;
+                boxSize = Math.min(getHeight(), getWidth()) / 50;
                 repaint();
             }
         });
@@ -77,6 +77,7 @@ public class Grid extends JPanel implements MouseListener {
         }
 
         stack.pop();
+        p1 = null;
         repaint();
     }
 
