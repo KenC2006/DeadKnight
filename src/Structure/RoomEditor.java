@@ -28,8 +28,15 @@ public class RoomEditor extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_F) grid.addHorizontalEntrance();
-                if (e.getKeyCode() == KeyEvent.VK_G) grid.addVerticalEntrance();
+//                if (e.getKeyCode() == KeyEvent.VK_F) grid.addHorizontalEntrance();
+//                if (e.getKeyCode() == KeyEvent.VK_G) grid.addVerticalEntrance();
+
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT) grid.addEntrance(1, 0);
+                if (e.getKeyCode() == KeyEvent.VK_LEFT) grid.addEntrance(-1, 0);
+                if (e.getKeyCode() == KeyEvent.VK_UP) grid.addEntrance(0, -1);
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) grid.addEntrance(0, 1);
+
+
                 if (e.getKeyCode() == KeyEvent.VK_R) grid.reset();
 
                 if (grid.getWalls().isEmpty() && grid.getEntrances().isEmpty()) return;
@@ -48,8 +55,8 @@ public class RoomEditor extends JFrame {
                         }
 
                         fw.write(grid.getEntrances().size() + "\n");
-                        for (Rectangle r: grid.getEntrances()) {
-                            fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
+                        for (Entrance entrance: grid.getEntrances()) {
+                            fw.write(((int) entrance.getLocation().getX() - ox) + " " + ((int) entrance.getLocation().getY() - oy) + " " + ((int) entrance.getConnection().getX() - ox) + " " + ((int) entrance.getConnection().getY() - oy) + "\n");
                         }
                         fw.close();
                         grid.reset();

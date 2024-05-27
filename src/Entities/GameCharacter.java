@@ -15,7 +15,7 @@ public class GameCharacter {
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
     private int health;
-    private boolean affectedByGravity = true, colliding, grounded, destroyedOnWallImpact;
+    private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, destroyedOnWallImpact;
     private boolean toDelete;
 
 
@@ -141,6 +141,7 @@ public class GameCharacter {
 
     private void movementCheck(ArrayList<Room> roomList) {
         grounded = onFloor(roomList);
+        hittingCeiling = onCeiling(roomList);
     }
 
     private boolean onFloor(ArrayList<Room> roomList) {
@@ -248,6 +249,10 @@ public class GameCharacter {
 
     public boolean isGrounded() {
         return grounded;
+    }
+
+    public boolean isHittingCeiling() {
+        return hittingCeiling;
     }
 
     public void setDestroyedOnWallImpact(boolean destroyed) {

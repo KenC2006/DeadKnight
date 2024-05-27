@@ -17,7 +17,8 @@ import java.util.HashMap;
 public class Player extends GameCharacter {
     private boolean immune;
     private boolean upPressed, leftRightPressed;
-    private int framesSinceTouchedGround = 0, framesSinceFiredProjectile = 0, dx;
+    private int framesSinceTouchedGround = 0;
+    private int framesSinceFiredProjectile = 0;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
 
     public Player(double x, double y){
@@ -25,12 +26,13 @@ public class Player extends GameCharacter {
     }
 
     public void updateKeyPresses(ActionManager manager) {
-        dx = 0;
+        double dx = 0;
         framesSinceTouchedGround++;
         framesSinceFiredProjectile++;
         if (isGrounded()) framesSinceTouchedGround = 0;
+        if (isHittingCeiling()) framesSinceTouchedGround = 30;
         if (manager.getPressed(KeyEvent.VK_W)) {
-            if (framesSinceTouchedGround < 10) setVY(-1.4 - (10 - framesSinceTouchedGround) / 10.0 * 1);
+            if (framesSinceTouchedGround < 10) setVY(-1 - (10 - framesSinceTouchedGround) / 10.0 * 0.5);
         } else {
             if (!isGrounded()) {
                 setVY(Math.max(-0, getVY()));
@@ -39,26 +41,26 @@ public class Player extends GameCharacter {
         }
 
         if (manager.getPressed(KeyEvent.VK_D)) {
-            dx += 1;
+            dx += 0.5;
         }
 
         if (manager.getPressed(KeyEvent.VK_A)) {
-            dx += -1;
+            dx += -0.5;
         }
 
         if (framesSinceFiredProjectile > 10 && (manager.getPressed(KeyEvent.VK_RIGHT) || manager.getPressed(KeyEvent.VK_LEFT) || manager.getPressed(KeyEvent.VK_UP) || manager.getPressed(KeyEvent.VK_DOWN))) {
             Projectile bullet = new Projectile(getCenterVector().getTranslated(new Vector2F(-0.5, -0.5)), new Vector2F(1, 1));
             if (manager.getPressed(KeyEvent.VK_RIGHT)) {
-                bullet.setVX(2);
+                bullet.setVX(1);
                 framesSinceFiredProjectile = 0;
             } else if (manager.getPressed(KeyEvent.VK_LEFT)) {
-                bullet.setVX(-2);
+                bullet.setVX(-1);
                 framesSinceFiredProjectile = 0;
             } else if (manager.getPressed(KeyEvent.VK_DOWN)) {
-                bullet.setVY(2);
+                bullet.setVY(1);
                 framesSinceFiredProjectile = 0;
             } else if (manager.getPressed(KeyEvent.VK_UP)) {
-                bullet.setVY(-2);
+                bullet.setVY(-1);
                 framesSinceFiredProjectile = 0;
             }
             projectiles.add(bullet);

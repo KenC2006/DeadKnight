@@ -1,18 +1,12 @@
 import Camera.Camera;
 import Managers.EntityManager;
-import Structure.Line;
-import Entities.GameCharacter;
-import Entities.Player;
 import Managers.ActionManager;
-import Managers.RoomManager;
 import Structure.RoomEditor;
-import Structure.Vector2F;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+
 
 public class GamePanel extends JPanel{
     private ActionManager manager = new ActionManager();

@@ -12,6 +12,14 @@ public class HitboxGroup {
         hitboxes = new ArrayList<>();
     }
 
+    public HitboxGroup(HitboxGroup copy) {
+        hitboxes = new ArrayList<>();
+        boundingBox = new Hitbox(0, 0, 0, 0);
+        for (Hitbox h: copy.hitboxes) {
+            addHitbox(new Hitbox(h));
+        }
+    }
+
     public void addHitbox(Hitbox h) {
         hitboxes.add(h);
         if (boundingBox.getTopLeft().getXDistance(h.getTopLeft()) < 0) {
@@ -32,6 +40,17 @@ public class HitboxGroup {
         for (Hitbox h : hitboxes) {
             c.drawHitbox(h);
         }
+    }
+
+    public Vector2F getCenter() {
+        return boundingBox.getCenter();
+    }
+
+    public void translateInPlace(Vector2F offset) {
+        for (Hitbox h: hitboxes) {
+            h.translateInPlace(offset);
+        }
+        boundingBox.translateInPlace(offset);
     }
 
     public boolean quickIntersect(Hitbox other) {

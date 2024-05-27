@@ -37,7 +37,7 @@ public class Camera {
         graphics.setColor(Color.BLACK);
         double x1 = scaleAndShiftX(c.getX());
         double y1 = scaleAndShiftY(c.getY());
-        graphics.drawOval((int) x1 - 2, (int) y1- 2, 4, 4);
+        graphics.drawOval((int) x1 - 2, (int) y1- 2, (int) scaling, (int) scaling);
 
     }
 

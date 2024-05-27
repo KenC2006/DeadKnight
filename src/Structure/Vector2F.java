@@ -113,10 +113,20 @@ public class Vector2F {
         return new Vector2F(getX() / d, getY() / d);
     }
 
+    public Vector2F getNegative() {
+        return new Vector2F(-getX(), -getY());
+    }
+
     public int compareTo(Vector2F other) {
         if (other.getX() == getX() && other.getY() == getY()) return 0;
         if (other.getX() < getX()) return 1;
         if (other.getX() == getX() && other.getY() < getY()) return 1;
         return -1;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Vector2F(" + x + ", " + y + ")";
     }
 }
