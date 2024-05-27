@@ -16,7 +16,7 @@ public class ShortMeleeEnemy extends Enemy {
     private Player player;
 
     public ShortMeleeEnemy(double x, double y, int health, Player player) {
-        super(x, y, 2, 5, health, 10);
+        super(x, y, 2, 5, health, 1000, player);
 //        right = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(0, 7),
 //                new Vector2F(4, 6), new Vector2F(6, 3),
 //                new Vector2F(4, 1))));
@@ -29,7 +29,7 @@ public class ShortMeleeEnemy extends Enemy {
 //        up = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(3, 0),
 //                new Vector2F(2, 2), new Vector2F(0, 4),
 //                new Vector2F(-2, 2), new Vector2F(-3, 0))));
-        swing = new GameCharacter(0, 0, 2, 2, 10);
+        swing = new GameCharacter(0, 0, 5, 5, 10);
         swing.setAffectedByGravity(false);
         this.player = player;
     }
@@ -66,19 +66,22 @@ public class ShortMeleeEnemy extends Enemy {
 
     public void updateValues() {
         super.updateValues();
-// temp attack stuff (without any distance checking)
-//        if (collidesWithPlayer(player)) {
-//            swingSword();
-//            System.out.printf("attacking at %f %f\n", swing.getX(), swing.getY());
-//        }
-//        else {
-//            isAttacking = false;
-//        }
-//
-//        if (isAttacking) {
-//            swing.setX(player.getX());
-//            swing.setY(player.getY());
-//        }
-        super.updateValues();
+
+
+        if (getSquareDistToPlayer() < 1000) {
+            //swing at the player
+            if (player.getY() + 1 < getY()) {
+                swing.setY(getY() - swing.getHeight());
+                swing.setX(getX() - player.getWidth());
+            }
+            else if(getX() - player.getX() < 0) {
+                swing.setY(getY());
+                swing.setX(getX() + player.getWidth());
+            }
+            else {
+                swing.setY(getY());
+                swing.setX(getX() - swing.getWidth());
+            }
+        }
     }
 }

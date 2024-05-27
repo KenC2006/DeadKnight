@@ -234,6 +234,14 @@ public class GameCharacter {
         return velocity.getY();
     }
 
+    public double getHeight() {
+        return hitbox.getHeight();
+    }
+
+    public double getWidth() {
+        return hitbox.getWidth();
+    }
+
     public void setVX(double vX) {
         velocity.setX(vX);
     }

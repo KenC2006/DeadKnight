@@ -2,6 +2,7 @@ package Entities;
 
 import Camera.Camera;
 import Structure.Room;
+import Structure.Vector2F;
 
 import java.util.ArrayList;
 
@@ -14,12 +15,14 @@ public class Enemy extends GameCharacter {
     private int state, prevState;
     private int id;
     private double sightRadius;
+    private Player player;
 
     private static int enemyCount;
 
-    public Enemy(double x, double y, int width, int height, int health, double sightRadius) {
+    public Enemy(double x, double y, int width, int height, int health, double sightRadius, Player player) {
         super(x, y, width, height, health);
         this.sightRadius = sightRadius;
+        this.player = player;
         id = enemyCount;
         enemyCount++;
         startWander();
@@ -48,12 +51,22 @@ public class Enemy extends GameCharacter {
         }
     }
 
+    public double getSquareDistToPlayer() {
+        Vector2F playerPos = new Vector2F(player.getX(), player.getY());
+        Vector2F enemyPos = new Vector2F(getX(), getY());
+        return playerPos.getEuclideanDistance(enemyPos);
+    }
+
     public GameCharacter getSwing() {
         return null;
     }
 
     public String getType() {
         return "Enemy";
+    }
+
+    public double getSightRadius() {
+        return sightRadius;
     }
 
     public int getId() {
