@@ -7,7 +7,6 @@ import Structure.Vector2F;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-// finish updating ShortMeleeEnemy, GameItem, and Sword classes since changes didnt save
 public class ShortMeleeEnemy extends Enemy {
 
     private boolean isDashing, isAttacking;
@@ -16,7 +15,7 @@ public class ShortMeleeEnemy extends Enemy {
     private Player player;
 
     public ShortMeleeEnemy(double x, double y, int health, Player player) {
-        super(x, y, 2, 5, health, 1000, player);
+        super(x, y, 2, 5, health, 500, player);
 //        right = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(0, 7),
 //                new Vector2F(4, 6), new Vector2F(6, 3),
 //                new Vector2F(4, 1))));
@@ -64,7 +63,7 @@ public class ShortMeleeEnemy extends Enemy {
         super.updateValues();
 
 
-        if (getSquareDistToPlayer() < 1000) {
+        if (getSquareDistToPlayer() < 100000) {
             //swing at the player
             if (player.getY() + 1 < getY()) {
                 swing.setY(getY() - swing.getHeight());

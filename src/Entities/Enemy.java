@@ -39,8 +39,6 @@ public class Enemy extends GameCharacter {
     }
 
     public void followPlayer() {
-
-        System.out.printf("%f\n", player.getX() - getX());
         if (player.getX() - getX() < 0) {
             setVX(-0.1);
         }
@@ -62,7 +60,7 @@ public class Enemy extends GameCharacter {
         else {
             if (Math.random() < 0.01) {
                 startWander();
-                System.out.println("jumping!");
+//                System.out.println("jumping!");
                 jump();
             }
         }
