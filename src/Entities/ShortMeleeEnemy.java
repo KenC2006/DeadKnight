@@ -56,7 +56,7 @@ public class ShortMeleeEnemy extends Enemy {
 
     public void updateData() {
         super.updateData();
-        setX(getVX() + getX());
+//        setX(getVX() + getX());
     }
 
     public void updateValues() {

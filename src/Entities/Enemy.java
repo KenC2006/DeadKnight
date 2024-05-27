@@ -28,7 +28,7 @@ public class Enemy extends GameCharacter {
         startWander();
     }
 
-    public void startWander() {
+    private void startWander() {
         setVX(0);
         if (Math.random() >= 0.5) {
             moveLeft(defaultWalkSpeed * 2);
@@ -38,7 +38,7 @@ public class Enemy extends GameCharacter {
         }
     }
 
-    public void followPlayer() {
+    private void followPlayer() {
         if (player.getX() - getX() < 0) {
             setVX(-0.1);
         }
@@ -48,7 +48,7 @@ public class Enemy extends GameCharacter {
     }
 
     public void updateData() {
-    super.updateData();
+        super.updateData();
     }
 
     public void updateValues() {
@@ -110,11 +110,11 @@ public class Enemy extends GameCharacter {
         prevState = state;
     }
 
-    public void moveLeft(double xChange) {
+    private void moveLeft(double xChange) {
         setVX((getVX() - xChange));
     }
 
-    public void moveRight(double xChange) {
+    private void moveRight(double xChange) {
         setVX((getVX() + xChange));
     }
 
