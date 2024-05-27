@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
  * ARROW KEYS TO MOVE CAMERA
  */
 public class Camera {
-    private Vector2F offset = new Vector2F(-1, -1);
+    private Vector2F offset = new Vector2F(-1, -1), targetOffset = new Vector2F(offset);
     private Graphics2D graphics;
     private double scaling;
     private Rectangle screenBounds;
@@ -86,7 +86,11 @@ public class Camera {
     }
 
     public void setPosition(Vector2F p) {
-        offset.copy(p);
+        targetOffset.copy(p);
+        if (targetOffset.getEuclideanDistance(offset) > 0.01) {
+            offset.translateInPlace(targetOffset.getTranslated(offset.getNegative()).multiply(0.1));
+        }
+//        offset.copy(p);
 //        System.out.printf("%f %f\n", offset.getX(), offset.getY());
     }
 
