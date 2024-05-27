@@ -21,7 +21,6 @@ public class RoomManager {
 //        createRectangleRoom();
         loadRoomsFromFile();
         generateRooms();
-//        nodeMap = new NodeMap(allRooms);
     }
 
     public void createRectangleRoom() {
@@ -34,7 +33,6 @@ public class RoomManager {
         for (Room room : loadedRooms) {
             room.drawRoom(c);
         }
-//        nodeMap.drawNodes(c);
     }
 
     public ArrayList<Room> getLoadedRooms() {
