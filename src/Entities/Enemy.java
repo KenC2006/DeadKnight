@@ -38,16 +38,33 @@ public class Enemy extends GameCharacter {
         }
     }
 
+    public void followPlayer() {
+
+        System.out.printf("%f\n", player.getX() - getX());
+        if (player.getX() - getX() < 0) {
+            setVX(-0.1);
+        }
+        else {
+            setVX(0.1);
+        }
+    }
+
     public void updateData() {
     super.updateData();
     }
 
     public void updateValues() {
         super.updateValues();
-        if (Math.random() < 0.01) {
-            startWander();
-            System.out.println("jumping!");
-            jump();
+
+        if (getSquareDistToPlayer() < sightRadius) {
+            followPlayer();
+        }
+        else {
+            if (Math.random() < 0.01) {
+                startWander();
+                System.out.println("jumping!");
+                jump();
+            }
         }
     }
 

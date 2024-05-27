@@ -42,10 +42,6 @@ public class ShortMeleeEnemy extends Enemy {
         return "MELEE";
     }
 
-    public void followPlayer(Player player) {
-        // a* to go to player's last known location
-    }
-
     public void startDashLeft() {
         isDashing = true;
         setVX(getVX() + 10);
