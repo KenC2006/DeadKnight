@@ -1,5 +1,4 @@
 package Structure;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
