@@ -7,18 +7,17 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 
-public class Grid extends JPanel implements MouseListener {
-    private Vector2F p1 = null, p2 = null;
+public class Grid extends JPanel implements MouseListener, MouseMotionListener {
+    private Vector2F p1 = null, p2 = null, highlighted = new Vector2F();
     private int boxSize;
     private final ArrayList<Rectangle> walls = new ArrayList<>();
     private final ArrayList<Entrance> entrances = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
-    private final int VERTICAL_ENTRANCE_LENGTH = 7;
-    private final int HORIZONTAL_ENTRANCE_LENGTH = 5;
     private Vector2F topLeftPoint = new Vector2F(999, 999);
 
     public Grid() {
         this.addMouseListener(this);
+        this.addMouseMotionListener(this);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
                 boxSize = Math.min(getHeight(), getWidth()) / 50;
@@ -45,6 +44,11 @@ public class Grid extends JPanel implements MouseListener {
     }
 
     public void draw(Graphics g) {
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect((int) highlighted.getX() * boxSize, 0, boxSize, getHeight());
+        g.fillRect(0, (int) highlighted.getY() * boxSize, getWidth(), boxSize);
+
+
         g.setColor(Color.RED);
         for (Rectangle wall : walls) {
             g.fillRect(wall.x * boxSize, wall.y * boxSize, wall.width * boxSize, wall.height * boxSize);
@@ -166,6 +170,25 @@ public class Grid extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    /**
+     * @param e the event to be processed
+     */
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    /**
+     * @param e the event to be processed
+     */
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (boxSize == 0) return;
+        int mouseX = e.getX() / boxSize, mouseY = e.getY() / boxSize;
+        highlighted = new Vector2F(mouseX, mouseY);
+        repaint();
     }
 }
 

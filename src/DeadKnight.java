@@ -7,6 +7,7 @@ public class DeadKnight {
         GamePanel game = new GamePanel();
         frame.add(game);
         frame.setTitle("DeadKnight");
+        frame.setSize(1280, 720);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 //        frame.setUndecorated(true);

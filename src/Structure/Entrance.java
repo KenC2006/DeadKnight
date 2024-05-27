@@ -6,6 +6,8 @@ import com.sun.nio.sctp.NotificationHandler;
 import java.awt.*;
 
 public class Entrance {
+    private final int VERTICAL_ENTRANCE_LENGTH = 7;
+    private final int HORIZONTAL_ENTRANCE_LENGTH = 5;
     private Vector2F relativeLocation;
     private Vector2F absoluteLocation;
     private Vector2F connectionPoint;
@@ -20,22 +22,22 @@ public class Entrance {
         absoluteLocation = new Vector2F(location);
         if (location.getX() > connection.getX()) {
             type = EntranceType.LEFT;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -3)), location.getTranslated(new Vector2F(1, 4)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -(int) (VERTICAL_ENTRANCE_LENGTH / 2))), location.getTranslated(new Vector2F(1, (int) (VERTICAL_ENTRANCE_LENGTH / 2) + 1)));
         }
         if (location.getX() < connection.getX()) {
             type = EntranceType.RIGHT;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -3)), location.getTranslated(new Vector2F(1, 4)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -(int) (VERTICAL_ENTRANCE_LENGTH / 2))), location.getTranslated(new Vector2F(1, (int) (VERTICAL_ENTRANCE_LENGTH / 2) + 1)));
 
         }
         if (location.getY() < connection.getY()) {
             type = EntranceType.DOWN;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F(-2, 0)), location.getTranslated(new Vector2F(3, 1)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
 
         }
 
         if (location.getY() > connection.getY()) {
             type = EntranceType.UP;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F(-2, 0)), location.getTranslated(new Vector2F(3, 1)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
 
         }
         System.out.println("new at " + location + " " + connection);

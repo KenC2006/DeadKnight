@@ -1,15 +1,12 @@
 package Entities;
 
 import Camera.Camera;
-import Entities.GameCharacter;
 import Managers.ActionManager;
 import Structure.Room;
 import Structure.Vector2F;
 
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * WASD TO MOVE PLAYER
@@ -73,7 +70,7 @@ public class Player extends GameCharacter {
         }
 
         if (manager.getPressed(KeyEvent.VK_A)) {
-            dx += -0.7;
+            dx -= 0.7;
         }
 
         if (framesSinceFiredProjectile > 10 && (manager.getPressed(KeyEvent.VK_RIGHT) || manager.getPressed(KeyEvent.VK_LEFT) || manager.getPressed(KeyEvent.VK_UP) || manager.getPressed(KeyEvent.VK_DOWN))) {

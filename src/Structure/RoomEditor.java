@@ -23,6 +23,7 @@ public class RoomEditor extends JFrame {
 
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1280, 720);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         addKeyListener(new KeyAdapter() {
             @Override
