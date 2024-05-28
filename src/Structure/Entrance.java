@@ -72,8 +72,8 @@ public class Entrance {
     }
 
     public void draw(Camera c) {
-        c.drawCoordinate(absoluteLocation);
-        c.drawCoordinate(absoluteLocation.getTranslated(new Vector2F(relativeLocation.getXDistance(connectionPoint), relativeLocation.getYDistance(connectionPoint))));
+//        c.drawCoordinate(absoluteLocation);
+//        c.drawCoordinate(absoluteLocation.getTranslated(new Vector2F(relativeLocation.getXDistance(connectionPoint), relativeLocation.getYDistance(connectionPoint))));
     }
 
     public boolean connects(Entrance other) {

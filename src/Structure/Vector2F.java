@@ -1,6 +1,8 @@
 package Structure;
 
-public class Vector2F {
+import java.util.Comparator;
+
+public class Vector2F implements Comparable<Vector2F> {
     private double x, y;
 
     public Vector2F() {
@@ -117,6 +119,7 @@ public class Vector2F {
         return new Vector2F(-getX(), -getY());
     }
 
+    @Override
     public int compareTo(Vector2F other) {
         if (other.getX() == getX() && other.getY() == getY()) return 0;
         if (other.getX() < getX()) return 1;

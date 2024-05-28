@@ -12,7 +12,7 @@ import java.util.*;
 
 public class RoomManager {
     private final ArrayList<Room> allPossibleRooms = new ArrayList<>();
-//    private NodeMap nodeMap;
+    private NodeMap nodeMap;
     private ArrayList<Room> allRooms = new ArrayList<>();
     private ArrayList<Room> loadedRooms = new ArrayList<>();
     private Deque<Room> toGenerateNeighbours = new ArrayDeque<>();
@@ -21,7 +21,7 @@ public class RoomManager {
 //        createRectangleRoom();
         loadRoomsFromFile();
         generateRooms();
-//        nodeMap = new NodeMap(allRooms);
+        nodeMap = new NodeMap(allRooms);
     }
 
     public void createRectangleRoom() {
@@ -34,7 +34,7 @@ public class RoomManager {
         for (Room room : loadedRooms) {
             room.drawRoom(c);
         }
-//        nodeMap.drawNodes(c);
+        nodeMap.drawNodes(c);
     }
 
     public ArrayList<Room> getLoadedRooms() {
