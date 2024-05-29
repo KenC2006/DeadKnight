@@ -1,7 +1,6 @@
 package Camera;
 
 import Entities.GameCharacter;
-import Entities.Player;
 import Structure.Hitbox;
 import Structure.Line;
 import Managers.ActionManager;
@@ -18,7 +17,6 @@ public class Camera {
     private Vector2F absoluteOffset = new Vector2F(), topLeftLocation = new Vector2F(), renderSize;
     private Graphics2D graphics;
     private double scaling;
-    private Rectangle screenSize;
     private int renderWidth, renderHeight;
     private boolean renderWallsOnly;
 
@@ -35,7 +33,7 @@ public class Camera {
     public void setGraphics(Graphics g) {
         graphics = (Graphics2D) g;
         graphics.setStroke(new BasicStroke(1f));
-        screenSize = graphics.getClipBounds();
+        Rectangle screenSize = graphics.getClipBounds();
 
         renderWidth = renderSize.getX() == -1 ? screenSize.width : (int) renderSize.getX();
         renderHeight = renderSize.getY() == -1 ? screenSize.height : (int) renderSize.getY();
@@ -94,15 +92,6 @@ public class Camera {
 
     private void drawLine(Line l, Color c) {
         drawLine(l.getStart(), l.getEnd(), c);
-    }
-
-    private void drawLine(Line l) {
-        drawLine(l.getStart(), l.getEnd(), Color.BLACK);
-    }
-
-
-    public void drawRect(int x, int y, int w, int h) {
-        graphics.drawRect(x, y, w, h);
     }
 
     public void updateKeyPresses(ActionManager manager) {

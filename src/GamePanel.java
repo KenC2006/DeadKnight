@@ -34,7 +34,6 @@ public class GamePanel extends JPanel{
     }
 
     public void draw(Graphics g) {
-        Graphics2D g2D = (Graphics2D) g;
         camera.setGraphics(g);
         entityManager.draw(camera);
         camera.paint();

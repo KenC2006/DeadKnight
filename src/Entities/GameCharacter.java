@@ -40,10 +40,6 @@ public class GameCharacter {
         c.drawGameCharacter(this);
     }
 
-    public String getType() {
-        return "";
-    }
-
     public GameCharacter getSwing() {
         return null;
     }
@@ -206,7 +202,7 @@ public class GameCharacter {
     }
 
     public void setY(double y) {
-        position.setX(y);
+        position.setY(y);
         hitbox.setY(y);
     }
 
