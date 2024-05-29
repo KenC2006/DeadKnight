@@ -37,7 +37,7 @@ public class GameCharacter {
     }
 
     public void paint(Camera c) {
-        c.drawHitbox(hitbox);
+        c.drawGameCharacter(this);
     }
 
     public String getType() {

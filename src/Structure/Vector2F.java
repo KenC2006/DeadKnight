@@ -1,7 +1,7 @@
 package Structure;
 
 public class Vector2F {
-    private double x, y;
+    private double x = 0, y = 0;
 
     public Vector2F() {
 

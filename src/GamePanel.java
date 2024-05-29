@@ -2,6 +2,7 @@ import Camera.Camera;
 import Managers.EntityManager;
 import Managers.ActionManager;
 import Structure.RoomEditor;
+import Structure.Vector2F;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,7 @@ public class GamePanel extends JPanel{
     private ActionManager manager = new ActionManager();
     private EntityManager entityManager = new EntityManager();
     private Camera camera = new Camera(10);
+    private Camera mapCamera;
     private boolean isRunning = true;
 
     public GamePanel() throws IOException {
@@ -20,6 +22,10 @@ public class GamePanel extends JPanel{
         this.setVisible(true);
         manager.addPanel(this);
         new RoomEditor();
+
+        mapCamera = new Camera(2, new Vector2F(0, 0), new Vector2F(250, 250));
+        mapCamera.setMapCamera(true);
+
     }
 
     public void paintComponent(Graphics g) {
@@ -32,6 +38,10 @@ public class GamePanel extends JPanel{
         camera.setGraphics(g);
         entityManager.draw(camera);
         camera.paint();
+
+        mapCamera.setGraphics(g);
+        entityManager.draw(mapCamera);
+        mapCamera.paint();
     }
 
     public void update() {
@@ -39,6 +49,7 @@ public class GamePanel extends JPanel{
         entityManager.updateKeyPresses(manager);
         entityManager.update();
         entityManager.followPlayer(camera);
+        entityManager.followPlayer(mapCamera);
     }
 
     public void start() {
