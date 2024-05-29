@@ -40,7 +40,6 @@ public class Entrance {
             hitbox = new Hitbox(location.getTranslated(new Vector2F(-(int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
 
         }
-        System.out.println("new at " + location + " " + connection);
     }
 
     public Entrance(Entrance e) {

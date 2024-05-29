@@ -61,6 +61,7 @@ public class Camera {
         if (renderWallsOnly) return;
 
         graphics.setColor(Color.BLACK);
+        graphics.setStroke(new BasicStroke(1f));
         double x1 = scaleAndShiftX(c.getX());
         double y1 = scaleAndShiftY(c.getY());
         if (x1 - absoluteOffset.getX() >  renderWidth || y1 - absoluteOffset.getY() > renderHeight) return;
@@ -71,7 +72,7 @@ public class Camera {
 
     private void drawLine(Vector2F p1, Vector2F p2, Color c) {
         graphics.setColor(c);
-        graphics.setStroke(new BasicStroke(2f));
+        graphics.setStroke(new BasicStroke(2f * (float) (Math.max(1.0, scaling / 7.0))));
         double x1 = scaleAndShiftX(p1.getX());
         double y1 = scaleAndShiftY(p1.getY());
         double x2 = scaleAndShiftX(p2.getX());

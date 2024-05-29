@@ -67,7 +67,7 @@ public class Vector2F {
     }
 
     /**
-     * Returns the euclidean distance between two points squared
+     * Returns the Euclidean distance between two points squared
      * @param p the coordinate to compare
      * @return the square of the straight line distance between two points
      */
