@@ -15,7 +15,7 @@ import java.awt.event.KeyEvent;
  */
 public class Camera {
     private Vector2F offset = new Vector2F(-1, -1), targetOffset = new Vector2F(offset);
-    private Vector2F absoluteOffset = new Vector2F(), topLeftLocation = new Vector2F();
+    private Vector2F absoluteOffset = new Vector2F(), topLeftLocation = new Vector2F(), renderSize;
     private Graphics2D graphics;
     private double scaling;
     private Rectangle screenSize;
@@ -24,8 +24,7 @@ public class Camera {
 
     public Camera(double scalingFactor, Vector2F offset, Vector2F size) {
         scaling = scalingFactor;
-        this.renderHeight = (int) size.getX();
-        this.renderWidth  = (int) size.getY();
+        renderSize = size;
         this.topLeftLocation.copy(offset);
     }
 
@@ -38,9 +37,15 @@ public class Camera {
         graphics.setStroke(new BasicStroke(1f));
         screenSize = graphics.getClipBounds();
 
-        if (renderWidth == -1) renderWidth = screenSize.width;
-        if (renderHeight == -1) renderHeight = screenSize.height;
-        absoluteOffset = topLeftLocation.getTranslated(new Vector2F(renderWidth, renderHeight));
+        renderWidth = renderSize.getX() == -1 ? screenSize.width : (int) renderSize.getX();
+        renderHeight = renderSize.getY() == -1 ? screenSize.height : (int) renderSize.getY();
+        if (renderWallsOnly) {
+            absoluteOffset = topLeftLocation.getTranslated(new Vector2F(screenSize.width - renderWidth, renderHeight));
+
+        } else {
+            absoluteOffset = topLeftLocation.getTranslated(new Vector2F(renderWidth / 2.0, renderHeight / 2.0));
+
+        }
     }
 
     public void drawHitbox(Hitbox h) {
@@ -62,7 +67,7 @@ public class Camera {
         double y1 = scaleAndShiftY(c.getY());
         if (x1 - absoluteOffset.getX() >  renderWidth || y1 - absoluteOffset.getY() > renderHeight) return;
         if (x1 - absoluteOffset.getX() < -renderWidth || y1 - absoluteOffset.getY() < -renderHeight) return;
-        graphics.drawOval((int) x1 - 2, (int) y1- 2, (int) scaling, (int) scaling);
+        graphics.drawOval((int) x1, (int) y1, (int) scaling, (int) scaling);
 
     }
 
@@ -76,6 +81,13 @@ public class Camera {
 
         if (Math.min(x1, x2) - absoluteOffset.getX() >  renderWidth || Math.min(y1, y2) - absoluteOffset.getY() > renderHeight) return;
         if (Math.max(x1, x2) - absoluteOffset.getX() < -renderWidth || Math.max(y1, y2) - absoluteOffset.getY() < -renderHeight) return;
+
+        x1 = Math.max(Math.min(renderWidth + absoluteOffset.getX(), x1), absoluteOffset.getX() - renderWidth);
+        x2 = Math.max(Math.min(renderWidth + absoluteOffset.getX(), x2), absoluteOffset.getX() - renderWidth);
+        y1 = Math.max(Math.min(renderHeight + absoluteOffset.getY(), y1), absoluteOffset.getY() - renderHeight);
+        y2 = Math.max(Math.min(renderHeight + absoluteOffset.getY(), y2), absoluteOffset.getY() - renderHeight);
+
+
         graphics.drawLine((int) x1, (int) y1, (int) x2, (int) y2);
         graphics.setStroke(new BasicStroke(1f));
     }
@@ -106,11 +118,15 @@ public class Camera {
         if (manager.getPressed(KeyEvent.VK_LEFT)) {
             offset.changeX(-3);
         }
-        if (manager.getPressed(KeyEvent.VK_PERIOD)) {
-            changeScaling(scaling * 0.1);
-        }
-        if (manager.getPressed(KeyEvent.VK_COMMA)) {
-            changeScaling(-scaling * 0.1);
+
+        if (renderWallsOnly) {
+            if (manager.getPressed(KeyEvent.VK_PERIOD)) {
+                changeScaling(scaling * 0.1);
+            }
+            if (manager.getPressed(KeyEvent.VK_COMMA)) {
+                changeScaling(-scaling * 0.1);
+            }
+
         }
     }
 
@@ -125,7 +141,13 @@ public class Camera {
 
     public void paint() {
         // DRAW CAMERA CROSSHAIR
-//        graphics.setColor(Color.BLACK);
+        graphics.setColor(Color.BLACK);
+        if (renderWallsOnly) {
+            double x1 = scaleAndShiftX(offset.getX());
+            double y1 = scaleAndShiftY(offset.getY());
+            graphics.drawOval((int) x1, (int) y1, (int) scaling, (int) scaling);
+
+        }
 //        graphics.setStroke(new BasicStroke(2f));
 //        double x1 = scaleAndShiftX(offset.getX() - 1);
 //        double y1 = scaleAndShiftY(offset.getY() - 1);
@@ -139,7 +161,7 @@ public class Camera {
     }
 
     public void changeScaling(double change) {
-        if (scaling + change < 0.2) return;
+        if (scaling + change < 0.2 || scaling + change > 5) return;
         scaling += change;
     }
 
