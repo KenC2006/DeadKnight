@@ -20,7 +20,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         this.addMouseMotionListener(this);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
-                boxSize = Math.min(getHeight(), getWidth()) / 50;
+                boxSize = Math.min(getHeight(), getWidth()) / 20;
                 repaint();
             }
         });
@@ -44,9 +44,18 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(Color.LIGHT_GRAY.brighter());
         g.fillRect((int) highlighted.getX() * boxSize, 0, boxSize, getHeight());
         g.fillRect(0, (int) highlighted.getY() * boxSize, getWidth(), boxSize);
+
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect((int) highlighted.getX() * boxSize, ((int) highlighted.getY() - 5) * boxSize, boxSize, boxSize * 11);
+        g.fillRect(((int) highlighted.getX() - 5) * boxSize, (int) highlighted.getY() * boxSize, boxSize * 11, boxSize);
+
+
+        g.setColor(Color.LIGHT_GRAY.darker());
+        g.fillRect((int) highlighted.getX() * boxSize, ((int) highlighted.getY() - 3) * boxSize, boxSize, boxSize * 7);
+        g.fillRect(((int) highlighted.getX() - 2) * boxSize, (int) highlighted.getY() * boxSize, boxSize * 5, boxSize);
 
 
         g.setColor(Color.RED);

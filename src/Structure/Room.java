@@ -56,7 +56,7 @@ public class Room {
             int y2 = Integer.parseInt(temp[3]);
 
             entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
-            entranceHitboxes.addHitbox(entrances.getLast().getHitbox());
+            entranceHitboxes.addHitbox(new Hitbox(entrances.getLast().getHitbox()));
 
         }
     }
@@ -88,7 +88,7 @@ public class Room {
         walls.draw(c);
 //        entranceHitboxes.draw(c);
         for (Entrance e: entrances) {
-            e.draw(c);
+//            e.draw(c);
 
         }
     }
@@ -96,7 +96,8 @@ public class Room {
     public void closeEntrances() {
         for (Entrance e: entrances) {
             if (e.isConnected()) continue;
-            walls.addHitbox(e.getHitbox());
+            walls.addHitbox(new Hitbox(e.getHitbox()));
+            System.out.println("HITBOX COLOUR IS " + e.getHitbox().getColour());
         }
     }
 

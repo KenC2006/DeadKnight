@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class RoomEditor extends JFrame {
     private final Grid grid;
-    private static final File roomStorage = new File("src/Rooms");
+    private static final File roomStorage = new File("src/Rooms/Testset");
 
     public RoomEditor() {
         grid = new Grid();
@@ -44,7 +44,7 @@ public class RoomEditor extends JFrame {
 
                 if (e.getKeyCode() == KeyEvent.VK_S) {
                     int fileNum = (Objects.requireNonNull(roomStorage.list()).length);
-                    File file = new File("src/Rooms/room" + (fileNum + 1) + ".txt");
+                    File file = new File(roomStorage.getPath() + "/room" + (fileNum + 1) + ".txt");
                     try {
                         FileWriter fw = new FileWriter(file);
                         int ox = (int) grid.getLeftMostPoint().getX(), oy = (int) grid.getLeftMostPoint().getY();
