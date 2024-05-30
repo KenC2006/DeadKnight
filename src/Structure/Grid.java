@@ -121,6 +121,9 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             p2.setY(temp);
         }
 
+        if (topLeftPoint == null) {
+            topLeftPoint = new Vector2F(p1);
+        }
         if (topLeftPoint.getX() > p1.getX()) {
             topLeftPoint.setX(p1.getX());
         }
