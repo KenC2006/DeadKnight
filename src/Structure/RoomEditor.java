@@ -43,9 +43,12 @@ public class RoomEditor extends JFrame {
 
                 if (e.getKeyCode() == KeyEvent.VK_S) {
                     int fileNum = (Objects.requireNonNull(roomStorage.list()).length);
-                    File file = new File("src/Rooms/room" + (fileNum + 1) + ".txt");
-
-                    grid.getDropDown().addItem(file);
+                    File file;
+                    if (grid.getFileToSave()==null) {
+                        file = new File("src/Rooms/room" + (fileNum + 1) + ".txt");
+                        grid.getDropDown().addItem(file);
+                    }
+                    else file = grid.getFileToSave();
                     try {
                         FileWriter fw = new FileWriter(file);
                         int ox = (int) grid.getLeftMostPoint().getX(), oy = (int) grid.getLeftMostPoint().getY();
@@ -60,7 +63,6 @@ public class RoomEditor extends JFrame {
                             fw.write(((int) entrance.getLocation().getX() - ox) + " " + ((int) entrance.getLocation().getY() - oy) + " " + ((int) entrance.getConnection().getX() - ox) + " " + ((int) entrance.getConnection().getY() - oy) + "\n");
                         }
                         fw.close();
-                        grid.reset();
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }

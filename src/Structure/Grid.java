@@ -19,9 +19,10 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final ArrayList<Rectangle> walls = new ArrayList<>();
     private final ArrayList<Entrance> entrances = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
-    private final Vector2F topLeftPoint = new Vector2F(999, 999);
+    private Vector2F topLeftPoint = new Vector2F(999, 999);
     private final GameObject selected=new GameObject();
     private JComboBox<File> dropDown;
+    private File fileToSave;
 
     public Grid() {
         this.addMouseListener(this);
@@ -81,6 +82,10 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         for (int i = 0; i < getHeight(); i += boxSize) {
             g.drawLine(0, i, getWidth(), i);
         }
+    }
+
+    public File getFileToSave() {
+        return fileToSave;
     }
 
     public Object returnSelected(){
@@ -167,6 +172,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         getWalls().clear();
         getEntrances().clear();
         getStack().clear();
+        fileToSave = null;
         selected.reset();
         p1 = null;
         p2 = null;
@@ -192,10 +198,10 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Scanner in = new Scanner((File) Objects.requireNonNull(dropDown.getSelectedItem()));
-                    walls.clear();
-                    entrances.clear();
-                    selected.reset();
+                    File file=(File) Objects.requireNonNull(dropDown.getSelectedItem());
+                    Scanner in = new Scanner(file);
+                    reset();
+                    fileToSave = file;
                     int wallNum = in.nextInt();
                     for (int i = 0; i < wallNum; i++) {
                         int x=in.nextInt();
@@ -215,6 +221,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         });
         revalidate();
     }
+
 
     @Override
     public void mouseClicked(MouseEvent e) {
