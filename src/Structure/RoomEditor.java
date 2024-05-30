@@ -13,8 +13,8 @@ import java.util.Objects;
 public class RoomEditor extends JFrame {
     private final Grid grid;
     private static final File roomStorage = new File("src/Rooms");
-
     public RoomEditor() {
+        
         grid = new Grid();
         add(grid);
         setLayout(new BorderLayout());
@@ -28,8 +28,6 @@ public class RoomEditor extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-//                if (e.getKeyCode() == KeyEvent.VK_F) grid.addHorizontalEntrance();
-//                if (e.getKeyCode() == KeyEvent.VK_G) grid.addVerticalEntrance();
 
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) grid.addEntrance(1, 0);
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) grid.addEntrance(-1, 0);
@@ -38,6 +36,7 @@ public class RoomEditor extends JFrame {
 
 
                 if (e.getKeyCode() == KeyEvent.VK_R) grid.reset();
+                if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && grid.getSelected()!=null) grid.delete();
 
                 if (grid.getWalls().isEmpty() && grid.getEntrances().isEmpty()) return;
                 if (e.getKeyCode() == KeyEvent.VK_Z) grid.undoLastMove();
@@ -45,6 +44,8 @@ public class RoomEditor extends JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_S) {
                     int fileNum = (Objects.requireNonNull(roomStorage.list()).length);
                     File file = new File("src/Rooms/room" + (fileNum + 1) + ".txt");
+
+                    grid.getDropDown().addItem(file);
                     try {
                         FileWriter fw = new FileWriter(file);
                         int ox = (int) grid.getLeftMostPoint().getX(), oy = (int) grid.getLeftMostPoint().getY();
@@ -66,6 +67,7 @@ public class RoomEditor extends JFrame {
                 }
             }
         });
+
     }
 
 
