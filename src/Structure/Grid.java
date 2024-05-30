@@ -154,12 +154,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             p2.setY(temp);
         }
 
-        if (topLeftPoint.getX() > p1.getX()) {
-            topLeftPoint.setX(p1.getX());
-        }
-        if (topLeftPoint.getY() > p1.getY()) {
-            topLeftPoint.setY(p1.getY());
-        }
+        topLeftPoint = topLeftPoint.getMin(p1);
 
         walls.add(new Rectangle((int) p1.getX(), (int) p1.getY(), (int) p1.getXDistance(p2) + 1, (int) p1.getYDistance(p2) + 1));
         stack.add(2);
@@ -174,6 +169,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         getStack().clear();
         fileToSave = null;
         selected.reset();
+        topLeftPoint = new Vector2F(999, 999);
         p1 = null;
         p2 = null;
         repaint();
@@ -206,12 +202,15 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                     for (int i = 0; i < wallNum; i++) {
                         int x=in.nextInt();
                         int y=in.nextInt();
+                        topLeftPoint = topLeftPoint.getMin(new Vector2F(x, y));
                         walls.add(new Rectangle(x, y, in.nextInt()-x, in.nextInt()-y));
                         stack.add(2);
                     }
                     int entranceNum = in.nextInt();
                     for (int i = 0; i < entranceNum; i++) {
-                        entrances.add(new Entrance(new Vector2F(in.nextInt(),in.nextInt()),new Vector2F(in.nextInt(),in.nextInt())));
+                        Vector2F v1 = new Vector2F(in.nextInt(), in.nextInt()), v2 = new Vector2F(in.nextInt(), in.nextInt());
+                        topLeftPoint = topLeftPoint.getMin(v1).getMin(v2);
+                        entrances.add(new Entrance(v1, v2));
                     }
 
                 } catch (FileNotFoundException ex) {
