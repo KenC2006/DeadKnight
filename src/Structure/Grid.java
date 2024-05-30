@@ -13,7 +13,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final ArrayList<Rectangle> walls = new ArrayList<>();
     private final ArrayList<Entrance> entrances = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
-    private Vector2F topLeftPoint = new Vector2F(999, 999);
+    private Vector2F topLeftPoint = null;
 
     public Grid() {
         this.addMouseListener(this);
