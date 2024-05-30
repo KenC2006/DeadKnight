@@ -33,7 +33,7 @@ public class Player extends GameCharacter {
         if (manager.getPressed(KeyEvent.VK_W)) {
             if (!upPressed) {
                 upPressed = true;
-                if (framesPassed - framesSinceTouchedGround < 7) {
+                if (framesPassed - framesSinceTouchedGround < 8) {
                     jumping = true;
                     framesSinceTouchedGround -= 10;
                     framesSinceStartedJumping = framesPassed;
@@ -42,7 +42,7 @@ public class Player extends GameCharacter {
                     lastUpPressed = framesPassed;
                 }
             } else {
-                if (framesPassed - framesSinceTouchedGround < 7 && framesPassed - lastUpPressed < 20) {
+                if (framesPassed - framesSinceTouchedGround < 8 && framesPassed - lastUpPressed < 20) {
                     jumping = true;
                     framesSinceStartedJumping = framesPassed;
                     framesSinceTouchedGround -= 10;

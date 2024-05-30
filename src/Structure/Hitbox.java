@@ -32,6 +32,8 @@ public class Hitbox {
             points.add(new Vector2F(p));
         }
         shape = new ConvexShape(points);
+        colour = copy.colour;
+        enabled = copy.enabled;
     }
 
     public Color getColour() {

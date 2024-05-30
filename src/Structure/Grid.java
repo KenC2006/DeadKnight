@@ -19,7 +19,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final ArrayList<Rectangle> walls = new ArrayList<>();
     private final ArrayList<Entrance> entrances = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
-    private Vector2F topLeftPoint = new Vector2F(999, 999);
+    private Vector2F topLeftPoint = null;
     private final GameObject selected=new GameObject();
     private JComboBox<File> dropDown;
     private File fileToSave;
@@ -30,7 +30,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         loadFiles();
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
-                boxSize = Math.min(getHeight(), getWidth()) / 50;
+                boxSize = Math.min(getHeight(), getWidth()) / 20;
                 repaint();
             }
         });
@@ -54,9 +54,18 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(Color.LIGHT_GRAY.brighter());
         g.fillRect((int) highlighted.getX() * boxSize, 0, boxSize, getHeight());
         g.fillRect(0, (int) highlighted.getY() * boxSize, getWidth(), boxSize);
+
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect((int) highlighted.getX() * boxSize, ((int) highlighted.getY() - 5) * boxSize, boxSize, boxSize * 11);
+        g.fillRect(((int) highlighted.getX() - 5) * boxSize, (int) highlighted.getY() * boxSize, boxSize * 11, boxSize);
+
+
+        g.setColor(Color.LIGHT_GRAY.darker());
+        g.fillRect((int) highlighted.getX() * boxSize, ((int) highlighted.getY() - 3) * boxSize, boxSize, boxSize * 7);
+        g.fillRect(((int) highlighted.getX() - 2) * boxSize, (int) highlighted.getY() * boxSize, boxSize * 5, boxSize);
 
 
         for (Rectangle wall : walls) {
@@ -69,6 +78,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             else g.setColor(Color.BLUE);
             entrance.draw(g, boxSize);
         }
+
         g.setColor(Color.GREEN);
         if (p2 == null && p1 != null) {
             g.fillRect((int) p1.getX() * boxSize, (int) p1.getY() * boxSize, boxSize, boxSize);
@@ -133,7 +143,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         entrances.add(new Entrance(p1, p1.getTranslated(new Vector2F(xOffset, yOffset))));
         stack.add(1);
         p1 = null;
-        p2=null;
         repaint();
     }
 
@@ -154,7 +163,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             p2.setY(temp);
         }
 
-        topLeftPoint = topLeftPoint.getMin(p1);
+        topLeftPoint = p1.getMin(topLeftPoint);
 
         walls.add(new Rectangle((int) p1.getX(), (int) p1.getY(), (int) p1.getXDistance(p2) + 1, (int) p1.getYDistance(p2) + 1));
         stack.add(2);
@@ -169,7 +178,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         getStack().clear();
         fileToSave = null;
         selected.reset();
-        topLeftPoint = new Vector2F(999, 999);
+        topLeftPoint = null;
         p1 = null;
         p2 = null;
         repaint();

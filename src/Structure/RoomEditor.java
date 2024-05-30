@@ -14,7 +14,7 @@ public class RoomEditor extends JFrame {
     private final Grid grid;
     private static final File roomStorage = new File("src/Rooms");
     public RoomEditor() {
-        
+
         grid = new Grid();
         add(grid);
         setLayout(new BorderLayout());
@@ -45,7 +45,7 @@ public class RoomEditor extends JFrame {
                     int fileNum = (Objects.requireNonNull(roomStorage.list()).length);
                     File file;
                     if (grid.getFileToSave()==null) {
-                        file = new File("src/Rooms/room" + (fileNum + 1) + ".txt");
+                        file = new File(roomStorage.getPath() + "/room" + (fileNum + 1) + ".txt");
                         grid.getDropDown().addItem(file);
                     }
                     else file = grid.getFileToSave();
@@ -69,7 +69,6 @@ public class RoomEditor extends JFrame {
                 }
             }
         });
-
     }
 
 

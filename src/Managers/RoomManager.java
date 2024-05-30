@@ -57,11 +57,17 @@ public class RoomManager {
     }
 
     public void generateAttached(Room r) {
+        ArrayList<Entrance> entrancesToGenerate = new ArrayList<>();
         for (Entrance e: r.getEntrances()) {
             if (e.isConnected()) continue;
+            entrancesToGenerate.add(e);
+        }
+
+        while (!entrancesToGenerate.isEmpty()) {
+            Entrance e = entrancesToGenerate.get((int)(Math.random() * entrancesToGenerate.size()));
+            entrancesToGenerate.remove(e);
             ArrayList<Room> compatibleRooms = new ArrayList<>();
             for (Room newRoom: allPossibleRooms) {
-                boolean compatible = false;
                 Room testRoom = new Room(newRoom);
                 testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getLocation()));
                 for (Entrance connectingEntrance: testRoom.getEntrances()) {
@@ -93,7 +99,7 @@ public class RoomManager {
     }
 
     public void loadRoomsFromFile() {
-        for (File f: Objects.requireNonNull(new File("src/Rooms").listFiles())) {
+        for (File f: Objects.requireNonNull(new File("src/Rooms/Set1").listFiles())) {
             try {
                 allPossibleRooms.add(new Room(f));
             } catch (FileNotFoundException e) {

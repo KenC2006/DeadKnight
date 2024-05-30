@@ -23,22 +23,26 @@ public class Entrance {
         if (location.getX() > connection.getX()) {
             type = EntranceType.LEFT;
             hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -(int) (VERTICAL_ENTRANCE_LENGTH / 2))), location.getTranslated(new Vector2F(1, (int) (VERTICAL_ENTRANCE_LENGTH / 2) + 1)));
-        }
-        if (location.getX() < connection.getX()) {
+            hitbox.setColour(Color.YELLOW);
+
+        } else if (location.getX() < connection.getX()) {
             type = EntranceType.RIGHT;
             hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -(int) (VERTICAL_ENTRANCE_LENGTH / 2))), location.getTranslated(new Vector2F(1, (int) (VERTICAL_ENTRANCE_LENGTH / 2) + 1)));
+            hitbox.setColour(Color.ORANGE);
 
-        }
-        if (location.getY() < connection.getY()) {
+        } else if (location.getY() > connection.getY()) {
             type = EntranceType.DOWN;
             hitbox = new Hitbox(location.getTranslated(new Vector2F(-(int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
+            hitbox.setColour(Color.PINK);
 
-        }
+        } else if (location.getY() < connection.getY()) {
+//            System.out.println(location + " " + connection + " left");
 
-        if (location.getY() > connection.getY()) {
             type = EntranceType.UP;
             hitbox = new Hitbox(location.getTranslated(new Vector2F(-(int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
-
+            hitbox.setColour(Color.BLUE);
+        } else {
+            System.out.println("ASDSADSADASDASDSAD\n");
         }
     }
 
@@ -60,9 +64,9 @@ public class Entrance {
             g.fillRect(((int) relativeLocation.getX() - HORIZONTAL_ENTRANCE_LENGTH/2) * scaling, (int) relativeLocation.getY() * scaling, HORIZONTAL_ENTRANCE_LENGTH * scaling, scaling);
 
             if (type == EntranceType.UP) {
-                g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() - 1) * scaling, scaling, scaling);
-            } else {
                 g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() + 1) * scaling, scaling, scaling);
+            } else {
+                g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() - 1) * scaling, scaling, scaling);
             }
         } else {
             g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() - VERTICAL_ENTRANCE_LENGTH/2) * scaling, scaling, VERTICAL_ENTRANCE_LENGTH * scaling);
@@ -78,6 +82,7 @@ public class Entrance {
     public void draw(Camera c) {
         c.drawCoordinate(absoluteLocation);
         c.drawCoordinate(absoluteLocation.getTranslated(new Vector2F(relativeLocation.getXDistance(connectionPoint), relativeLocation.getYDistance(connectionPoint))));
+        c.drawHitbox(hitbox);
     }
 
     public boolean connects(Entrance other) {
