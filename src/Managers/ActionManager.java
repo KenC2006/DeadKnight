@@ -5,7 +5,8 @@ import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActionManager implements KeyListener, MouseListener, MouseMotionListener {
+public class
+ActionManager implements KeyListener, MouseListener, MouseMotionListener {
     private final Map<Integer, Boolean> pressed = new HashMap<>();
 
     public void addPanel(JPanel panel) {

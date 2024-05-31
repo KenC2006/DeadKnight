@@ -20,7 +20,7 @@ public class EntityManager {
         player = new Player(-1, -2);
         entityList.add(player);
         entityList.add(new GameCharacter(20, 20, 3, 4,100));
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             entityList.add(new ShortMeleeEnemy(0, 0, 2, player));
 
         }
