@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class RoomEditor extends JFrame {
     private final Grid grid;
-    private static final File roomStorage = new File("src/Rooms");
+    private static final File roomStorage = new File("src/Rooms/Set1");
     public RoomEditor() {
 
         grid = new Grid();
