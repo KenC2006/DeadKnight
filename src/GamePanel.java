@@ -2,6 +2,7 @@ import Camera.Camera;
 import Managers.EntityManager;
 import Managers.ActionManager;
 import Structure.RoomEditor;
+import Structure.Vector2F;
 
 import javax.swing.*;
 import java.awt.*;
