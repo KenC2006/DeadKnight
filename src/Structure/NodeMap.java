@@ -8,24 +8,22 @@ import Camera.Camera;
 public class NodeMap {
 
     private ArrayList<Vector2F> nodes;
-    private ArrayList<Room> rooms;
     private Map<Vector2F, ArrayList<Vector2F>> edges;
 
     private char[][] grid;
 
-    public NodeMap(ArrayList<Room> rooms) {
+    public NodeMap(Room room) {
         nodes = new ArrayList<Vector2F> ();
         edges = new HashMap<Vector2F, ArrayList<Vector2F>> (); //add edge connecting
 
         grid = new char[2000][2000];
 
-        this.rooms = rooms;
-        loadGrid();
-        loadNodes(new Vector2F(1000, 1002));
-        nodes.add(new Vector2F(0, 2));
+        loadGrid(room);
+        loadNodes(new Vector2F(1000, 1002), room);
+        nodes.add(new Vector2F(0, 0));
         int idx = 0;
         while (idx < nodes.size()) {
-            loadNodes(new Vector2F(nodes.get(idx).getX() + 1000, nodes.get(idx).getY() + 1000));
+            loadNodes(new Vector2F(nodes.get(idx).getX() + 1000, nodes.get(idx).getY() + 1000), room);
             idx++;
         }
         HashSet<Vector2F> set = new HashSet<Vector2F> (nodes);
@@ -36,17 +34,24 @@ public class NodeMap {
 //        System.out.println(nodes.size());
     }
 
-    private void loadGrid() {
-        for (Room room : rooms) {
-            for (Hitbox hitbox : room.getHitbox().getHitboxes()) {
-                for (int i = (int)hitbox.getTop(); i <= (int)hitbox.getBottom(); i++) {
-                    for (int j = (int)hitbox.getLeft(); j <= hitbox.getRight(); j++) {
+    private void loadGrid(Room room) {
+        for (Hitbox hitbox : room.getHitbox().getHitboxes()) {
+            for (int i = (int)hitbox.getTop(); i <= (int)hitbox.getBottom(); i++) {
+                for (int j = (int)hitbox.getLeft(); j <= hitbox.getRight(); j++) {
 //                        System.out.printf("%d %d\n", i, j);
-                        grid[i+1000][j+1000] = 'X'; // since array index must be > 0
-                    }
+                    grid[i+1000][j+1000] = 'X'; // since array index must be > 0
                 }
             }
         }
+
+//        for (Entrance e : room.getEntrances()) {
+//            for (int i = (int)e.getHitbox().getTop(); i <= (int)e.getHitbox().getBottom(); i++) {
+//                for (int j = (int)e.getHitbox().getLeft(); j <= e.getHitbox().getRight(); j++) {
+////                        System.out.printf("%d %d\n", i, j);
+//                    grid[i+1000][j+1000] = 'X'; // since array index must be > 0
+//                }
+//            }
+//        }
 
 //        for(int i = 900; i < 1100; i++) {
 //            for (int j = 900; j < 1100; j++) {
@@ -61,7 +66,7 @@ public class NodeMap {
      * within a raidus, then mark as 'V' and store as a node
      * @param start
      */
-    public void loadNodes(Vector2F start) {
+    private void loadNodes(Vector2F start, Room room) {
         Queue<Vector2F> q = new LinkedList<Vector2F> ();
         Vector2F cur_node, ogCur_node, ogStart; // og stores original node coords
         boolean[][] v = new boolean[2000][2000];
@@ -93,7 +98,7 @@ public class NodeMap {
 
                 if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()-1] != 'X' &&
                     grid[(int)cur_node.getY()][(int)cur_node.getX()-1] != 'X') {
-                    if (doesIntersectRoom(new Line(ogCur_node, ogStart))) {
+                    if (doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
                         continue;
                     }
 //                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
@@ -104,7 +109,7 @@ public class NodeMap {
                 }
                 else if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()+1] != 'X' &&
                         grid[(int)cur_node.getY()][(int)cur_node.getX()+1] != 'X') {
-                    if (doesIntersectRoom(new Line(ogCur_node, ogStart))) {
+                    if (doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
                         continue;
                     }
 //                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
@@ -113,7 +118,7 @@ public class NodeMap {
 //                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                 }
                 else if (grid[(int)cur_node.getY()][(int)cur_node.getX()-1] == 'X') {
-                    if (doesIntersectRoom(new Line(ogCur_node, ogStart))) {
+                    if (doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
                         continue;
                     }
 //                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
@@ -122,7 +127,7 @@ public class NodeMap {
 //                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                 }
                 else if (grid[(int)cur_node.getY()][(int)cur_node.getX()+1] == 'X') {
-                    if (doesIntersectRoom(new Line(ogCur_node, ogStart))) {
+                    if (doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
                         continue;
                     }
 //                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
@@ -165,17 +170,31 @@ public class NodeMap {
 //        }
     }
 
-    public boolean doesIntersectRoom(Line line) {
-        for (Room room : rooms) {
-            for (Hitbox wall : room.getHitbox().getHitboxes()) {
-                if (wall.quickIntersect(new Hitbox(line.getStart(), line.getEnd()))) {
-                    if (line.doesIntersect(wall)) {
-                        return true;
-                    }
+    private boolean doesIntersectRoom(Line line, Room room) {
+        for (Hitbox wall : room.getHitbox().getHitboxes()) {
+            if (wall.quickIntersect(new Hitbox(line.getStart(), line.getEnd()))) {
+                if (line.doesIntersect(wall)) {
+                    return true;
                 }
             }
         }
         return false;
+    }
+
+    public void translateNodes(Vector2F newDrawLocation) {
+        Vector2F newNode, newNextNode;
+        for (int i = 0; i < nodes.size(); i++) {
+            ArrayList<Vector2F> oldNodes = edges.remove(nodes.get(i));
+            newNode = new Vector2F(nodes.get(i).getX() + newDrawLocation.getX(), nodes.get(i).getY() + newDrawLocation.getY());
+            if (oldNodes == null) {
+                continue;
+            }
+            for (Vector2F node : oldNodes) {
+                newNextNode = new Vector2F(node.getX() + newDrawLocation.getX(), node.getY() + newDrawLocation.getY());
+                edges.computeIfAbsent(newNode, k -> new ArrayList<Vector2F> ()).add(newNextNode);
+            }
+            nodes.set(i, newNode);
+        }
     }
 
     public void drawNodes(Camera c) {

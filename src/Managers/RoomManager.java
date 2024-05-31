@@ -21,7 +21,6 @@ public class RoomManager {
 //        createRectangleRoom();
         loadRoomsFromFile();
         generateRooms();
-        nodeMap = new NodeMap(allRooms);
     }
 
     public void createRectangleRoom() {
@@ -34,7 +33,6 @@ public class RoomManager {
         for (Room room : loadedRooms) {
             room.drawRoom(c);
         }
-        nodeMap.drawNodes(c);
     }
 
     public ArrayList<Room> getLoadedRooms() {
@@ -51,7 +49,7 @@ public class RoomManager {
         loadRoom(randomRoom);
 
         toGenerateNeighbours.add(randomRoom);
-        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 10) {
+        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 2) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
 
