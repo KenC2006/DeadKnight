@@ -40,7 +40,7 @@ public class RoomManager {
     public void generateRooms() {
         if (allPossibleRooms.isEmpty()) return;
 //        Room randomRoom = allPossibleRooms.get((int) (Math.random() * allPossibleRooms.size()));
-        Room randomRoom = new Room(allPossibleRooms.get(5)); // TODO add player spawn locations to prevent spawning inside of walls
+        Room randomRoom = new Room(allPossibleRooms.get(8)); // TODO add player spawn locations to prevent spawning inside of walls
         Vector2F center = randomRoom.getCenterRelativeToRoom();
         randomRoom.centerAroundPointInRoom(center);
         addRoom(randomRoom);
@@ -64,7 +64,7 @@ public class RoomManager {
         }
 
         while (!entrancesToGenerate.isEmpty()) {
-            Entrance e = entrancesToGenerate.get((int)(Math.random() * entrancesToGenerate.size()));
+            Entrance e = entrancesToGenerate.get((int)(Math.random() * entrancesToGenerate.size())); // TODO generate rooms based on entrances closest to the center
             entrancesToGenerate.remove(e);
             ArrayList<Room> compatibleRooms = new ArrayList<>();
             for (Room newRoom: allPossibleRooms) {

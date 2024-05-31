@@ -121,16 +121,16 @@ public class Camera {
 
     public void updateKeyPresses(ActionManager manager) {
         if (manager.getPressed(KeyEvent.VK_UP)) {
-            offset.changeY(-3);
+            offset.changeY(-1.5);
         }
         if (manager.getPressed(KeyEvent.VK_DOWN)) {
-            offset.changeY(3);
+            offset.changeY(1.5);
         }
         if (manager.getPressed(KeyEvent.VK_RIGHT)) {
-            offset.changeX(3);
+            offset.changeX(1.5);
         }
         if (manager.getPressed(KeyEvent.VK_LEFT)) {
-            offset.changeX(-3);
+            offset.changeX(-1.5);
         }
 
         if (renderWallsOnly) {
