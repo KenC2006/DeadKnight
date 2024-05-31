@@ -45,7 +45,7 @@ public class Entity {
      * Resets entity values for next frame <br>
      * - Colliding set to false
      */
-    public void updateValues() {
+    public void updateValues(NodeMap nodemap) {
         updateVelocity();
         colliding = false;
     }
