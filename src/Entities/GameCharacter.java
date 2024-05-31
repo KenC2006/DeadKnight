@@ -1,10 +1,7 @@
 package Entities;
 
 import Camera.Camera;
-import Structure.Hitbox;
-import Structure.HitboxGroup;
-import Structure.Room;
-import Structure.Vector2F;
+import Structure.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -44,7 +41,7 @@ public class GameCharacter {
         return null;
     }
 
-    public void updateValues() {
+    public void updateValues(NodeMap nodeMap) {
         updateVelocity();
         colliding = false;
     }

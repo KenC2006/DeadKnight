@@ -13,6 +13,7 @@ public class Room {
     private HitboxGroup walls = new HitboxGroup();
     private HitboxGroup entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
+    private NodeMap nodeMap;
 
     public Room(int x, int y, int width, int height) {
 //        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
@@ -21,7 +22,7 @@ public class Room {
         walls.addHitbox(new Hitbox(x + width - 1, y + height, x + width, y));
         walls.addHitbox(new Hitbox(x + width / 2.0, y + height * 3.0 / 4.0, x + width / 2.0 + 1, y + height));
         walls.addHitbox(new Hitbox(x, y + height / 2.0, x + width * 3.0 / 4.0, y + height / 2.0 + 1));
-
+        nodeMap = new NodeMap(this);
     }
 
     public Room(Room copy) {
@@ -32,6 +33,7 @@ public class Room {
         for (Entrance e: copy.entrances) {
             entrances.add(new Entrance(e));
         }
+        nodeMap = new NodeMap(copy);
     }
 
     public Room(File file) throws FileNotFoundException {
@@ -59,6 +61,7 @@ public class Room {
             entranceHitboxes.addHitbox(new Hitbox(entrances.getLast().getHitbox()));
 
         }
+        nodeMap = new NodeMap(this);
     }
 
     public Vector2F getCenterRelativeToRoom() {
@@ -68,6 +71,7 @@ public class Room {
     public void setDrawLocation(Vector2F newDrawLocation) {
         walls.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         entranceHitboxes.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
+        nodeMap.translateNodes(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         }
@@ -77,6 +81,7 @@ public class Room {
     public void centerAroundPointInRoom(Vector2F newCenter) {
         walls.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         entranceHitboxes.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+        nodeMap.translateNodes(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
 
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
@@ -91,6 +96,8 @@ public class Room {
 //            e.draw(c);
 
         }
+
+        nodeMap.drawNodes(c);
     }
 
     public void closeEntrances() {
