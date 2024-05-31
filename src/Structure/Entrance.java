@@ -44,8 +44,6 @@ public class Entrance {
         } else {
             System.out.println("ASDSADSADASDASDSAD\n");
         }
-
-        System.out.println("new at " + location + " " + connection + " " + hitbox.getColour());
     }
 
     public Entrance(Entrance e) {
@@ -56,22 +54,27 @@ public class Entrance {
         hitbox = new Hitbox(e.hitbox);
     }
 
+    public void setRelativeLocation(Vector2F relativeLocation) {
+        getHitbox().translateInPlace(relativeLocation.getTranslated(this.relativeLocation.getNegative()));
+        this.relativeLocation=relativeLocation;
+    }
+
     public void draw(Graphics g, int scaling) {
         if (type == EntranceType.DOWN || type == EntranceType.UP) {
-            g.fillRect(((int) absoluteLocation.getX() - 2) * scaling, (int) absoluteLocation.getY() * scaling, 5 * scaling, scaling);
+            g.fillRect(((int) relativeLocation.getX() - HORIZONTAL_ENTRANCE_LENGTH/2) * scaling, (int) relativeLocation.getY() * scaling, HORIZONTAL_ENTRANCE_LENGTH * scaling, scaling);
 
             if (type == EntranceType.UP) {
-                g.fillRect((int) absoluteLocation.getX() * scaling, ((int) absoluteLocation.getY() + 1) * scaling, scaling, scaling);
+                g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() + 1) * scaling, scaling, scaling);
             } else {
-                g.fillRect((int) absoluteLocation.getX() * scaling, ((int) absoluteLocation.getY() - 1) * scaling, scaling, scaling);
+                g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() - 1) * scaling, scaling, scaling);
             }
         } else {
-            g.fillRect((int) absoluteLocation.getX() * scaling, ((int) absoluteLocation.getY() - 3) * scaling, scaling, 7 * scaling);
+            g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() - VERTICAL_ENTRANCE_LENGTH/2) * scaling, scaling, VERTICAL_ENTRANCE_LENGTH * scaling);
 
             if (type == EntranceType.LEFT) {
-                g.fillRect(((int) absoluteLocation.getX() - 1) * scaling, (int) absoluteLocation.getY() * scaling, scaling, scaling);
+                g.fillRect(((int) relativeLocation.getX() - 1) * scaling, (int) relativeLocation.getY() * scaling, scaling, scaling);
             } else {
-                g.fillRect(((int) absoluteLocation.getX() + 1) * scaling, (int) absoluteLocation.getY() * scaling, scaling, scaling);
+                g.fillRect(((int) relativeLocation.getX() + 1) * scaling, (int) relativeLocation.getY() * scaling, scaling, scaling);
             }
         }
     }

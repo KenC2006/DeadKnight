@@ -1,9 +1,15 @@
 package Structure;
 
+import Entities.GameObject;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
 import java.util.Stack;
 
 
@@ -14,10 +20,14 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final ArrayList<Entrance> entrances = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
     private Vector2F topLeftPoint = null;
+    private final GameObject selected=new GameObject();
+    private JComboBox<File> dropDown;
+    private File fileToSave;
 
     public Grid() {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+        loadFiles();
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
                 boxSize = Math.min(getHeight(), getWidth()) / 20;
@@ -58,14 +68,17 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         g.fillRect(((int) highlighted.getX() - 2) * boxSize, (int) highlighted.getY() * boxSize, boxSize * 5, boxSize);
 
 
-        g.setColor(Color.RED);
         for (Rectangle wall : walls) {
+            if (selected.getObject() == wall) g.setColor(Color.GREEN);
+            else g.setColor(Color.RED);
             g.fillRect(wall.x * boxSize, wall.y * boxSize, wall.width * boxSize, wall.height * boxSize);
         }
-        g.setColor(Color.BLUE);
         for (Entrance entrance : entrances) {
+            if (selected.getObject() == entrance) g.setColor(Color.GREEN);
+            else g.setColor(Color.BLUE);
             entrance.draw(g, boxSize);
         }
+
         g.setColor(Color.GREEN);
         if (p2 == null && p1 != null) {
             g.fillRect((int) p1.getX() * boxSize, (int) p1.getY() * boxSize, boxSize, boxSize);
@@ -81,19 +94,49 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
     }
 
+    public File getFileToSave() {
+        return fileToSave;
+    }
+
+    public Object returnSelected(){
+        for (Rectangle wall : walls) {
+            if (wall.intersects(new Rectangle((int) p1.getX(), (int) p1.getY(), 1, 1))) {
+                p1 = null;
+                return wall;
+            }
+        }
+        for (Entrance entrance : entrances) {
+            if (entrance.getHitbox().intersects(new Hitbox(p1.getX(), p1.getY() , p1.getX()+1, p1.getY()+1))){
+                selected.setObject(entrance);
+                p1 = null;
+                return entrance;
+            }
+        }
+        return null;
+    }
+
     public void undoLastMove() {
         if (stack.isEmpty()) return;
-        if (stack.getLast() == 1){
+        if (stack.getLast() == 1) {
             getEntrances().removeLast();
         } else {
             getWalls().removeLast();
         }
-
         stack.pop();
         p1 = null;
         repaint();
     }
 
+    public void delete() {
+        if (selected.getObject() instanceof Entrance) entrances.remove(selected.getObject());
+        else walls.remove(selected.getObject());
+        stack.remove(selected.getObject());
+        selected.reset();
+    }
+
+    public GameObject getSelected() {
+        return selected;
+    }
 
     public void addEntrance(int xOffset, int yOffset) {
         if (p1 == null) return;
@@ -105,7 +148,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void addRect() {
         if (p1 == null || p2 == null) {
-            System.out.println("BUG FOUND, ADD RECT CALLED WHEN NO P1 SET");
             return;
         }
 
@@ -121,19 +163,10 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             p2.setY(temp);
         }
 
-        if (topLeftPoint == null) {
-            topLeftPoint = new Vector2F(p1);
-        }
-        if (topLeftPoint.getX() > p1.getX()) {
-            topLeftPoint.setX(p1.getX());
-        }
-        if (topLeftPoint.getY() > p1.getY()) {
-            topLeftPoint.setY(p1.getY());
-        }
+        topLeftPoint = p1.getMin(topLeftPoint);
 
         walls.add(new Rectangle((int) p1.getX(), (int) p1.getY(), (int) p1.getXDistance(p2) + 1, (int) p1.getYDistance(p2) + 1));
         stack.add(2);
-
         p1 = null;
         p2 = null;
         repaint();
@@ -143,6 +176,9 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         getWalls().clear();
         getEntrances().clear();
         getStack().clear();
+        fileToSave = null;
+        selected.reset();
+        topLeftPoint = null;
         p1 = null;
         p2 = null;
         repaint();
@@ -152,11 +188,55 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         return topLeftPoint;
     }
 
+    public JComboBox<File> getDropDown() {
+        return dropDown;
+    }
+
+    public void loadFiles() {
+        File storage = new File("src/Rooms");
+        dropDown = new JComboBox<>(Objects.requireNonNull(storage.listFiles()));
+        dropDown.setFocusable(false);
+        this.add(dropDown);
+        dropDown.setVisible(true);
+        dropDown.setLayout(null);
+        dropDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    File file=(File) Objects.requireNonNull(dropDown.getSelectedItem());
+                    Scanner in = new Scanner(file);
+                    reset();
+                    fileToSave = file;
+                    int wallNum = in.nextInt();
+                    for (int i = 0; i < wallNum; i++) {
+                        int x=in.nextInt();
+                        int y=in.nextInt();
+                        topLeftPoint = topLeftPoint.getMin(new Vector2F(x, y));
+                        walls.add(new Rectangle(x, y, in.nextInt()-x, in.nextInt()-y));
+                        stack.add(2);
+                    }
+                    int entranceNum = in.nextInt();
+                    for (int i = 0; i < entranceNum; i++) {
+                        Vector2F v1 = new Vector2F(in.nextInt(), in.nextInt()), v2 = new Vector2F(in.nextInt(), in.nextInt());
+                        topLeftPoint = topLeftPoint.getMin(v1).getMin(v2);
+                        entrances.add(new Entrance(v1, v2));
+                    }
+
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        revalidate();
+    }
+
+
     @Override
     public void mouseClicked(MouseEvent e) {
         int mouseX = e.getX() / boxSize, mouseY = e.getY() / boxSize;
         if (p1 == null) {
             p1 = new Vector2F(mouseX, mouseY);
+            selected.setObject(returnSelected());
         } else if (p2 == null) {
             p2 = new Vector2F(mouseX, mouseY);
             addRect();
@@ -171,7 +251,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        selected.reset();
     }
 
     @Override
@@ -189,7 +269,11 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
      */
     @Override
     public void mouseDragged(MouseEvent e) {
+        if (selected.getObject() != null) {
+            selected.setLocation(e.getX() / boxSize, e.getY() / boxSize);
 
+            repaint();
+        }
     }
 
     /**
