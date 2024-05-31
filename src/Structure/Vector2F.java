@@ -124,6 +124,10 @@ public class Vector2F {
         return -1;
     }
 
+    public Vector2F getMin(Vector2F v) {
+        if (v == null) return new Vector2F(getX(), getY());
+        return new Vector2F(Math.min(getX(), v.getX()), Math.min(getY(), v.getY()));
+    }
 
     @Override
     public String toString() {
