@@ -22,12 +22,18 @@ public class NodeMap {
         this.rooms = rooms;
         loadGrid();
         loadNodes(new Vector2F(1000, 1002));
+        nodes.add(new Vector2F(0, 2));
         int idx = 0;
-        while (idx < 100) {
+        while (idx < nodes.size()) {
             loadNodes(new Vector2F(nodes.get(idx).getX() + 1000, nodes.get(idx).getY() + 1000));
             idx++;
         }
-        System.out.println(nodes.size());
+        HashSet<Vector2F> set = new HashSet<Vector2F> (nodes);
+        nodes.clear();
+        nodes.addAll(set);
+
+//        System.out.println(nodes);
+//        System.out.println(nodes.size());
     }
 
     private void loadGrid() {
@@ -56,86 +62,94 @@ public class NodeMap {
      * @param start
      */
     public void loadNodes(Vector2F start) {
-        Queue<Pair> q = new LinkedList<Pair> ();
-        Vector2F cur_node, prev_node, ogCur_node, ogPrev_node; // og stores original node coords
+        Queue<Vector2F> q = new LinkedList<Vector2F> ();
+        Vector2F cur_node, ogCur_node, ogStart; // og stores original node coords
         boolean[][] v = new boolean[2000][2000];
-        q.add(new Pair(start, start));
+        q.add(start);
         v[(int)start.getX()][(int)start.getY()] = true;
-        grid[(int)start.getY()][(int)start.getX()] = 'S';
+        ogStart = new Vector2F(start.getX() - 1000, start.getY() - 1000);
+//        grid[(int)start.getY()][(int)start.getX()] = 'S';
 //        System.out.println("start = " + start);
         while(!q.isEmpty()) {
-            cur_node = q.peek().getFirst();
-            prev_node = q.remove().getSecond();
+            cur_node = q.remove();
             ogCur_node = new Vector2F(cur_node.getX() - 1000, cur_node.getY() - 1000);
-            ogPrev_node = new Vector2F(prev_node.getX() - 1000, prev_node.getY() - 1000);
 
-            if (cur_node.getEuclideanDistance(prev_node) > 500  || Math.abs(cur_node.getY() - prev_node.getY()) > 15) {
+            if (cur_node.getEuclideanDistance(start) > 5000 || Math.abs(cur_node.getY() - start.getY()) > 15) {
                 continue;
             }
-            if (Math.abs(cur_node.getYDistance(prev_node)) > 2 && Math.abs(cur_node.getXDistance(prev_node)) > 20) {
+            if (Math.abs(cur_node.getYDistance(start)) > 2 && Math.abs(cur_node.getXDistance(start)) > 15) {
                 continue;
             }
-            if (grid[(int)cur_node.getY()][(int)cur_node.getX()] == 'V') {
+            if (grid[(int)cur_node.getY()][(int)cur_node.getX()] == 'V' &&
+            !(cur_node.getY() == start.getY() && cur_node.getX() == start.getX())) {
                 continue;
             }
 
 //            System.out.println(q.size());
             if (grid[(int)cur_node.getY()][(int)cur_node.getX()] != 'X' &&
-                grid[(int)cur_node.getY()+1][(int)cur_node.getX()] == 'X') {
-                if (doesIntersectRoom(new Line(ogCur_node, ogPrev_node))) {
-                    continue;
-                }
+                grid[(int)cur_node.getY()][(int)cur_node.getX()] != 'V' &&
+                grid[(int)cur_node.getY()+1][(int)cur_node.getX()] == 'X' &&
+                !(cur_node.getX() == start.getX() && cur_node.getY() == start.getY())) {
+
                 if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()-1] != 'X' &&
                     grid[(int)cur_node.getY()][(int)cur_node.getX()-1] != 'X') {
-                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
-                    nodes.add(ogPrev_node);
-                    edges.computeIfAbsent(nodes.getLast(), k -> new ArrayList<>()).add(ogCur_node);
-//                    System.out.println("adding " + ogCur_node + " to " + ogPrev_node);
-                    prev_node = cur_node;
+                    if (doesIntersectRoom(new Line(ogCur_node, ogStart))) {
+                        continue;
+                    }
+//                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
+                    nodes.add(ogCur_node);
+                    edges.computeIfAbsent(ogStart, k -> new ArrayList<>()).add(ogCur_node);
+//                    System.out.println("adding " + ogCur_node + " to " + ogStart);
 
                 }
                 else if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()+1] != 'X' &&
                         grid[(int)cur_node.getY()][(int)cur_node.getX()+1] != 'X') {
-                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
-                    nodes.add(ogPrev_node);
-                    edges.computeIfAbsent(nodes.getLast(), k -> new ArrayList<>()).add(ogCur_node);
-//                    System.out.println("adding " + ogCur_node + " to " + ogPrev_node);
-                    prev_node = cur_node;
+                    if (doesIntersectRoom(new Line(ogCur_node, ogStart))) {
+                        continue;
+                    }
+//                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
+                    nodes.add(ogCur_node);
+                    edges.computeIfAbsent(ogStart, k -> new ArrayList<>()).add(ogCur_node);
+//                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                 }
                 else if (grid[(int)cur_node.getY()][(int)cur_node.getX()-1] == 'X') {
-                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
-                    nodes.add(ogPrev_node);
-                    edges.computeIfAbsent(nodes.getLast(), k -> new ArrayList<>()).add(ogCur_node);
-//                    System.out.println("adding " + ogCur_node + " to " + ogPrev_node);
-                    prev_node = cur_node;
+                    if (doesIntersectRoom(new Line(ogCur_node, ogStart))) {
+                        continue;
+                    }
+//                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
+                    nodes.add(ogCur_node);
+                    edges.computeIfAbsent(ogStart, k -> new ArrayList<>()).add(ogCur_node);
+//                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                 }
                 else if (grid[(int)cur_node.getY()][(int)cur_node.getX()+1] == 'X') {
-                    nodes.add(ogPrev_node);
-                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
-                    edges.computeIfAbsent(nodes.getLast(), k -> new ArrayList<>()).add(ogCur_node);
-//                    System.out.println("adding " + ogCur_node + " to " + ogPrev_node);
-                    prev_node = cur_node;
+                    if (doesIntersectRoom(new Line(ogCur_node, ogStart))) {
+                        continue;
+                    }
+//                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
+                    nodes.add(ogCur_node);
+                    edges.computeIfAbsent(ogStart, k -> new ArrayList<>()).add(ogCur_node);
+//                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                 }
             }
 
             if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()] != 'X' &&
                 !v[(int)cur_node.getY()+1][(int)cur_node.getX()]) {
-                q.add(new Pair(new Vector2F(cur_node.getX(), cur_node.getY() + 1), prev_node));
+                q.add(new Vector2F(cur_node.getX(), cur_node.getY() + 1));
                 v[(int)cur_node.getY()+1][(int)cur_node.getX()] = true;
             }
             if (grid[(int)cur_node.getY()-1][(int)cur_node.getX()] != 'X' &&
                 !v[(int)cur_node.getY()-1][(int)cur_node.getX()]) {
-                q.add(new Pair(new Vector2F(cur_node.getX(), cur_node.getY() - 1), prev_node));
+                q.add(new Vector2F(cur_node.getX(), cur_node.getY() - 1));
                 v[(int)cur_node.getY()-1][(int)cur_node.getX()] = true;
             }
             if (grid[(int)cur_node.getY()][(int)cur_node.getX() + 1] != 'X' &&
                 !v[(int)cur_node.getY()][(int)cur_node.getX() + 1]) {
-                q.add(new Pair(new Vector2F(cur_node.getX() + 1, cur_node.getY()), prev_node));
+                q.add(new Vector2F(cur_node.getX() + 1, cur_node.getY()));
                 v[(int)cur_node.getY()][(int)cur_node.getX() + 1] = true;
             }
             if (grid[(int)cur_node.getY()][(int)cur_node.getX() - 1] != 'X' &&
                 !v[(int)cur_node.getY()][(int)cur_node.getX() - 1]) {
-                q.add(new Pair(new Vector2F(cur_node.getX() - 1, cur_node.getY()), prev_node));
+                q.add(new Vector2F(cur_node.getX() - 1, cur_node.getY()));
                 v[(int)cur_node.getY()][(int)cur_node.getX() - 1] = true;
             }
         }
@@ -154,8 +168,10 @@ public class NodeMap {
     public boolean doesIntersectRoom(Line line) {
         for (Room room : rooms) {
             for (Hitbox wall : room.getHitbox().getHitboxes()) {
-                if (line.doesIntersect(wall)) {
-                    return true;
+                if (wall.quickIntersect(new Hitbox(line.getStart(), line.getEnd()))) {
+                    if (line.doesIntersect(wall)) {
+                        return true;
+                    }
                 }
             }
         }
