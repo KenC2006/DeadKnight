@@ -14,6 +14,7 @@ import java.util.Stack;
 
 
 public class Grid extends JPanel implements MouseListener, MouseMotionListener {
+    private final int TILES_PER_HEIGHT = 100;
     private Vector2F p1 = null, p2 = null, highlighted = new Vector2F();
     private int boxSize;
     private final ArrayList<Rectangle> walls = new ArrayList<>();
@@ -30,7 +31,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         loadFiles();
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
-                boxSize = Math.min(getHeight(), getWidth()) / 20;
+                boxSize = Math.min(getHeight(), getWidth()) / TILES_PER_HEIGHT;
                 repaint();
             }
         });
@@ -193,7 +194,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void loadFiles() {
-        File storage = new File("src/Rooms");
+        File storage = new File("src/Rooms/Set1");
         dropDown = new JComboBox<>(Objects.requireNonNull(storage.listFiles()));
         dropDown.setFocusable(false);
         this.add(dropDown);
@@ -211,14 +212,14 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                     for (int i = 0; i < wallNum; i++) {
                         int x=in.nextInt();
                         int y=in.nextInt();
-                        topLeftPoint = topLeftPoint.getMin(new Vector2F(x, y));
+                        topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
                         walls.add(new Rectangle(x, y, in.nextInt()-x, in.nextInt()-y));
                         stack.add(2);
                     }
                     int entranceNum = in.nextInt();
                     for (int i = 0; i < entranceNum; i++) {
                         Vector2F v1 = new Vector2F(in.nextInt(), in.nextInt()), v2 = new Vector2F(in.nextInt(), in.nextInt());
-                        topLeftPoint = topLeftPoint.getMin(v1).getMin(v2);
+                        topLeftPoint = v1.getMin(v2).getMin(topLeftPoint);
                         entrances.add(new Entrance(v1, v2));
                     }
 

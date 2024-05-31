@@ -55,8 +55,10 @@ public class Entrance {
     }
 
     public void setRelativeLocation(Vector2F relativeLocation) {
-        getHitbox().translateInPlace(relativeLocation.getTranslated(this.relativeLocation.getNegative()));
-        this.relativeLocation=relativeLocation;
+        Vector2F delta = relativeLocation.getTranslated(this.relativeLocation.getNegative());
+        getHitbox().translateInPlace(delta);
+        this.relativeLocation.translateInPlace(delta);
+        this.connectionPoint.translateInPlace(delta);
     }
 
     public void draw(Graphics g, int scaling) {
