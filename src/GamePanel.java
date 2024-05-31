@@ -11,7 +11,8 @@ import java.io.IOException;
 public class GamePanel extends JPanel{
     private ActionManager manager = new ActionManager();
     private EntityManager entityManager = new EntityManager();
-    private Camera camera = new Camera(10);
+    private Camera camera = new Camera(20);
+    private Camera mapCamera;
     private boolean isRunning = true;
 
     public GamePanel() throws IOException {
@@ -20,6 +21,9 @@ public class GamePanel extends JPanel{
         this.setVisible(true);
         manager.addPanel(this);
         new RoomEditor();
+
+        mapCamera = new Camera(3, new Vector2F(0, 0), new Vector2F(100, 100));
+        mapCamera.setMapCamera(true);
     }
 
     public void paintComponent(Graphics g) {
@@ -28,42 +32,51 @@ public class GamePanel extends JPanel{
     }
 
     public void draw(Graphics g) {
-        Graphics2D g2D = (Graphics2D) g;
         camera.setGraphics(g);
         entityManager.draw(camera);
         camera.paint();
+
+        mapCamera.setGraphics(g);
+        mapCamera.paint();
+        entityManager.draw(mapCamera);
     }
 
     public void update() {
         camera.updateKeyPresses(manager);
+        mapCamera.updateKeyPresses(manager);
         entityManager.updateKeyPresses(manager);
         entityManager.update();
         entityManager.followPlayer(camera);
+        entityManager.followPlayer(mapCamera);
     }
 
     public void start() {
         Thread gameLoop = new Thread(() -> { // TEMPORARY FOR NOW https://stackoverflow.com/questions/65907092/where-should-i-put-the-game-loop-in-the-swing-app
             // how many frames should be drawn in a second
-            final int FRAMES_PER_SECOND = 60;
+            final int FRAMES_PER_SECOND = 60; // MAX IS AROUND 3000 WITH NO ENEMIES
             // calculate how many nano seconds each frame should take for our target frames per second.
             final long TIME_BETWEEN_UPDATES = 1000000000 / FRAMES_PER_SECOND;
             // track number of frames
-            int frameCount;
+            int frameCount = 0;
             // if you're worried about visual hitches more than perfect timing, set this to 1. else 5 should be okay
             final int MAX_UPDATES_BETWEEN_RENDER = 1;
 
             // we will need the last update time.
             long lastUpdateTime = System.nanoTime();
             // store the time we started this will be used for updating map and charcter animations
-            long currTime = System.currentTimeMillis();
+            long currTime = System.nanoTime();
 
 
             while (isRunning) {
                 long now = System.nanoTime();
-                long elapsedTime = System.currentTimeMillis() - currTime;
-                currTime += elapsedTime;
-
                 int updateCount = 0;
+                long dt = System.nanoTime() - currTime;
+                if (dt > 100000000L) {
+                    System.out.println("FPS: " + (frameCount * 1000000000L / dt));
+                    currTime = System.nanoTime();
+                    frameCount = 0;
+                }
+
                 // do as many game updates as we need to, potentially playing catchup.
                 while (now - lastUpdateTime >= TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BETWEEN_RENDER) {
                     update(); //Update the entity movements and collision checks etc (all has to do with updating the games status i.e  call move() on Enitites)
@@ -77,6 +90,7 @@ public class GamePanel extends JPanel{
                     lastUpdateTime = now - TIME_BETWEEN_UPDATES;
                 }
 
+                frameCount++;
                 repaint(); // draw call for rendering sprites etc
 
                 long lastRenderTime = now;

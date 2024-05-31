@@ -1,6 +1,5 @@
 package Entities;
 
-import Items.Sword;
 import Structure.Hitbox;
 import Structure.Vector2F;
 

@@ -119,7 +119,7 @@ public class Hitbox {
     }
 
     public boolean intersects(Hitbox hitbox) {
-        if (!enabled) return false;
+        if (!enabled || !hitbox.enabled) return false;
         return shape.intersects(hitbox.shape);
     }
 
@@ -129,7 +129,7 @@ public class Hitbox {
     }
 
     public boolean quickIntersect(Hitbox hitbox) {
-        if (!enabled) return false;
+        if (!enabled || !hitbox.enabled) return false;
         return !(hitbox.getLeft() > getRight() || hitbox.getRight() < getLeft() || hitbox.getTop() > getBottom() || hitbox.getBottom() < getTop());
     }
 
@@ -145,4 +145,9 @@ public class Hitbox {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    public boolean getEnabled() {
+        return enabled;
+    }
 }
+

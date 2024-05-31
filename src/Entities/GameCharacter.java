@@ -62,7 +62,7 @@ public class GameCharacter {
     }
 
     public boolean collidesWithPlayer(Player p) {
-        if (!lastMovement.quickIntersect(p.getLastMovement())) return false;
+        if (!p.getHitbox().getEnabled() || !lastMovement.quickIntersect(p.getLastMovement())) return false;
         return lastMovement.intersects(p.getLastMovement());
 
     }

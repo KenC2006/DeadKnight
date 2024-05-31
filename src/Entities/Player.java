@@ -1,6 +1,7 @@
 package Entities;
 
 import Camera.Camera;
+import Items.BasicSword;
 import Managers.ActionManager;
 import Structure.Room;
 import Structure.Vector2F;
@@ -13,20 +14,24 @@ import java.util.ArrayList;
  */
 public class Player extends GameCharacter {
     private boolean immune;
-    private boolean upPressed, leftRightPressed, jumping;
-    private int framesSinceTouchedGround = 0, framesSinceStartedJumping;
+    private boolean upPressed, leftRightPressed, jumping, lastFacingLeft;
+    private int framesSinceTouchedGround = 0, framesSinceStartedJumping, framesSinceDash;
     private int framesSinceFiredProjectile = 0;
     private int framesPassed, lastUpPressed;
+    private Inventory playerInventory;
     private ArrayList<Projectile> projectiles = new ArrayList<>();
 
     public Player(double x, double y){
         super(x, y, 2, 5,100);
+        playerInventory = new Inventory();
+        playerInventory.addPrimary(new BasicSword(2));
     }
 
     public void updateKeyPresses(ActionManager manager) {
         double dx = 0;
         framesPassed++;
         framesSinceFiredProjectile++;
+        if (framesSinceDash > 0) framesSinceDash--;
         if (isGrounded()) framesSinceTouchedGround = framesPassed;
         if (isHittingCeiling()) framesSinceStartedJumping -= 10;
 
@@ -67,10 +72,24 @@ public class Player extends GameCharacter {
 
         if (manager.getPressed(KeyEvent.VK_D)) {
             dx += 0.7;
+            lastFacingLeft = false;
         }
 
         if (manager.getPressed(KeyEvent.VK_A)) {
             dx -= 0.7;
+            lastFacingLeft = true;
+        }
+
+        if (framesSinceDash == 0 && manager.getPressed(KeyEvent.VK_SHIFT)) {
+            framesSinceDash = 75;
+        }
+
+        if (framesSinceDash > 60) {
+            if (lastFacingLeft) dx = -1.4;
+            else dx = 1.4;
+            getHitbox().setEnabled(false);
+        } else {
+            getHitbox().setEnabled(true);
         }
 
         if (framesSinceFiredProjectile > 10 && (manager.getPressed(KeyEvent.VK_RIGHT) || manager.getPressed(KeyEvent.VK_LEFT) || manager.getPressed(KeyEvent.VK_UP) || manager.getPressed(KeyEvent.VK_DOWN))) {
