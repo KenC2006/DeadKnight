@@ -23,8 +23,9 @@ public class GamePanel extends JPanel{
         manager.addPanel(this);
         new RoomEditor();
 
-        mapCamera = new Camera(3, new Vector2F(0, 0), new Vector2F(100, 100));
+        mapCamera = new Camera(3, new Vector2F(0, 0), 0.2);
         mapCamera.setMapCamera(true);
+
     }
 
     public void paintComponent(Graphics g) {
@@ -34,12 +35,14 @@ public class GamePanel extends JPanel{
 
     public void draw(Graphics g) {
         camera.setGraphics(g);
+        camera.paintBackground();
         entityManager.draw(camera);
-        camera.paint();
+        camera.paintForeground();
 
         mapCamera.setGraphics(g);
-        mapCamera.paint();
+        mapCamera.paintBackground();
         entityManager.draw(mapCamera);
+        mapCamera.paintForeground();
     }
 
     public void update() {

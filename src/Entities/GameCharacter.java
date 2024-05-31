@@ -37,11 +37,7 @@ public class GameCharacter {
     }
 
     public void paint(Camera c) {
-        c.drawHitbox(hitbox);
-    }
-
-    public String getType() {
-        return "";
+        c.drawGameCharacter(this);
     }
 
     public GameCharacter getSwing() {
@@ -206,7 +202,7 @@ public class GameCharacter {
     }
 
     public void setY(double y) {
-        position.setX(y);
+        position.setY(y);
         hitbox.setY(y);
     }
 

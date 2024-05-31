@@ -1,6 +1,7 @@
 package Camera;
 
 import Entities.GameCharacter;
+import Entities.Player;
 import Structure.Hitbox;
 import Structure.Line;
 import Managers.ActionManager;
@@ -14,20 +15,20 @@ import java.awt.event.KeyEvent;
  */
 public class Camera {
     private Vector2F offset = new Vector2F(-1, -1), targetOffset = new Vector2F(offset);
-    private Vector2F absoluteOffset = new Vector2F(), topLeftLocation = new Vector2F(), renderSize;
+    private Vector2F absoluteOffset = new Vector2F(), topLeftLocation = new Vector2F();
     private Graphics2D graphics;
     private double scaling;
-    private int renderWidth, renderHeight;
+    private double renderWidth, renderHeight, renderSize;
     private boolean renderWallsOnly;
 
-    public Camera(double scalingFactor, Vector2F offset, Vector2F size) {
+    public Camera(double scalingFactor, Vector2F offset, double size) {
         scaling = scalingFactor;
         renderSize = size;
         this.topLeftLocation.copy(offset);
     }
 
     public Camera(double scalingFactor) {
-        this(scalingFactor, new Vector2F(), new Vector2F(-1, -1));
+        this(scalingFactor, new Vector2F(), 0);
     }
 
     public void setGraphics(Graphics g) {
@@ -35,8 +36,13 @@ public class Camera {
         graphics.setStroke(new BasicStroke(1f));
         Rectangle screenSize = graphics.getClipBounds();
 
-        renderWidth = renderSize.getX() == -1 ? screenSize.width : (int) renderSize.getX();
-        renderHeight = renderSize.getY() == -1 ? screenSize.height : (int) renderSize.getY();
+        if (renderSize == 0) {
+            renderWidth = screenSize.width;
+            renderHeight = screenSize.height;
+        } else {
+            renderWidth = Math.min(screenSize.width, screenSize.height) * renderSize;
+            renderHeight = Math.min(screenSize.width, screenSize.height) * renderSize;
+        }
         if (renderWallsOnly) {
             absoluteOffset = topLeftLocation.getTranslated(new Vector2F(screenSize.width - renderWidth, renderHeight));
 
@@ -54,26 +60,38 @@ public class Camera {
 
     public void drawGameCharacter(GameCharacter e) {
         if (renderWallsOnly) {
-            graphics.setColor(Color.RED);
-            double x = scaleAndShiftX(e.getCenterX());
-            double y = scaleAndShiftY(e.getCenterY());
-            drawCoordinate(new Vector2F(x, y));
+            if (e instanceof Player) {
+                drawCoordinate(e.getCenterVector(), Color.BLUE);
+            } else {
+                drawCoordinate(e.getCenterVector(), Color.RED);
+
+            }
+
             return;
         }
         drawHitbox(e.getHitbox());
     }
 
-    public void drawCoordinate(Vector2F c) {
-        if (renderWallsOnly) return;
-
-        graphics.setColor(Color.BLACK);
+    public void drawCoordinate(Vector2F c, Color color) {
+        graphics.setColor(color);
         graphics.setStroke(new BasicStroke(1f));
         double x1 = scaleAndShiftX(c.getX());
         double y1 = scaleAndShiftY(c.getY());
         if (x1 - absoluteOffset.getX() >  renderWidth || y1 - absoluteOffset.getY() > renderHeight) return;
         if (x1 - absoluteOffset.getX() < -renderWidth || y1 - absoluteOffset.getY() < -renderHeight) return;
-        graphics.drawOval((int) x1, (int) y1, (int) scaling, (int) scaling);
 
+        if (renderWallsOnly) {
+            if (color != Color.RED && color != Color.BLUE) return;
+            graphics.fillOval((int) x1, (int) y1, (int) scaling * 2, (int) scaling * 2);
+        } else {
+            graphics.fillOval((int) x1, (int) y1, (int) scaling, (int) scaling);
+
+        }
+
+    }
+
+    public void drawCoordinate(Vector2F c) {
+        drawCoordinate(c, Color.BLACK);
     }
 
     private void drawLine(Vector2F p1, Vector2F p2, Color c) {
@@ -135,28 +153,23 @@ public class Camera {
 //        System.out.printf("%f %f\n", offset.getX(), offset.getY());
     }
 
-    public void paint() {
-        // DRAW CAMERA CROSSHAIR
+    public void paintBackground() {
         graphics.setColor(Color.BLACK);
-        graphics.setStroke(new BasicStroke(1f));
         if (renderWallsOnly) {
-            graphics.fillRect((int) absoluteOffset.getX() - renderWidth, (int) absoluteOffset.getY() - renderHeight, renderWidth * 2, renderHeight * 2);
+            graphics.fillRect((int) (scaleAndShiftX(offset.getX()) - renderWidth), (int) (scaleAndShiftY(offset.getY()) - renderHeight), (int) renderWidth * 2, (int) renderHeight * 2);
             double x1 = scaleAndShiftX(offset.getX());
             double y1 = scaleAndShiftY(offset.getY());
-            graphics.setColor(Color.BLUE);
-            graphics.fillRect((int) (x1 - scaling), (int) (y1 - scaling), (int) scaling * 2, (int) scaling * 2);
+            graphics.drawOval((int) x1, (int) y1, (int) scaling, (int) scaling);
 
         }
-//        graphics.setStroke(new BasicStroke(2f));
-//        double x1 = scaleAndShiftX(offset.getX() - 1);
-//        double y1 = scaleAndShiftY(offset.getY() - 1);
-//        double x2 = scaleAndShiftX(offset.getX());
-//        double y2 = scaleAndShiftY(offset.getY());
-//        double x3 = scaleAndShiftX(offset.getX() + 1);
-//        double y3 = scaleAndShiftY(offset.getY() + 1);
-//        graphics.drawLine((int) x1, (int) y2, (int) x3, (int) y2);
-//        graphics.drawLine((int) x2, (int) y1, (int) x2, (int) y3);
-        graphics.setStroke(new BasicStroke(1f));
+    }
+
+    public void paintForeground() {
+        if (renderWallsOnly) {
+            graphics.setStroke(new BasicStroke(10f));
+            graphics.setColor(Color.YELLOW);
+            graphics.drawRect((int) (scaleAndShiftX(offset.getX()) - renderWidth), (int) (scaleAndShiftY(offset.getY()) - renderHeight), (int) renderWidth * 2, (int) renderHeight * 2);
+        }
     }
 
     public void changeScaling(double change) {
