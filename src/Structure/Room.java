@@ -1,6 +1,7 @@
 package Structure;
 
 import Camera.Camera;
+import Entities.Enemy;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +15,7 @@ public class Room {
     private HitboxGroup entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
     private NodeMap nodeMap;
+    private ArrayList<Enemy> enemies;
 
     public Room(int x, int y, int width, int height) {
 //        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
@@ -23,6 +25,7 @@ public class Room {
         walls.addHitbox(new Hitbox(x + width / 2.0, y + height * 3.0 / 4.0, x + width / 2.0 + 1, y + height));
         walls.addHitbox(new Hitbox(x, y + height / 2.0, x + width * 3.0 / 4.0, y + height / 2.0 + 1));
         nodeMap = new NodeMap(this);
+        enemies = new ArrayList<Enemy> ();
     }
 
     public Room(Room copy) {
@@ -123,6 +126,8 @@ public class Room {
     public Vector2F getCenterLocation() {
         return center;
     }
+
+    public NodeMap getNodeMap() {return nodeMap; }
 
     public boolean quickIntersect(Room other) {
         return walls.quickIntersect(other.walls);

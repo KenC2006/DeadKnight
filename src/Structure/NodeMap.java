@@ -16,14 +16,15 @@ public class NodeMap {
         nodes = new ArrayList<Vector2F> ();
         edges = new HashMap<Vector2F, ArrayList<Vector2F>> (); //add edge connecting
 
-        grid = new char[2000][2000];
+        grid = new char[500][500];
 
         loadGrid(room);
-        loadNodes(new Vector2F(1000, 1002), room);
-        nodes.add(new Vector2F(0, 0));
+        loadNodes(new Vector2F(252, 252), room);
+//        loadNodes(new Vector2F(room.getCenterRelativeToRoom().getX() + 250, room.getCenterRelativeToRoom().getY() + 250), room);
+        nodes.add(new Vector2F(2, 2));
         int idx = 0;
         while (idx < nodes.size()) {
-            loadNodes(new Vector2F(nodes.get(idx).getX() + 1000, nodes.get(idx).getY() + 1000), room);
+            loadNodes(new Vector2F(nodes.get(idx).getX() + 250, nodes.get(idx).getY() + 250), room);
             idx++;
         }
         HashSet<Vector2F> set = new HashSet<Vector2F> (nodes);
@@ -39,19 +40,20 @@ public class NodeMap {
             for (int i = (int)hitbox.getTop(); i <= (int)hitbox.getBottom(); i++) {
                 for (int j = (int)hitbox.getLeft(); j <= hitbox.getRight(); j++) {
 //                        System.out.printf("%d %d\n", i, j);
-                    grid[i+1000][j+1000] = 'X'; // since array index must be > 0
+                    grid[i+250][j+250] = 'X'; // since array index must be > 0
                 }
             }
         }
 
-//        for (Entrance e : room.getEntrances()) {
-//            for (int i = (int)e.getHitbox().getTop(); i <= (int)e.getHitbox().getBottom(); i++) {
-//                for (int j = (int)e.getHitbox().getLeft(); j <= e.getHitbox().getRight(); j++) {
-////                        System.out.printf("%d %d\n", i, j);
-//                    grid[i+1000][j+1000] = 'X'; // since array index must be > 0
-//                }
-//            }
-//        }
+        for (Entrance e : room.getEntrances()) {
+            for (int i = (int)e.getHitbox().getTop(); i <= (int)e.getHitbox().getBottom(); i++) {
+                for (int j = (int)e.getHitbox().getLeft(); j <= e.getHitbox().getRight(); j++) {
+//                        System.out.printf("%d %d\n", i, j);
+                    grid[i+250][j+250] = 'X'; // since array index must be > 0
+                }
+            }
+        }
+        grid[(int)room.getCenterRelativeToRoom().getY() + 250][(int)room.getCenterRelativeToRoom().getX() + 250] = 'S';
 
 //        for(int i = 900; i < 1100; i++) {
 //            for (int j = 900; j < 1100; j++) {
@@ -59,6 +61,7 @@ public class NodeMap {
 //            }
 //            System.out.println();
 //        }
+//        System.out.println(room.getCenterRelativeToRoom());
     }
 
     /**
@@ -72,17 +75,17 @@ public class NodeMap {
         boolean[][] v = new boolean[2000][2000];
         q.add(start);
         v[(int)start.getX()][(int)start.getY()] = true;
-        ogStart = new Vector2F(start.getX() - 1000, start.getY() - 1000);
+        ogStart = new Vector2F(start.getX() - 250, start.getY() - 250);
 //        grid[(int)start.getY()][(int)start.getX()] = 'S';
 //        System.out.println("start = " + start);
         while(!q.isEmpty()) {
             cur_node = q.remove();
-            ogCur_node = new Vector2F(cur_node.getX() - 1000, cur_node.getY() - 1000);
+            ogCur_node = new Vector2F(cur_node.getX() - 250, cur_node.getY() - 250);
 
             if (cur_node.getEuclideanDistance(start) > 5000 || Math.abs(cur_node.getY() - start.getY()) > 15) {
                 continue;
             }
-            if (Math.abs(cur_node.getYDistance(start)) > 2 && Math.abs(cur_node.getXDistance(start)) > 15) {
+            if (Math.abs(cur_node.getYDistance(start)) > 0.1 && Math.abs(cur_node.getXDistance(start)) > 20) {
                 continue;
             }
             if (grid[(int)cur_node.getY()][(int)cur_node.getX()] == 'V' &&
@@ -115,6 +118,7 @@ public class NodeMap {
 //                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
                     nodes.add(ogCur_node);
                     edges.computeIfAbsent(ogStart, k -> new ArrayList<>()).add(ogCur_node);
+                    edges.computeIfAbsent(ogCur_node, k -> new ArrayList<>()).add(ogStart);
 //                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                 }
                 else if (grid[(int)cur_node.getY()][(int)cur_node.getX()-1] == 'X') {
@@ -124,6 +128,7 @@ public class NodeMap {
 //                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
                     nodes.add(ogCur_node);
                     edges.computeIfAbsent(ogStart, k -> new ArrayList<>()).add(ogCur_node);
+                    edges.computeIfAbsent(ogCur_node, k -> new ArrayList<>()).add(ogStart);
 //                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                 }
                 else if (grid[(int)cur_node.getY()][(int)cur_node.getX()+1] == 'X') {
@@ -133,6 +138,7 @@ public class NodeMap {
 //                    grid[(int)cur_node.getY()][(int)cur_node.getX()] = 'V';
                     nodes.add(ogCur_node);
                     edges.computeIfAbsent(ogStart, k -> new ArrayList<>()).add(ogCur_node);
+                    edges.computeIfAbsent(ogCur_node, k -> new ArrayList<>()).add(ogStart);
 //                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                 }
             }
@@ -195,6 +201,14 @@ public class NodeMap {
             }
             nodes.set(i, newNode);
         }
+    }
+
+    public Map<Vector2F, ArrayList<Vector2F>> getEdges() {
+        return edges;
+    }
+
+    public ArrayList<Vector2F> getNodes() {
+        return nodes;
     }
 
     public void drawNodes(Camera c) {

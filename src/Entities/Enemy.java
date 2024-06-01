@@ -1,10 +1,12 @@
 package Entities;
 
 import Camera.Camera;
+import Structure.NodeMap;
+import Structure.Pair;
 import Structure.Room;
 import Structure.Vector2F;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Enemy extends GameCharacter {
 
@@ -15,6 +17,7 @@ public class Enemy extends GameCharacter {
     private int state, prevState;
     private int id;
     private double sightRadius;
+    private Vector2F playerPos;
 
     private static int enemyCount;
 
@@ -56,18 +59,35 @@ public class Enemy extends GameCharacter {
         }
     }
 
-    private void followPlayer(Player player) {
-        if (player.getX() - getX() < 0) {
-            setVX(-0.1);
-        }
-        else {
-            setVX(0.1);
+    public void followPlayer(Room room) {
+
+    }
+
+    private void generatePath(Vector2F start, NodeMap graph) {
+        PriorityQueue<Pair> q = new PriorityQueue<Pair> ();
+        Queue<Vector2F> path = new LinkedList<Vector2F>();
+        Map<Vector2F, Boolean> v = new HashMap<Vector2F, Boolean> ();
+
+        Vector2F cur_node;
+        double cur_dist;
+
+        q.add(new Pair(0.0, start));
+        while (!q.isEmpty()) {
+            cur_node = q.peek().getSecondVec();
+            cur_dist = q.remove().getFirstDouble();
+
+            for (Vector2F node : graph.getEdges().get(cur_node)) {
+                if (v.get(node) != null) {
+                    v.put(node, true);
+                    q.add(new Pair(cur_node.getEuclideanDistance(node), node));
+                }
+            }
         }
     }
 
     public void updateEnemy(Player player) {
         if (getSquareDistToPlayer(player) < sightRadius) {
-            followPlayer(player);
+            playerPos = new Vector2F(player.getX(), player.getY());
         }
         else {
             startWander();

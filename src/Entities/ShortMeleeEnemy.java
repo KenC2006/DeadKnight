@@ -49,7 +49,8 @@ public class ShortMeleeEnemy extends Enemy {
 
     public void updateEnemy(Player player) {
         super.updateEnemy(player);
-        if (getSquareDistToPlayer(player) < 100000) {
+        if (getSquareDistToPlayer(player) < 1000) {
+            swing.markToDelete(false);
             //swing at the player
             if (player.getY() + 1 < getY()) {
                 swing.setY(getY() - swing.getHeight());
@@ -64,11 +65,17 @@ public class ShortMeleeEnemy extends Enemy {
                 swing.setX(getX() - swing.getWidth());
             }
         }
+        else {
+            swing.markToDelete(true);
+        }
     }
 
     @Override
     public void paint(Camera c) {
         super.paint(c);
-        swing.paint(c);
+//        System.out.println(swing.getToDelete());
+        if (!swing.getToDelete()) {
+            swing.paint(c);
+        }
     }
 }

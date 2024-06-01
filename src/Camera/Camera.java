@@ -94,7 +94,7 @@ public class Camera {
         drawCoordinate(c, Color.BLACK);
     }
 
-    private void drawLine(Vector2F p1, Vector2F p2, Color c) {
+    public void drawLine(Vector2F p1, Vector2F p2, Color c) {
         graphics.setColor(c);
         graphics.setStroke(new BasicStroke(2f * (float) (Math.max(1.0, scaling / 7.0))));
         double x1 = scaleAndShiftX(p1.getX());

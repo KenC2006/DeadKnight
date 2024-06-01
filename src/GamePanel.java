@@ -76,7 +76,7 @@ public class GamePanel extends JPanel{
                 int updateCount = 0;
                 long dt = System.nanoTime() - currTime;
                 if (dt > 100000000L) {
-                    System.out.println("FPS: " + (frameCount * 1000000000L / dt));
+//                    System.out.println("FPS: " + (frameCount * 1000000000L / dt));
                     currTime = System.nanoTime();
                     frameCount = 0;
                 }

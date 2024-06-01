@@ -41,7 +41,7 @@ public class GameCharacter {
         return null;
     }
 
-    public void updateValues(NodeMap nodeMap) {
+    public void updateValues() {
         updateVelocity();
         colliding = false;
     }
@@ -282,7 +282,7 @@ public class GameCharacter {
     }
 
     public void markToDelete(boolean delete) {
-        toDelete = true;
+        toDelete = delete;
     }
 
     public boolean getToDelete() {
