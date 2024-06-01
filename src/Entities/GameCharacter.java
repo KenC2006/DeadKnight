@@ -1,13 +1,13 @@
 package Entities;
 
-import Camera.Camera;
+import Universal.Camera;
 import Structure.*;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 public class GameCharacter {
-    private Vector2F position, velocity;
+    private Vector2F position, velocity, lastVelocity;
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
     private int health;
@@ -71,6 +71,7 @@ public class GameCharacter {
 
     public void resolveRoomCollisions(ArrayList<Room> roomList) { // TODO add the binary search
         lastMovement = new HitboxGroup();
+        lastVelocity = new Vector2F();
         Hitbox initialTest = createMovementBox(velocity);
         boolean collides = false;
         for (Room r: roomList) {
@@ -87,6 +88,7 @@ public class GameCharacter {
         }
         updatePosition(newVelocity);
         lastMovement.addHitbox(createMovementBox(newVelocity));
+        lastVelocity = lastVelocity.getTranslated(newVelocity);
 
         double remainingX = velocity.getX() - newVelocity.getX();
         double remainingY = velocity.getY() - newVelocity.getY();
@@ -107,6 +109,7 @@ public class GameCharacter {
 
         newVelocity = binarySearchVelocity(new Vector2F(remainingX, remainingY), roomList);
         lastMovement.addHitbox(createMovementBox(newVelocity));
+        lastVelocity = lastVelocity.getTranslated(newVelocity);
         updatePosition(newVelocity);
 
         movementCheck(roomList);
@@ -307,4 +310,8 @@ public class GameCharacter {
 
     public Vector2F getPos() { return new Vector2F(getX(), getY()); }
     public Vector2F getBottomPos() { return new Vector2F(getX() + getWidth()/2, getY() + getHeight() - 1); }
+
+    public Vector2F getLastVelocity() {
+        return lastVelocity;
+    }
 }

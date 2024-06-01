@@ -1,9 +1,6 @@
 package Entities;
 
-import Camera.Camera;
-import Structure.Room;
-
-import java.util.ArrayList;
+import Universal.Camera;
 
 public class EnemyManager {
 

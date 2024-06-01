@@ -1,6 +1,6 @@
 package Entities;
 
-import Camera.Camera;
+import Universal.Camera;
 import Structure.NodeMap;
 import Structure.Edge;
 import Structure.Room;

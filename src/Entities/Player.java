@@ -1,6 +1,8 @@
 package Entities;
 
-import Camera.Camera;
+import Items.ActivationType;
+import Items.WeaponType;
+import Universal.Camera;
 import Items.BasicSword;
 import Managers.ActionManager;
 import Structure.Room;
@@ -14,7 +16,8 @@ import java.util.ArrayList;
  */
 public class Player extends GameCharacter {
     private boolean immune;
-    private boolean upPressed, leftRightPressed, jumping, lastFacingLeft;
+    private boolean upPressed, leftRightPressed, jumping;
+    private Direction direction;
     private int framesSinceTouchedGround = 0, framesSinceStartedJumping, framesSinceDash;
     private int framesSinceFiredProjectile = 0;
     private int framesPassed, lastUpPressed;
@@ -24,7 +27,7 @@ public class Player extends GameCharacter {
     public Player(double x, double y){
         super(x, y, 2, 5,100);
         playerInventory = new Inventory();
-        playerInventory.addPrimary(new BasicSword(2));
+        playerInventory.addPrimary(new BasicSword(2, new Vector2F(x, y)));
     }
 
     public void updateKeyPresses(ActionManager manager) {
@@ -36,6 +39,7 @@ public class Player extends GameCharacter {
         if (isHittingCeiling()) framesSinceStartedJumping -= 10;
 
         if (manager.getPressed(KeyEvent.VK_W)) {
+            direction = Direction.UP;
             if (!upPressed) {
                 upPressed = true;
                 if (framesPassed - framesSinceTouchedGround < 8) {
@@ -72,45 +76,59 @@ public class Player extends GameCharacter {
 
         if (manager.getPressed(KeyEvent.VK_D)) {
             dx += 0.7;
-            lastFacingLeft = false;
+            direction = Direction.RIGHT;
         }
 
         if (manager.getPressed(KeyEvent.VK_A)) {
             dx -= 0.7;
-            lastFacingLeft = true;
+            direction = Direction.LEFT;
         }
+
+        if (manager.getPressed(KeyEvent.VK_RIGHT)) {
+            playerInventory.usePrimary(ActivationType.RIGHT, manager);
+        }
+
+        if (manager.getPressed(KeyEvent.VK_LEFT)) {
+            playerInventory.usePrimary(ActivationType.LEFT, manager);
+        }
+
 
         if (framesSinceDash == 0 && manager.getPressed(KeyEvent.VK_SHIFT)) {
             framesSinceDash = 75;
         }
 
         if (framesSinceDash > 60) {
-            if (lastFacingLeft) dx = -1.4;
+            if (direction == Direction.LEFT) dx = -1.4;
             else dx = 1.4;
             getHitbox().setEnabled(false);
         } else {
             getHitbox().setEnabled(true);
         }
 
-        if (framesSinceFiredProjectile > 10 && (manager.getPressed(KeyEvent.VK_RIGHT) || manager.getPressed(KeyEvent.VK_LEFT) || manager.getPressed(KeyEvent.VK_UP) || manager.getPressed(KeyEvent.VK_DOWN))) {
-            Projectile bullet = new Projectile(getCenterVector().getTranslated(new Vector2F(-0.5, -0.5)), new Vector2F(1, 1));
-            if (manager.getPressed(KeyEvent.VK_RIGHT)) {
-                bullet.setVX(1);
-                framesSinceFiredProjectile = 0;
-            } else if (manager.getPressed(KeyEvent.VK_LEFT)) {
-                bullet.setVX(-1);
-                framesSinceFiredProjectile = 0;
-            } else if (manager.getPressed(KeyEvent.VK_DOWN)) {
-                bullet.setVY(1);
-                framesSinceFiredProjectile = 0;
-            } else if (manager.getPressed(KeyEvent.VK_UP)) {
-                bullet.setVY(-1);
-                framesSinceFiredProjectile = 0;
-            }
-            projectiles.add(bullet);
-        }
+//        if (framesSinceFiredProjectile > 10 && (manager.getPressed(KeyEvent.VK_RIGHT) || manager.getPressed(KeyEvent.VK_LEFT) || manager.getPressed(KeyEvent.VK_UP) || manager.getPressed(KeyEvent.VK_DOWN))) {
+//            Projectile bullet = new Projectile(getCenterVector().getTranslated(new Vector2F(-0.5, -0.5)), new Vector2F(1, 1));
+//            if (manager.getPressed(KeyEvent.VK_RIGHT)) {
+//                bullet.setVX(1);
+//                framesSinceFiredProjectile = 0;
+//            } else if (manager.getPressed(KeyEvent.VK_LEFT)) {
+//                bullet.setVX(-1);
+//                framesSinceFiredProjectile = 0;
+//            } else if (manager.getPressed(KeyEvent.VK_DOWN)) {
+//                bullet.setVY(1);
+//                framesSinceFiredProjectile = 0;
+//            } else if (manager.getPressed(KeyEvent.VK_UP)) {
+//                bullet.setVY(-1);
+//                framesSinceFiredProjectile = 0;
+//            }
+//            projectiles.add(bullet);
+//        }
 
         setVX(dx);
+    }
+
+    public WeaponType getPrimaryType() {
+        if (playerInventory.getCurrentPrimary() == null) return null;
+        return playerInventory.getCurrentPrimary().getType();
     }
 
     public void resolveEntityCollision(GameCharacter e) {
@@ -150,5 +168,18 @@ public class Player extends GameCharacter {
         for (Projectile p: projectiles) {
             p.paint(c);
         }
+        playerInventory.draw(c);
+    }
+
+    @Override
+    public void updateValues() {
+        super.updateValues();
+        playerInventory.update();
+    }
+
+    @Override
+    public void updateData() {
+        super.updateData();
+        playerInventory.updatePosition(getHitbox().getCenter());
     }
 }

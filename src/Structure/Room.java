@@ -1,12 +1,11 @@
 package Structure;
 
-import Camera.Camera;
+import Universal.Camera;
 import Entities.Enemy;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Room {
