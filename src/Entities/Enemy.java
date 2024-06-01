@@ -1,10 +1,7 @@
 package Entities;
 
-import Camera.Camera;
-import Structure.Room;
+import Universal.Camera;
 import Structure.Vector2F;
-
-import java.util.ArrayList;
 
 public class Enemy extends GameCharacter {
 

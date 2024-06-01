@@ -1,18 +1,46 @@
 package Entities;
 
+import Items.ActivationType;
+import Items.GameItem;
 import Items.Item;
 import Items.Weapon;
+import Managers.ActionManager;
+import Structure.Vector2F;
+import Universal.Camera;
 
 import java.util.ArrayList;
 
 public class Inventory {
     private ArrayList<Weapon> primarySlot = new ArrayList<>();
     private ArrayList<Item> secondarySlot = new ArrayList<>();
-    private int coins, selectedPrimary, selectedSecondary;
+    private int intelligence, selectedPrimary, selectedSecondary;
 
     public Inventory() {
 
     }
+
+    public void draw(Camera c) {
+        for (Weapon w: primarySlot) {
+            w.draw(c);
+        }
+        for (Item i: secondarySlot) {
+            i.draw(c);
+        }
+    }
+
+    public void update() {
+        for (Weapon w: primarySlot) {
+            w.update();
+        }
+        for (Item i: secondarySlot) {
+            i.update();
+        }
+    }
+
+    public void updatePosition(Vector2F newPosition) {
+        primarySlot.get(selectedPrimary).setRelativeLocation(newPosition);
+    }
+
 
     public void addSecondary(Item item) {
         secondarySlot.add(item);
@@ -26,18 +54,22 @@ public class Inventory {
         this.selectedPrimary = selectedPrimary;
     }
 
-    public void usePrimary() {
+    public Weapon getCurrentPrimary() {
+        return primarySlot.get(selectedPrimary);
+    }
+
+    public void usePrimary(ActivationType dir, ActionManager ac) {
         if (primarySlot.isEmpty()) return;
-        primarySlot.get(selectedPrimary).activate();
+        primarySlot.get(selectedPrimary).activate(dir, ac);
         if (primarySlot.get(selectedPrimary).getToDelete()) {
             primarySlot.remove(selectedPrimary);
             selectedPrimary--;
         }
     }
 
-    public void useSecondary() {
+    public void useSecondary(ActivationType dir, ActionManager ac) {
         if (secondarySlot.isEmpty()) return;
-        secondarySlot.get(selectedSecondary).activate();
+        secondarySlot.get(selectedSecondary).activate(dir, ac);
         if (secondarySlot.get(selectedSecondary).getToDelete()) {
             secondarySlot.remove(selectedSecondary);
             selectedSecondary--;

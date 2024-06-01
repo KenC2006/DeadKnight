@@ -1,6 +1,6 @@
 package Structure;
 
-import Camera.Camera;
+import Universal.Camera;
 
 import java.util.ArrayList;
 

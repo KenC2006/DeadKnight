@@ -1,18 +1,15 @@
 package Managers;
 
-import Entities.Enemy;
 import Entities.GameCharacter;
 import Entities.Player;
-import Camera.Camera;
+import Universal.Camera;
 import Entities.ShortMeleeEnemy;
-import Structure.Room;
-import Structure.Vector2F;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class EntityManager {
-    private Player player;
+    private final Player player;
     private ArrayList<GameCharacter> entityList = new ArrayList<>();
     private RoomManager roomManager = new RoomManager();
 
@@ -67,5 +64,9 @@ public class EntityManager {
             g.paint(c);
         }
         roomManager.drawRooms(c);
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

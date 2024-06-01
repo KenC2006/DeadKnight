@@ -21,7 +21,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final ArrayList<Entrance> entrances = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
     private Vector2F topLeftPoint = null;
-    private final GameObject selected=new GameObject();
+    private final GameObject selected = new GameObject();
     private JComboBox<File> dropDown;
     private File fileToSave;
 
@@ -136,7 +136,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void delete() {
-        if (selected.getObject() instanceof Entrance) entrances.remove(selected.getObject());
+        if (selected.getObject() instanceof Entrance) entrances.remove((Entrance) selected.getObject());
         else walls.remove(selected.getObject());
         stack.remove(selected.getObject());
         selected.reset();
