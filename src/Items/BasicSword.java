@@ -35,7 +35,6 @@ public class BasicSword extends Weapon {
     public void update() {
         if (swingLengthTimer.isReady()) {
             toggleHitbox(lastSwingDirection, false);
-            System.out.println("hitbox: " + lastSwingDirection);
         }
     }
 }
