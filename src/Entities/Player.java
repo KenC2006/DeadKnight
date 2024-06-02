@@ -1,9 +1,10 @@
 package Entities;
 
 import Items.ActivationType;
+import Items.BasicSpear;
+import Items.BasicSword;
 import Items.WeaponType;
 import Universal.Camera;
-import Items.BasicSword;
 import Managers.ActionManager;
 import Structure.Room;
 import Structure.Vector2F;
@@ -27,7 +28,9 @@ public class Player extends GameCharacter {
     public Player(double x, double y){
         super(x, y, 2, 5,100);
         playerInventory = new Inventory();
-        playerInventory.addPrimary(new BasicSword(2, new Vector2F(x, y)));
+        playerInventory.addPrimaryItem(new BasicSword(2, new Vector2F(x, y)));
+        playerInventory.addPrimaryItem(new BasicSpear(2, new Vector2F(x, y)));
+
     }
 
     public void updateKeyPresses(ActionManager manager) {
@@ -84,6 +87,13 @@ public class Player extends GameCharacter {
             direction = Direction.LEFT;
         }
 
+        if (manager.getPressed(KeyEvent.VK_E)) {
+            playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() + 1);
+        }
+        if (manager.getPressed(KeyEvent.VK_Q)) {
+            playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() - 1);
+        }
+
         if (manager.getPressed(KeyEvent.VK_RIGHT)) {
             playerInventory.usePrimary(ActivationType.RIGHT, manager);
         }
@@ -127,8 +137,8 @@ public class Player extends GameCharacter {
     }
 
     public WeaponType getPrimaryType() {
-        if (playerInventory.getCurrentPrimary() == null) return null;
-        return playerInventory.getCurrentPrimary().getType();
+        if (playerInventory.getCurrentPrimaryItem() == null) return null;
+        return playerInventory.getCurrentPrimaryItem().getType();
     }
 
     public void resolveEntityCollision(GameCharacter e) {
