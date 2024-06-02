@@ -323,4 +323,6 @@ public class Entity {
     public Vector2F getLastVelocity() {
         return lastVelocity;
     }
+
+    public Vector2F getPos() { return new Vector2F(getX(), getY()); }
 }
