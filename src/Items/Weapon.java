@@ -80,7 +80,7 @@ public abstract class Weapon extends GameItem {
         }
     }
 
-    public void draw(Camera c) {
+    public void draw(Camera c) { // TODO remove hitbox from being drawn on mini map
         for (Hitbox h: hitboxes.values()) {
             if (h.getEnabled()) {
                 c.drawHitbox(h);

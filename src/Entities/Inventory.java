@@ -1,22 +1,23 @@
 package Entities;
 
 import Items.ActivationType;
-import Items.GameItem;
 import Items.Item;
 import Items.Weapon;
 import Managers.ActionManager;
 import Structure.Vector2F;
 import Universal.Camera;
+import Universal.GameTimer;
 
 import java.util.ArrayList;
 
 public class Inventory {
     private ArrayList<Weapon> primarySlot = new ArrayList<>();
     private ArrayList<Item> secondarySlot = new ArrayList<>();
+    private GameTimer itemSwapCooldown;
     private int intelligence, selectedPrimary, selectedSecondary;
 
     public Inventory() {
-
+        itemSwapCooldown = new GameTimer(10);
     }
 
     public void draw(Camera c) {
@@ -42,19 +43,26 @@ public class Inventory {
     }
 
 
-    public void addSecondary(Item item) {
+    public void addSecondaryItem(Item item) {
         secondarySlot.add(item);
     }
 
-    public void addPrimary(Weapon weapon) {
+    public void addPrimaryItem(Weapon weapon) {
         primarySlot.add(weapon);
     }
 
-    public void setPrimary(int selectedPrimary) {
-        this.selectedPrimary = selectedPrimary;
+    public void setPrimaryIndex(int selectedPrimary) {
+        if (itemSwapCooldown.isReady()) {
+            this.selectedPrimary = (selectedPrimary + primarySlot.size()) % primarySlot.size();
+            itemSwapCooldown.reset();
+        }
     }
 
-    public Weapon getCurrentPrimary() {
+    public int getPrimaryIndex() {
+        return this.selectedPrimary;
+    }
+
+    public Weapon getCurrentPrimaryItem() {
         return primarySlot.get(selectedPrimary);
     }
 
@@ -66,6 +74,19 @@ public class Inventory {
             selectedPrimary--;
         }
     }
+
+    public void setSecondaryIndex(int selectedSecondary) {
+        this.selectedSecondary = selectedSecondary;
+    }
+
+    public int getSecondaryIndex() {
+        return this.selectedSecondary;
+    }
+
+    public Item getCurrentSecondaryItem() {
+        return secondarySlot.get(selectedSecondary);
+    }
+
 
     public void useSecondary(ActivationType dir, ActionManager ac) {
         if (secondarySlot.isEmpty()) return;
