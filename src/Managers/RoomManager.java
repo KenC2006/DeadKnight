@@ -12,7 +12,6 @@ import java.util.*;
 
 public class RoomManager {
     private final ArrayList<Room> allPossibleRooms = new ArrayList<>();
-    private NodeMap nodeMap;
     private ArrayList<Room> allRooms = new ArrayList<>();
     private ArrayList<Room> loadedRooms = new ArrayList<>();
     private Deque<Room> toGenerateNeighbours = new ArrayDeque<>();
@@ -121,10 +120,6 @@ public class RoomManager {
 
     public void update() {
 
-    }
-
-    public NodeMap getNodeMap() {
-        return nodeMap;
     }
 
 }

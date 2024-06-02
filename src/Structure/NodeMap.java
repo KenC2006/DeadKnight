@@ -49,7 +49,7 @@ public class NodeMap {
             for (int i = (int)e.getHitbox().getTop(); i <= (int)e.getHitbox().getBottom(); i++) {
                 for (int j = (int)e.getHitbox().getLeft(); j <= e.getHitbox().getRight(); j++) {
 //                        System.out.printf("%d %d\n", i, j);
-                    grid[i+250][j+250] = 'X'; // since array index must be > 0
+                    grid[i+250][j+250] = 'E'; // since array index must be > 0
                 }
             }
         }
@@ -222,7 +222,7 @@ public class NodeMap {
             for (Vector2F connectedNode : edges.get(n)) {
 //                System.out.println("drawing line from" + n + " to " + connectedNode + "\n");
                 c.drawCoordinate(connectedNode);
-                c.drawLine(n, connectedNode, Color.BLUE);
+//                c.drawLine(n, connectedNode, Color.BLUE);
             }
         }
     }

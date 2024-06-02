@@ -9,7 +9,7 @@ public class ShortMeleeEnemy extends Enemy {
     private GameCharacter swing;
 
     public ShortMeleeEnemy(double x, double y, int health) {
-        super(x, y, 2, 5, health, 500);
+        super(x, y, 2, 5, health, 5000);
 //        right = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(0, 7),
 //                new Vector2F(4, 6), new Vector2F(6, 3),
 //                new Vector2F(4, 1))));

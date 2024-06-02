@@ -112,6 +112,10 @@ public class GameCharacter {
         movementCheck(roomList);
     }
 
+    public void generatePath(Vector2F start, NodeMap nodeMap) {
+
+    }
+
     private Vector2F binarySearchVelocity(Vector2F startingVelocity, ArrayList<Room> roomList) {
         double minTime = 0, maxTime = 1;
         while (maxTime - minTime > 0.001) {
@@ -300,4 +304,6 @@ public class GameCharacter {
     public Vector2F getCenterVector() {
         return new Vector2F(getCenterX(), getCenterY());
     }
+
+    public Vector2F getPos() { return new Vector2F(getX(), getY()); }
 }

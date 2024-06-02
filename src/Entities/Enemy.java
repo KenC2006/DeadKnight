@@ -2,10 +2,11 @@ package Entities;
 
 import Camera.Camera;
 import Structure.NodeMap;
-import Structure.Pair;
+import Structure.Edge;
 import Structure.Room;
 import Structure.Vector2F;
 
+import java.awt.*;
 import java.util.*;
 
 public class Enemy extends GameCharacter {
@@ -17,7 +18,9 @@ public class Enemy extends GameCharacter {
     private int state, prevState;
     private int id;
     private double sightRadius;
-    private Vector2F playerPos;
+    private Vector2F playerPos = new Vector2F();
+    private Vector2F enemyPos = new Vector2F();
+    private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
 
     private static int enemyCount;
 
@@ -26,6 +29,7 @@ public class Enemy extends GameCharacter {
         this.sightRadius = sightRadius;
         id = enemyCount;
         enemyCount++;
+        enemyPos = new Vector2F(4.5, 22); // temp bc no enemy spawn locs
         startWander();
     }
 
@@ -59,35 +63,88 @@ public class Enemy extends GameCharacter {
         }
     }
 
-    public void followPlayer(Room room) {
+    public void followPlayer() {
+//        System.out.println(getPos());
+//        System.out.println(path);
+        if (path.isEmpty()) {
+            return;
+        }
+        System.out.println(path.getFirst() + " " + new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5 ) + " " + path.getFirst().getEuclideanDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)));
+        if (path.getFirst().getEuclideanDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)) < 2) {
+            path.removeFirst();
+            if (path.isEmpty()) {
+                stopXMovement();
+                return; }
+            enemyPos = path.getFirst();
+        }
+        stopXMovement();
+        if (new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5).getXDistance(path.getFirst()) < 0) {
+            moveLeft(defaultWalkSpeed * 2);
+        }
+        else {
+            moveRight(defaultWalkSpeed * 2);
+        }
+        System.out.println(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5).getYDistance(path.getFirst()));
+        if (path.getFirst().getYDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)) > 2) {
+            double xDist = Math.abs(path.getFirst().getXDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)));
+//            System.out.println(xDist);
+            if (xDist < 3 && isGrounded()) {
+                jump();
+            }
+        }
 
     }
 
-    private void generatePath(Vector2F start, NodeMap graph) {
-        PriorityQueue<Pair> q = new PriorityQueue<Pair> ();
-        Queue<Vector2F> path = new LinkedList<Vector2F>();
+    public void generatePath(Vector2F start, NodeMap graph) {
+        PriorityQueue<Edge> q = new PriorityQueue<Edge> ();
+        Map<Vector2F, ArrayList<Vector2F>> reversedMap = new HashMap<Vector2F, ArrayList<Vector2F>> ();
         Map<Vector2F, Boolean> v = new HashMap<Vector2F, Boolean> ();
 
-        Vector2F cur_node;
+        Vector2F cur_node = new Vector2F(), prev_node;
         double cur_dist;
 
-        q.add(new Pair(0.0, start));
+        q.add(new Edge(0.0, start, start));
+//        System.out.println(start);
         while (!q.isEmpty()) {
-            cur_node = q.peek().getSecondVec();
-            cur_dist = q.remove().getFirstDouble();
-
+            cur_node = q.peek().getNode1();
+            prev_node = q.peek().getNode2();
+            cur_dist = q.remove().getDist();
+//            System.out.println(cur_node);
+            v.put(cur_node, true);
+            if (cur_node != prev_node) {
+                reversedMap.computeIfAbsent(cur_node, k -> new ArrayList<Vector2F> ()).add(prev_node);
+            }
+//            System.out.println(cur_node.getEuclideanDistance(playerPos));
+            // if we reach a node within 4 units of player pos, we good
+            if (cur_node.getEuclideanDistance(new Vector2F(playerPos.getX() + 1, playerPos.getY() + 4)) < 25) {
+                break;
+            }
+            if (graph.getEdges().get(cur_node) == null) {
+                continue;
+            }
             for (Vector2F node : graph.getEdges().get(cur_node)) {
-                if (v.get(node) != null) {
-                    v.put(node, true);
-                    q.add(new Pair(cur_node.getEuclideanDistance(node), node));
+                if (v.get(node) == null) {
+                    q.add(new Edge(cur_node.getEuclideanDistance(node) + cur_dist, node, cur_node));
                 }
             }
         }
+//        System.out.println(vNodes);
+        Queue<Vector2F> q2 = new LinkedList<Vector2F> ();
+        q2.add(cur_node);
+        path.clear();
+        while (!q2.isEmpty()) {
+            path.add(0, q2.peek());
+//            System.out.println(q2.peek());
+            if (reversedMap.get(q2.peek()) == null) break;
+            q2.add(reversedMap.get(q2.remove()).getFirst());
+        }
+//        System.out.println(path);
     }
 
     public void updateEnemy(Player player) {
         if (getSquareDistToPlayer(player) < sightRadius) {
             playerPos = new Vector2F(player.getX(), player.getY());
+            followPlayer();
         }
         else {
             startWander();
@@ -158,9 +215,17 @@ public class Enemy extends GameCharacter {
         setVY(getVY() - 2);
     }
 
+    public Vector2F getPos() {
+        return enemyPos;
+    }
+
     @Override
     public void paint(Camera c) {
         super.paint(c);
+        for (int i = 0; i < path.size() - 1; i++) {
+            if (path.size() < 2) break;
+            c.drawLine(path.get(i), path.get(i+1), Color.RED);
+        }
     }
 
 }
