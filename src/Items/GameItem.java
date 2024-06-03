@@ -17,8 +17,8 @@ public abstract class GameItem {
     private boolean toDelete;
     private Vector2F location = new Vector2F();
 
-    public GameItem() {
-
+    public GameItem(Vector2F location) {
+        this.location = location;
     }
 
     public Vector2F getLocation() {

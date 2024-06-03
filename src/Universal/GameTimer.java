@@ -3,7 +3,6 @@ package Universal;
 public class GameTimer {
     private static int globalTime = 0;
     private int targetTime, lengthTime;
-    private boolean started;
 
     public static void update() {
         globalTime++;
@@ -15,7 +14,6 @@ public class GameTimer {
     }
 
     public boolean isReady() {
-        if (!started) return true;
         return globalTime > targetTime;
     }
 
@@ -23,13 +21,4 @@ public class GameTimer {
         targetTime = globalTime + lengthTime;
     }
 
-    public void toggle(boolean value) {
-        if (value == started) return;
-        reset();
-        started = value;
-    }
-
-    public boolean getState() {
-        return started;
-    }
 }

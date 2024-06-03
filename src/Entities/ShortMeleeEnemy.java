@@ -1,16 +1,10 @@
 package Entities;
 
-import Structure.Hitbox;
-import Structure.Vector2F;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class ShortMeleeEnemy extends Enemy {
 
     private boolean isDashing, isAttacking;
 //    private Hitbox up, down, left, right; // change to gamecharacter when polygon hitbox support added
-    private GameCharacter swing;
+    private Entity swing;
     private Player player;
 
     public ShortMeleeEnemy(double x, double y, int health, Player player) {
@@ -27,12 +21,12 @@ public class ShortMeleeEnemy extends Enemy {
 //        up = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(3, 0),
 //                new Vector2F(2, 2), new Vector2F(0, 4),
 //                new Vector2F(-2, 2), new Vector2F(-3, 0))));
-        swing = new GameCharacter(0, 0, 5, 5, 10);
+        swing = new Entity(0, 0, 5, 5, 10);
         swing.setAffectedByGravity(false);
         this.player = player;
     }
 
-    public GameCharacter getSwing() {
+    public Entity getSwing() {
         return swing;
     }
 
