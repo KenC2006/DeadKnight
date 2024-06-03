@@ -3,6 +3,7 @@ package Entities;
 import Items.*;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
+import Items.Melee.MeleeWeapon;
 import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
 import Universal.Camera;
@@ -71,12 +72,12 @@ public class Player extends Entity {
 
         if (jumping) {
             if (framesPassed - framesSinceStartedJumping < 10) {
-                setVY(-1 - (10 - (framesPassed - framesSinceStartedJumping)) / 10.0);
+                setIntendedVY(-1 - (10 - (framesPassed - framesSinceStartedJumping)) / 10.0);
             } else {
                 jumping = false;
             }
         } else if (!isGrounded()) {
-            setVY(Math.max(-0, getVY()));
+            setIntendedVY(Math.max(-0, getIntendedVY()));
 
         }
 
@@ -114,12 +115,14 @@ public class Player extends Entity {
             if (direction == Direction.LEFT) dx = -1.4;
             else dx = 1.4;
             getHitbox().setEnabled(false);
+            setAffectedByGravity(false);
         } else {
+            setAffectedByGravity(true);
             getHitbox().setEnabled(true);
         }
 
 
-        setVX(dx);
+        setIntendedVX(dx);
     }
 
     public WeaponType getPrimaryType() {
@@ -138,7 +141,13 @@ public class Player extends Entity {
                 e.setColliding(true);
                 p.setColliding(true);
                 p.markToDelete(true);
+                p.doKB(e);
             }
+        }
+
+        if (playerInventory.getCurrentPrimaryItem() instanceof MeleeWeapon) {
+            ((MeleeWeapon) playerInventory.getCurrentPrimaryItem()).doCollisionCheck(e);
+
         }
 
     }

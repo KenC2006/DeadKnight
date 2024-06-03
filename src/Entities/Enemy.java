@@ -57,10 +57,10 @@ public class Enemy extends Entity {
 
     private void followPlayer() {
         if (player.getX() - getX() < 0) {
-            setVX(-0.1);
+            setIntendedVX(-0.1);
         }
         else {
-            setVX(0.1);
+            setIntendedVX(0.1);
         }
     }
 
@@ -135,19 +135,19 @@ public class Enemy extends Entity {
     }
 
     private void moveLeft(double xChange) {
-        setVX((getVX() - xChange));
+        setIntendedVX((getVX() - xChange));
     }
 
     private void moveRight(double xChange) {
-        setVX((getVX() + xChange));
+        setIntendedVX((getVX() + xChange));
     }
 
     public void stopXMovement() {
-        setVX(0);
+        setIntendedVX(0);
     }
 
     public void jump() {
-        setVY(getVY() - 2);
+        setIntendedVY(getVY() - 2);
     }
 
     public void drawEnemy(Camera c) {

@@ -10,7 +10,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Entity {
-    private Vector2F position, velocity, lastVelocity;
+    private Vector2F position, velocity, lastVelocity, constantVelocity;
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
     private int health;
@@ -21,13 +21,16 @@ public class Entity {
     public Entity(double x, double y, double width, double height, int health) {
         position = new Vector2F(x, y);
         velocity = new Vector2F();
+        constantVelocity = new Vector2F();
         hitbox = new Hitbox(x, y, x + width, y + height);
         this.health = health;
     }
 
-    public Entity(Vector2F position, Vector2F size, Vector2F velocity) {
+    public Entity(Vector2F position, Vector2F size, Vector2F constantVelocity) {
         this.position = new Vector2F(position);
-        this.velocity = new Vector2F(velocity);
+        this.velocity = new Vector2F();
+        this.constantVelocity = new Vector2F(constantVelocity);
+
         hitbox = new Hitbox(position, position.getTranslated(size));
 
     }
@@ -107,11 +110,13 @@ public class Entity {
         }
         if ((onFloor(roomList) && remainingY > 0) || (onCeiling(roomList) && remainingY < 0)) {
             velocity.setY(0);
+            setIntendedVY(0);
             remainingY = 0;
         }
 
         if ((onLeftWall(roomList) && remainingX < 0) || (onRightWall(roomList) && remainingX > 0)) {
             velocity.setX(0);
+            setIntendedVX(0);
             remainingX = 0;
         }
 
@@ -124,10 +129,10 @@ public class Entity {
     }
 
     private Vector2F binarySearchVelocity(Vector2F startingVelocity, ArrayList<Room> roomList) {
-        double minTime = 0, maxTime = 1;
-        while (maxTime - minTime > 0.001) {
-            double mid = (minTime + maxTime) / 2.0;
-            Hitbox movementBox = createMovementBox(startingVelocity.multiply(mid));
+        int minTime = 0, maxTime = 1000;
+        while (minTime < maxTime) {
+            double mid = (minTime + maxTime + 1) / 2.0;
+            Hitbox movementBox = createMovementBox(startingVelocity.multiply(mid / 1000.0));
             boolean collides = false;
             for (Room r: roomList) {
                 if (collidesWithRoom(r, movementBox)) {
@@ -136,18 +141,20 @@ public class Entity {
                 }
             }
             if (collides) {
-                maxTime = mid - 0.001;
+                maxTime = (int) mid - 1;
             } else {
-                minTime = mid;
+                minTime = (int) mid;
             }
         }
 
-        return startingVelocity.multiply(minTime);
+        return startingVelocity.multiply(minTime / 1000.0);
     }
 
     private void updateVelocity() {
+        velocity.translateInPlace(constantVelocity.getTranslated(velocity.getNegative()).multiply(0.8));
+        System.out.println(constantVelocity);
         // Gravity
-        if (affectedByGravity) velocity.changeY(0.1);
+        if (affectedByGravity) constantVelocity.changeY(0.1);
     }
 
     public HitboxGroup getLastMovement() {
@@ -219,13 +226,11 @@ public class Entity {
     }
 
     public void changeX(double dx) {
-        position.changeX(dx);
-        hitbox.changeX(dx);
+        changeVX(dx);
     }
 
     public void changeY(double dy) {
-        position.changeY(dy);
-        hitbox.changeY(dy);
+        changeVY(dy);
     }
 
     public double getX() {
@@ -244,6 +249,22 @@ public class Entity {
         return velocity.getY();
     }
 
+    public double getIntendedVX() {
+        return constantVelocity.getX();
+    }
+
+    public double getIntendedVY() {
+        return constantVelocity.getY();
+    }
+
+    public void changeVX(double dx) {
+        velocity.setX(getX() + dx);
+    }
+
+    public void changeVY(double dy) {
+        velocity.setY(getY() + dy);
+    }
+
     public double getHeight() {
         return hitbox.getHeight();
     }
@@ -252,12 +273,22 @@ public class Entity {
         return hitbox.getWidth();
     }
 
-    public void setVX(double vX) {
-        velocity.setX(vX);
+    public void setIntendedVX(double vx) {
+        constantVelocity.setX(vx);
     }
 
-    public void setVY(double vY) {
+    public void setIntendedVY(double vy) {
+        constantVelocity.setY(vy);
+    }
+
+    public void setActualVX(double vX) {
+        velocity.setX(vX);
+//        constantVelocity.setX(vX);
+    }
+
+    public void setActualVY(double vY) {
         velocity.setY(vY);
+//        constantVelocity.setY(vY);
     }
 
     public Hitbox getHitbox() {

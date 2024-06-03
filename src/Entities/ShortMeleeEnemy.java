@@ -36,11 +36,11 @@ public class ShortMeleeEnemy extends Enemy {
 
     public void startDashLeft() {
         isDashing = true;
-        setVX(getVX() + 10);
+        setIntendedVX(getVX() + 10);
     }
     public void startDashRight() {
         isDashing = true;
-        setVX(getVX() - 10);
+        setIntendedVX(getVX() - 10);
     }
     public void swingSword() {
         isAttacking = true;
