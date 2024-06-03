@@ -1,5 +1,7 @@
 package Structure;
 
+import Items.Item;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -34,12 +36,18 @@ public class RoomEditor extends JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_UP) grid.addEntrance(0, -1);
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) grid.addEntrance(0, 1);
 
+                if (e.getKeyCode() == KeyEvent.VK_P) grid.addPlayerSpawn();
+                if (e.getKeyCode() == KeyEvent.VK_I) grid.addItemSpawn();
+                if (e.getKeyCode() == KeyEvent.VK_E) grid.addEnemySpawn();
+
 
                 if (e.getKeyCode() == KeyEvent.VK_R) grid.reset();
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && grid.getSelected()!=null) grid.delete();
 
-                if (grid.getWalls().isEmpty() && grid.getEntrances().isEmpty()) return;
-                if (e.getKeyCode() == KeyEvent.VK_Z) grid.undoLastMove();
+                if (grid.getWalls().isEmpty() && grid.getEntrances().isEmpty() && grid.getEnemySpawns().isEmpty() && grid.getPlayerSpawns().isEmpty() && grid.getItemSpawns().isEmpty()) return;
+                if (e.getKeyCode() == KeyEvent.VK_Z) {
+                    grid.undoLastMove();
+                }
 
                 if (e.getKeyCode() == KeyEvent.VK_S) {
                     int fileNum = (Objects.requireNonNull(roomStorage.list()).length);
@@ -62,6 +70,22 @@ public class RoomEditor extends JFrame {
                         for (Entrance entrance: grid.getEntrances()) {
                             fw.write(((int) entrance.getLocation().getX() - ox) + " " + ((int) entrance.getLocation().getY() - oy) + " " + ((int) entrance.getConnection().getX() - ox) + " " + ((int) entrance.getConnection().getY() - oy) + "\n");
                         }
+
+                        fw.write(grid.getPlayerSpawns().size() + "\n");
+                        for (PlayerSpawn r: grid.getPlayerSpawns()) {
+                            fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
+                        }
+
+                        fw.write(grid.getItemSpawns().size() + "\n");
+                        for (ItemSpawn r: grid.getItemSpawns()) {
+                            fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
+                        }
+
+                        fw.write(grid.getEnemySpawns().size() + "\n");
+                        for (EnemySpawn r: grid.getEnemySpawns()) {
+                            fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
+                        }
+
                         fw.close();
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);

@@ -1,7 +1,5 @@
 package Structure;
 
-import Entities.GameObject;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -19,9 +17,12 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private int boxSize;
     private final ArrayList<Rectangle> walls = new ArrayList<>();
     private final ArrayList<Entrance> entrances = new ArrayList<>();
+    private final ArrayList<PlayerSpawn> playerSpawns = new ArrayList<>();
+    private final ArrayList<EnemySpawn> enemySpawns = new ArrayList<>();
+    private final ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
     private Vector2F topLeftPoint = null;
-    private final GameObject selected = new GameObject();
+    private final RoomObject selected = new RoomObject();
     private JComboBox<File> dropDown;
     private File fileToSave;
 
@@ -86,6 +87,21 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             else g.setColor(Color.BLUE);
             entrance.draw(g, boxSize);
         }
+        for (PlayerSpawn playerSpawn : playerSpawns) {
+            if (selected.getObject() == playerSpawn) g.setColor(Color.GREEN);
+            else g.setColor(Color.YELLOW);
+            g.fillRect(playerSpawn.x * boxSize, playerSpawn.y * boxSize, playerSpawn.width * boxSize, playerSpawn.height * boxSize);
+        }
+        for (ItemSpawn itemSpawn : itemSpawns) {
+            if (selected.getObject() == itemSpawn) g.setColor(Color.GREEN);
+            else g.setColor(Color.MAGENTA);
+            g.fillRect(itemSpawn.x * boxSize, itemSpawn.y * boxSize, itemSpawn.width * boxSize, itemSpawn.height * boxSize);
+        }
+        for (EnemySpawn enemySpawn : enemySpawns) {
+            if (selected.getObject() == enemySpawn) g.setColor(Color.GREEN);
+            else g.setColor(Color.BLACK);
+            g.fillRect(enemySpawn.x * boxSize, enemySpawn.y * boxSize, enemySpawn.width * boxSize, enemySpawn.height * boxSize);
+        }
 
         g.setColor(Color.GREEN);
         if (p2 == null && p1 != null) {
@@ -107,8 +123,9 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public Object returnSelected(){
+        Rectangle intersectRect=new Rectangle((int) p1.getX(), (int) p1.getY(), 1, 1);
         for (Rectangle wall : walls) {
-            if (wall.intersects(new Rectangle((int) p1.getX(), (int) p1.getY(), 1, 1))) {
+            if (wall.intersects(intersectRect)) {
                 p1 = null;
                 return wall;
             }
@@ -120,6 +137,27 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                 return entrance;
             }
         }
+        for (PlayerSpawn playerSpawn : playerSpawns) {
+            if (playerSpawn.intersects(intersectRect)){
+                selected.setObject(playerSpawn);
+                p1 = null;
+                return playerSpawn;
+            }
+        }
+        for (ItemSpawn itemSpawns : itemSpawns) {
+            if (itemSpawns.intersects(intersectRect)){
+                selected.setObject(itemSpawns);
+                p1 = null;
+                return itemSpawns;
+            }
+        }
+        for (EnemySpawn enemySpawn : enemySpawns) {
+            if (enemySpawn.intersects(intersectRect)){
+                selected.setObject(enemySpawn);
+                p1 = null;
+                return enemySpawn;
+            }
+        }
         return null;
     }
 
@@ -127,8 +165,14 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         if (stack.isEmpty()) return;
         if (stack.getLast() == 1) {
             getEntrances().removeLast();
-        } else {
+        } else if (stack.getLast() == 2) {
             getWalls().removeLast();
+        } else if (stack.getLast() == 3) {
+            getPlayerSpawns().removeLast();
+        } else if (stack.getLast() == 4) {
+            getItemSpawns().removeLast();
+        } else if (stack.getLast() == 5) {
+            getEnemySpawns().removeLast();
         }
         stack.pop();
         p1 = null;
@@ -137,12 +181,15 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void delete() {
         if (selected.getObject() instanceof Entrance) entrances.remove((Entrance) selected.getObject());
-        else walls.remove(selected.getObject());
+        else if (selected.getObject() instanceof PlayerSpawn) playerSpawns.remove((PlayerSpawn) selected.getObject());
+        else if (selected.getObject() instanceof ItemSpawn) itemSpawns.remove((ItemSpawn) selected.getObject());
+        else if (selected.getObject() instanceof EnemySpawn) enemySpawns.remove((EnemySpawn) selected.getObject());
+        else walls.remove((Rectangle) selected.getObject());
         stack.remove(selected.getObject());
         selected.reset();
     }
 
-    public GameObject getSelected() {
+    public RoomObject getSelected() {
         return selected;
     }
 
@@ -151,6 +198,30 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         entrances.add(new Entrance(p1, p1.getTranslated(new Vector2F(xOffset, yOffset))));
         stack.add(1);
         p1 = null;
+        repaint();
+    }
+
+    public void addPlayerSpawn(){
+        if (p1 == null) return;
+        playerSpawns.add(new PlayerSpawn((int)p1.getX(),(int)p1.getY(),1,1));
+        stack.add(3);
+        p1=null;
+        repaint();
+    }
+
+    public void addItemSpawn(){
+        if (p1 == null) return;
+        itemSpawns.add(new ItemSpawn((int)p1.getX(),(int)p1.getY(),1,1));
+        stack.add(4);
+        p1=null;
+        repaint();
+    }
+
+    public void addEnemySpawn(){
+        if (p1 == null) return;
+        enemySpawns.add(new EnemySpawn((int)p1.getX(),(int)p1.getY(),1,1));
+        stack.add(5);
+        p1=null;
         repaint();
     }
 
@@ -180,9 +251,24 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         repaint();
     }
 
+    public ArrayList<PlayerSpawn> getPlayerSpawns() {
+        return playerSpawns;
+    }
+
+    public ArrayList<EnemySpawn> getEnemySpawns() {
+        return enemySpawns;
+    }
+
+    public ArrayList<ItemSpawn> getItemSpawns() {
+        return itemSpawns;
+    }
+
     public void reset() {
         getWalls().clear();
         getEntrances().clear();
+        getPlayerSpawns().clear();
+        getItemSpawns().clear();
+        getEnemySpawns().clear();
         getStack().clear();
         fileToSave = null;
         selected.reset();
@@ -228,6 +314,27 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                         Vector2F v1 = new Vector2F(in.nextInt(), in.nextInt()), v2 = new Vector2F(in.nextInt(), in.nextInt());
                         topLeftPoint = v1.getMin(v2).getMin(topLeftPoint);
                         entrances.add(new Entrance(v1, v2));
+                    }
+                    int playerSpawnNum=in.nextInt();
+                    for (int i = 0; i < playerSpawnNum; i++) {
+                        int x=in.nextInt();
+                        int y=in.nextInt();
+                        playerSpawns.add(new PlayerSpawn(x,y,in.nextInt()-x,in.nextInt()-y));
+                    }
+
+                    int itemSpawnNum=in.nextInt();
+                    for (int i = 0; i < itemSpawnNum; i++) {
+                        int x=in.nextInt();
+                        int y=in.nextInt();
+                        itemSpawns.add(new ItemSpawn(x,y,in.nextInt()-x,in.nextInt()-y));
+                    }
+
+                    int enemySpawnNum=in.nextInt();
+                    for (int i = 0; i < enemySpawnNum; i++) {
+                        int x=in.nextInt();
+                        int y=in.nextInt();
+                        System.out.println(topLeftPoint);
+                        enemySpawns.add(new EnemySpawn(x,y,in.nextInt()-x,in.nextInt()-y));
                     }
 
                 } catch (FileNotFoundException ex) {
@@ -279,7 +386,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     public void mouseDragged(MouseEvent e) {
         if (selected.getObject() != null) {
             selected.setLocation(e.getX() / boxSize, e.getY() / boxSize);
-
             repaint();
         }
     }
