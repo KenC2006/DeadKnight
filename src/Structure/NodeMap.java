@@ -49,14 +49,15 @@ public class NodeMap {
             for (int i = (int)e.getHitbox().getTop(); i <= (int)e.getHitbox().getBottom(); i++) {
                 for (int j = (int)e.getHitbox().getLeft(); j <= e.getHitbox().getRight(); j++) {
 //                        System.out.printf("%d %d\n", i, j);
+                    if (grid[i+250][j+250] == 'X') continue;
                     grid[i+250][j+250] = 'E'; // since array index must be > 0
                 }
             }
         }
-        grid[(int)room.getCenterRelativeToRoom().getY() + 250][(int)room.getCenterRelativeToRoom().getX() + 250] = 'S';
+//        grid[(int)room.getCenterRelativeToRoom().getY() + 250][(int)room.getCenterRelativeToRoom().getX() + 250] = 'S';
 
-//        for(int i = 900; i < 1100; i++) {
-//            for (int j = 900; j < 1100; j++) {
+//        for(int i = 100; i < 300; i++) {
+//            for (int j = 100; j < 300; j++) {
 //                System.out.printf("%c", grid[i][j]);
 //            }
 //            System.out.println();
@@ -81,13 +82,16 @@ public class NodeMap {
         while(!q.isEmpty()) {
             cur_node = q.remove();
             ogCur_node = new Vector2F(cur_node.getX() - 250, cur_node.getY() - 250);
-
+            if (grid[(int)cur_node.getY()][(int)cur_node.getX()] == 'E') {
+                continue;
+            }
             if (cur_node.getEuclideanDistance(start) > 5000 || Math.abs(cur_node.getY() - start.getY()) > 15) {
                 continue;
             }
             if (Math.abs(cur_node.getYDistance(start)) > 0.1 && Math.abs(cur_node.getXDistance(start)) > 20) {
                 continue;
             }
+
             if (grid[(int)cur_node.getY()][(int)cur_node.getX()] == 'V' &&
             !(cur_node.getY() == start.getY() && cur_node.getX() == start.getX())) {
                 continue;
@@ -96,11 +100,12 @@ public class NodeMap {
 //            System.out.println(q.size());
             if (grid[(int)cur_node.getY()][(int)cur_node.getX()] != 'X' &&
                 grid[(int)cur_node.getY()][(int)cur_node.getX()] != 'V' &&
-                grid[(int)cur_node.getY()+1][(int)cur_node.getX()] == 'X' &&
+                (grid[(int)cur_node.getY()+1][(int)cur_node.getX()] == 'X' ||
+                grid[(int)cur_node.getY()+1][(int)cur_node.getX()] == 'E') &&
                 !(cur_node.getX() == start.getX() && cur_node.getY() == start.getY())) {
 
-                if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()-1] != 'X' &&
-                    grid[(int)cur_node.getY()][(int)cur_node.getX()-1] != 'X') {
+                if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()-1]  == 0 &&
+                    grid[(int)cur_node.getY()][(int)cur_node.getX()-1] == 0) {
                     if (doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
                         continue;
                     }
@@ -110,8 +115,8 @@ public class NodeMap {
 //                    System.out.println("adding " + ogCur_node + " to " + ogStart);
 
                 }
-                else if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()+1] != 'X' &&
-                        grid[(int)cur_node.getY()][(int)cur_node.getX()+1] != 'X') {
+                else if (grid[(int)cur_node.getY()+1][(int)cur_node.getX()+1] == 0 &&
+                        grid[(int)cur_node.getY()][(int)cur_node.getX()+1] == 0) {
                     if (doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
                         continue;
                     }
@@ -168,8 +173,8 @@ public class NodeMap {
 //        for (Vector2F n : nodes) {
 //            System.out.println(n + " is connect to " + edges.get(n));
 //        }
-//        for(int i = 900; i < 1100; i++) {
-//            for (int j = 900; j < 1100; j++) {
+//        for(int i = 200; i < 300; i++) {
+//            for (int j = 200; j < 300; j++) {
 //                System.out.printf("%c", grid[i][j]);
 //            }
 //            System.out.println();

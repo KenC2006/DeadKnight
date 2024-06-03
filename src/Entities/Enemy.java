@@ -21,6 +21,7 @@ public class Enemy extends GameCharacter {
     private Vector2F playerPos = new Vector2F();
     private Vector2F enemyPos = new Vector2F();
     private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
+    private boolean isPlayerFound;
 
     private static int enemyCount;
 
@@ -69,8 +70,10 @@ public class Enemy extends GameCharacter {
         if (path.isEmpty()) {
             return;
         }
-        System.out.println(path.getFirst() + " " + new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5 ) + " " + path.getFirst().getEuclideanDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)));
-        if (path.getFirst().getEuclideanDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)) < 2) {
+        if (!isPlayerFound) return;
+        isPlayerFound = false;
+//        System.out.println(path.getFirst() + " " + new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5 ) + " " + path.getFirst().getEuclideanDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)));
+        if (path.getFirst().getEuclideanDistance(getBottomPos()) < 2) {
             path.removeFirst();
             if (path.isEmpty()) {
                 stopXMovement();
@@ -78,15 +81,15 @@ public class Enemy extends GameCharacter {
             enemyPos = path.getFirst();
         }
         stopXMovement();
-        if (new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5).getXDistance(path.getFirst()) < 0) {
+        if (getBottomPos().getXDistance(path.getFirst()) < 0) {
             moveLeft(defaultWalkSpeed * 2);
         }
         else {
             moveRight(defaultWalkSpeed * 2);
         }
-        System.out.println(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5).getYDistance(path.getFirst()));
-        if (path.getFirst().getYDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)) > 2) {
-            double xDist = Math.abs(path.getFirst().getXDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)));
+//        System.out.println(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5).getYDistance(path.getFirst()));
+        if (path.getFirst().getYDistance(new Vector2F(super.getBottomPos().getX(), super.getBottomPos().getY())) > 2) {
+            double xDist = Math.abs(path.getFirst().getXDistance(getBottomPos()));
 //            System.out.println(xDist);
             if (xDist < 3 && isGrounded()) {
                 jump();
@@ -116,7 +119,8 @@ public class Enemy extends GameCharacter {
             }
 //            System.out.println(cur_node.getEuclideanDistance(playerPos));
             // if we reach a node within 4 units of player pos, we good
-            if (cur_node.getEuclideanDistance(new Vector2F(playerPos.getX() + 1, playerPos.getY() + 4)) < 25) {
+            if (cur_node.getEuclideanDistance(playerPos) < 25) {
+                isPlayerFound = true;
                 break;
             }
             if (graph.getEdges().get(cur_node) == null) {
@@ -124,7 +128,7 @@ public class Enemy extends GameCharacter {
             }
             for (Vector2F node : graph.getEdges().get(cur_node)) {
                 if (v.get(node) == null) {
-                    q.add(new Edge(cur_node.getEuclideanDistance(node) + cur_dist, node, cur_node));
+                    q.add(new Edge(cur_node.getEuclideanDistance(node) + cur_dist + node.getEuclideanDistance(playerPos), node, cur_node));
                 }
             }
         }
@@ -138,12 +142,11 @@ public class Enemy extends GameCharacter {
             if (reversedMap.get(q2.peek()) == null) break;
             q2.add(reversedMap.get(q2.remove()).getFirst());
         }
-//        System.out.println(path);
     }
 
     public void updateEnemy(Player player) {
         if (getSquareDistToPlayer(player) < sightRadius) {
-            playerPos = new Vector2F(player.getX(), player.getY());
+            playerPos = new Vector2F(player.getX() + player.getWidth()/2, player.getY() + player.getHeight() - 1);
             followPlayer();
         }
         else {
