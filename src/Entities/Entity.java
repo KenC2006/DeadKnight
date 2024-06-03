@@ -325,4 +325,5 @@ public class Entity {
     }
 
     public Vector2F getPos() { return new Vector2F(getX(), getY()); }
+    public Vector2F getBottomPos() { return new Vector2F(getX() + getWidth()/2, getY() + getHeight() - 1); }
 }
