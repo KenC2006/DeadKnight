@@ -1,6 +1,6 @@
 package Managers;
 
-import Camera.Camera;
+import Universal.Camera;
 import Structure.Entrance;
 import Structure.Room;
 import Structure.Vector2F;

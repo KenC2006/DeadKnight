@@ -44,6 +44,11 @@ public class Hitbox {
         this.colour = colour;
     }
 
+    public void setLocation(Vector2F point) {
+        setX(point.getX());
+        setY(point.getY());
+    }
+
     public void setX(double x) {
         double dist = x - getTopLeft().getX();
         changeX(dist);

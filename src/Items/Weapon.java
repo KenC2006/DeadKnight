@@ -1,26 +1,40 @@
 package Items;
 
-import Entities.GameCharacter;
+import Universal.Camera;
 import Structure.Hitbox;
 import Structure.Vector2F;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Scanner;
 
-public class Weapon extends GameItem {
+public abstract class Weapon extends GameItem {
+    private final WeaponType type;
+    private int damagePerHit, attackCooldown;
+    private String dataPath = "src/Items/WeaponData";
 
-    private int damagePerHit;
-    private Hitbox upHitbox, downHitbox, leftHitbox, rightHitbox;
-
-    public Weapon(int damage) {
-        super();
+    public Weapon(int damage, Vector2F startingLocation, WeaponType type) {
+        super(startingLocation);
         this.damagePerHit = damage;
+        this.type = type;
     }
 
-//
-//    public boolean collidesWith(GameCharacter other) {
-//        if (other.getHitbox().quickIntersect()) {
-//
-//        }
-//    }
+    public int getDamagePerHit() {
+        return damagePerHit;
+    }
+
+    public void setDamagePerHit(int damagePerHit) {
+        this.damagePerHit = damagePerHit;
+    }
+
+    public String getResourcePath() {
+        return dataPath;
+    }
+
+
+    public WeaponType getType() {
+        return type;
+    }
 }

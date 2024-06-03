@@ -1,12 +1,9 @@
 package Entities;
 
-import Camera.Camera;
-import Structure.Room;
+import Universal.Camera;
 import Structure.Vector2F;
 
-import java.util.ArrayList;
-
-public class Enemy extends GameCharacter {
+public class Enemy extends Entity {
 
     public final static double defaultHeight = 5;
     public final static double defaultWidth = 2;
@@ -99,7 +96,7 @@ public class Enemy extends GameCharacter {
         return playerPos.getEuclideanDistance(enemyPos);
     }
 
-    public GameCharacter getSwing() {
+    public Entity getSwing() {
         return null;
     }
 

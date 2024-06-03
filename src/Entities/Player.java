@@ -1,7 +1,11 @@
 package Entities;
 
-import Camera.Camera;
-import Items.BasicSword;
+import Items.*;
+import Items.Melee.BasicSpear;
+import Items.Melee.BasicSword;
+import Items.Ranged.BasicTurret;
+import Items.Ranged.MachineGun;
+import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
 import Structure.Vector2F;
@@ -12,19 +16,24 @@ import java.util.ArrayList;
 /**
  * WASD TO MOVE PLAYER
  */
-public class Player extends GameCharacter {
+public class Player extends Entity {
+    private final ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
     private boolean immune;
-    private boolean upPressed, leftRightPressed, jumping, lastFacingLeft;
+    private boolean upPressed, leftRightPressed, jumping;
+    private Direction direction;
     private int framesSinceTouchedGround = 0, framesSinceStartedJumping, framesSinceDash;
     private int framesSinceFiredProjectile = 0;
     private int framesPassed, lastUpPressed;
     private Inventory playerInventory;
-    private ArrayList<Projectile> projectiles = new ArrayList<>();
 
     public Player(double x, double y){
         super(x, y, 2, 5,100);
         playerInventory = new Inventory();
-        playerInventory.addPrimary(new BasicSword(2));
+        playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
+        playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
+        playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
+        playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
+
     }
 
     public void updateKeyPresses(ActionManager manager) {
@@ -36,6 +45,7 @@ public class Player extends GameCharacter {
         if (isHittingCeiling()) framesSinceStartedJumping -= 10;
 
         if (manager.getPressed(KeyEvent.VK_W)) {
+            direction = Direction.UP;
             if (!upPressed) {
                 upPressed = true;
                 if (framesPassed - framesSinceTouchedGround < 8) {
@@ -72,54 +82,65 @@ public class Player extends GameCharacter {
 
         if (manager.getPressed(KeyEvent.VK_D)) {
             dx += 0.7;
-            lastFacingLeft = false;
+            direction = Direction.RIGHT;
         }
 
         if (manager.getPressed(KeyEvent.VK_A)) {
             dx -= 0.7;
-            lastFacingLeft = true;
+            direction = Direction.LEFT;
         }
+
+        if (manager.getPressed(KeyEvent.VK_E)) {
+            playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() + 1);
+        }
+        if (manager.getPressed(KeyEvent.VK_Q)) {
+            playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() - 1);
+        }
+
+        if (manager.getPressed(KeyEvent.VK_RIGHT)) {
+            playerInventory.usePrimary(ActivationType.RIGHT, manager);
+        }
+
+        if (manager.getPressed(KeyEvent.VK_LEFT)) {
+            playerInventory.usePrimary(ActivationType.LEFT, manager);
+        }
+
 
         if (framesSinceDash == 0 && manager.getPressed(KeyEvent.VK_SHIFT)) {
             framesSinceDash = 75;
         }
 
         if (framesSinceDash > 60) {
-            if (lastFacingLeft) dx = -1.4;
+            if (direction == Direction.LEFT) dx = -1.4;
             else dx = 1.4;
             getHitbox().setEnabled(false);
         } else {
             getHitbox().setEnabled(true);
         }
 
-        if (framesSinceFiredProjectile > 10 && (manager.getPressed(KeyEvent.VK_RIGHT) || manager.getPressed(KeyEvent.VK_LEFT) || manager.getPressed(KeyEvent.VK_UP) || manager.getPressed(KeyEvent.VK_DOWN))) {
-            Projectile bullet = new Projectile(getCenterVector().getTranslated(new Vector2F(-0.5, -0.5)), new Vector2F(1, 1));
-            if (manager.getPressed(KeyEvent.VK_RIGHT)) {
-                bullet.setVX(1);
-                framesSinceFiredProjectile = 0;
-            } else if (manager.getPressed(KeyEvent.VK_LEFT)) {
-                bullet.setVX(-1);
-                framesSinceFiredProjectile = 0;
-            } else if (manager.getPressed(KeyEvent.VK_DOWN)) {
-                bullet.setVY(1);
-                framesSinceFiredProjectile = 0;
-            } else if (manager.getPressed(KeyEvent.VK_UP)) {
-                bullet.setVY(-1);
-                framesSinceFiredProjectile = 0;
-            }
-            projectiles.add(bullet);
-        }
 
         setVX(dx);
     }
 
-    public void resolveEntityCollision(GameCharacter e) {
+    public WeaponType getPrimaryType() {
+        if (playerInventory.getCurrentPrimaryItem() == null) return null;
+        return playerInventory.getCurrentPrimaryItem().getType();
+    }
+
+    public void resolveEntityCollision(Entity e) {
         if (e.collidesWithPlayer(this)) {
             e.setColliding(true);
             setColliding(true);
-        } else {
-            e.setColliding(false);
         }
+
+        for (Projectile p: projectiles) {
+            if (e.collidesWith(p)) {
+                e.setColliding(true);
+                p.setColliding(true);
+                p.markToDelete(true);
+            }
+        }
+
     }
 
     @Override
@@ -139,15 +160,35 @@ public class Player extends GameCharacter {
             newProjectiles.add(p);
         }
 
-        projectiles = newProjectiles;
+        projectiles.clear();
+        projectiles.addAll(newProjectiles);
         return super.getToDelete();
     }
 
     @Override
     public void paint(Camera c) {
         super.paint(c);
-        for (Projectile p: projectiles) {
+        for (Projectile p: new ArrayList<>(projectiles)) { // TODO currently temp fix for when the size of projectiles changes between a frame
             p.paint(c);
+        }
+        playerInventory.draw(c);
+    }
+
+    @Override
+    public void updateValues() {
+        super.updateValues();
+        playerInventory.update();
+        for (Projectile p: projectiles) {
+            p.updateValues();
+        }
+    }
+
+    @Override
+    public void updateData() {
+        super.updateData();
+        playerInventory.updatePosition(getHitbox().getCenter());
+        for (Projectile p: projectiles) {
+            p.updateData();
         }
     }
 }

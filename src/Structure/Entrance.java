@@ -1,7 +1,6 @@
 package Structure;
 
-import Camera.Camera;
-import com.sun.nio.sctp.NotificationHandler;
+import Universal.Camera;
 
 import java.awt.*;
 

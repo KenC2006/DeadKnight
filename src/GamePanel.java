@@ -1,8 +1,8 @@
-import Camera.Camera;
+import Managers.CameraManager;
 import Managers.EntityManager;
 import Managers.ActionManager;
 import Structure.RoomEditor;
-import Structure.Vector2F;
+import Universal.GameTimer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,22 +10,20 @@ import java.io.IOException;
 
 
 public class GamePanel extends JPanel{
-    private ActionManager manager = new ActionManager();
-    private EntityManager entityManager = new EntityManager();
-    private Camera camera = new Camera(20);
-    private Camera mapCamera;
+    private final ActionManager actionManager;
+    private final EntityManager entityManager;
+    private final CameraManager cameraManager;
     private boolean isRunning = true;
 
     public GamePanel() throws IOException {
         this.setLayout(null);
         this.setFocusable(true);
         this.setVisible(true);
-        manager.addPanel(this);
         new RoomEditor();
-
-        mapCamera = new Camera(3, new Vector2F(0, 0), 0.2);
-        mapCamera.setMapCamera(true);
-
+        actionManager = new ActionManager();
+        entityManager = new EntityManager();
+        cameraManager = new CameraManager(entityManager.getPlayer());
+        actionManager.addPanel(this);
     }
 
     public void paintComponent(Graphics g) {
@@ -34,24 +32,16 @@ public class GamePanel extends JPanel{
     }
 
     public void draw(Graphics g) {
-        camera.setGraphics(g);
-        camera.paintBackground();
-        entityManager.draw(camera);
-        camera.paintForeground();
-
-        mapCamera.setGraphics(g);
-        mapCamera.paintBackground();
-        entityManager.draw(mapCamera);
-        mapCamera.paintForeground();
+        cameraManager.draw(g, entityManager);
     }
 
     public void update() {
-        camera.updateKeyPresses(manager);
-        mapCamera.updateKeyPresses(manager);
-        entityManager.updateKeyPresses(manager);
+        GameTimer.update();
+
+        cameraManager.update(actionManager, entityManager);
+
+        entityManager.updateKeyPresses(actionManager);
         entityManager.update();
-        entityManager.followPlayer(camera);
-        entityManager.followPlayer(mapCamera);
     }
 
     public void start() {
@@ -76,7 +66,7 @@ public class GamePanel extends JPanel{
                 int updateCount = 0;
                 long dt = System.nanoTime() - currTime;
                 if (dt > 100000000L) {
-                    System.out.println("FPS: " + (frameCount * 1000000000L / dt));
+//                    System.out.println("FPS: " + (frameCount * 1000000000L / dt));
                     currTime = System.nanoTime();
                     frameCount = 0;
                 }

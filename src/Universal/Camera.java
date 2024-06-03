@@ -1,7 +1,8 @@
-package Camera;
+package Universal;
 
-import Entities.GameCharacter;
+import Entities.Entity;
 import Entities.Player;
+import Items.WeaponType;
 import Structure.Hitbox;
 import Structure.Line;
 import Managers.ActionManager;
@@ -58,7 +59,7 @@ public class Camera {
         }
     }
 
-    public void drawGameCharacter(GameCharacter e) {
+    public void drawGameCharacter(Entity e) {
         if (renderWallsOnly) {
             if (e instanceof Player) {
                 drawCoordinate(e.getCenterVector(), Color.BLUE);
@@ -119,18 +120,20 @@ public class Camera {
         drawLine(l.getStart(), l.getEnd(), c);
     }
 
-    public void updateKeyPresses(ActionManager manager) {
-        if (manager.getPressed(KeyEvent.VK_UP)) {
-            offset.changeY(-1.5);
-        }
-        if (manager.getPressed(KeyEvent.VK_DOWN)) {
-            offset.changeY(1.5);
-        }
-        if (manager.getPressed(KeyEvent.VK_RIGHT)) {
-            offset.changeX(1.5);
-        }
-        if (manager.getPressed(KeyEvent.VK_LEFT)) {
-            offset.changeX(-1.5);
+    public void updateKeyPresses(ActionManager manager, WeaponType weaponType) {
+        if (weaponType == WeaponType.RANGED) {
+            if (manager.getPressed(KeyEvent.VK_UP)) {
+                offset.changeY(-1.5);
+            }
+            if (manager.getPressed(KeyEvent.VK_DOWN)) {
+                offset.changeY(1.5);
+            }
+            if (manager.getPressed(KeyEvent.VK_RIGHT)) {
+                offset.changeX(1.5);
+            }
+            if (manager.getPressed(KeyEvent.VK_LEFT)) {
+                offset.changeX(-1.5);
+            }
         }
 
         if (renderWallsOnly) {

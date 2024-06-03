@@ -1,25 +1,22 @@
 package Managers;
 
-import Entities.Enemy;
-import Entities.GameCharacter;
+import Entities.Entity;
 import Entities.Player;
-import Camera.Camera;
+import Universal.Camera;
 import Entities.ShortMeleeEnemy;
-import Structure.Room;
-import Structure.Vector2F;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class EntityManager {
-    private Player player;
-    private ArrayList<GameCharacter> entityList = new ArrayList<>();
+    private final Player player;
+    private ArrayList<Entity> entityList = new ArrayList<>();
     private RoomManager roomManager = new RoomManager();
 
     public EntityManager() throws FileNotFoundException {
         player = new Player(-1, -2);
         entityList.add(player);
-        entityList.add(new GameCharacter(20, 20, 3, 4,100));
+        entityList.add(new Entity(20, 20, 3, 4,100));
         for (int i = 0; i < 10; i++) {
             entityList.add(new ShortMeleeEnemy(0, 0, 2, player));
 
@@ -32,25 +29,25 @@ public class EntityManager {
     }
 
     public void update() {
-        for (GameCharacter g: entityList) { // Set pre conditions and intital values
+        for (Entity g: entityList) { // Set pre conditions and intital values
             g.updateValues();
         }
 
-        for (GameCharacter g: entityList) { // Manage collisions with walls
+        for (Entity g: entityList) { // Manage collisions with walls
             g.resolveRoomCollisions(roomManager.getLoadedRooms());
         }
 
-        for (GameCharacter g: entityList) { // Manage collisions with player
+        for (Entity g: entityList) { // Manage collisions with player
             if (g.equals(player)) continue;
             player.resolveEntityCollision(g);
         }
 
-        for (GameCharacter g: entityList) { // Update visuals based on data
+        for (Entity g: entityList) { // Update visuals based on data
             g.updateData();
         }
 
-        ArrayList<GameCharacter> newEntityList = new ArrayList<>();
-        for (GameCharacter e: entityList) {
+        ArrayList<Entity> newEntityList = new ArrayList<>();
+        for (Entity e: entityList) {
             if (e.getToDelete()) continue;
             newEntityList.add(e);
         }
@@ -63,9 +60,13 @@ public class EntityManager {
 
     public void draw(Camera c) {
         player.paint(c);
-        for (GameCharacter g: entityList) {
+        for (Entity g: entityList) {
             g.paint(c);
         }
         roomManager.drawRooms(c);
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }
