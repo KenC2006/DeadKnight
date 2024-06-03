@@ -1,6 +1,6 @@
 package Managers;
 
-import Entities.GameCharacter;
+import Entities.Entity;
 import Entities.Player;
 import Universal.Camera;
 import Entities.ShortMeleeEnemy;
@@ -10,15 +10,15 @@ import java.util.ArrayList;
 
 public class EntityManager {
     private final Player player;
-    private ArrayList<GameCharacter> entityList = new ArrayList<>();
+    private ArrayList<Entity> entityList = new ArrayList<>();
     private RoomManager roomManager = new RoomManager();
 
     public EntityManager() throws FileNotFoundException {
         player = new Player(0, 0);
         entityList.add(player);
-        entityList.add(new GameCharacter(20, 20, 3, 4,100));
-        for (int i = 0; i < 1; i++) {
-            entityList.add(new ShortMeleeEnemy(-2, 15, 2));
+        entityList.add(new Entity(20, 20, 3, 4,100));
+        for (int i = 0; i < 10; i++) {
+            entityList.add(new ShortMeleeEnemy(0, 0, 2, player));
 
         }
     }
@@ -28,28 +28,28 @@ public class EntityManager {
     }
 
     public void update() {
-        for (GameCharacter g: entityList) { // Set pre conditions and intital values
+        for (Entity g: entityList) { // Set pre conditions and intital values
             g.updateValues();
         }
 
-        for (GameCharacter g: entityList) { // Manage collisions with walls
+        for (Entity g: entityList) { // Manage collisions with walls
             g.resolveRoomCollisions(roomManager.getLoadedRooms());
         }
 
-        for (GameCharacter g: entityList) { // Manage collisions with player
+        for (Entity g: entityList) { // Manage collisions with player
             if (g.equals(player)) continue;
             player.resolveEntityCollision(g);
         }
 
-        for (GameCharacter g: entityList) { // Update visuals based on data
+        for (Entity g: entityList) { // Update visuals based on data
             g.updateData();
             if (!g.equals(entityList.get(2))) continue; // need to know enemy spawns to have working grid generation and pathfinding
             g.generatePath(g.getPos(), roomManager.getLoadedRooms().getFirst().getNodeMap());
 //            System.out.println(g.getBottomPos());
         }
 
-        ArrayList<GameCharacter> newEntityList = new ArrayList<>();
-        for (GameCharacter e: entityList) {
+        ArrayList<Entity> newEntityList = new ArrayList<>();
+        for (Entity e: entityList) {
             if (e.getToDelete()) continue;
             newEntityList.add(e);
         }
@@ -62,7 +62,7 @@ public class EntityManager {
 
     public void draw(Camera c) {
         player.paint(c);
-        for (GameCharacter g: entityList) {
+        for (Entity g: entityList) {
             g.paint(c);
         }
         roomManager.drawRooms(c);

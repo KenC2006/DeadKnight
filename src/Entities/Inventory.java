@@ -39,7 +39,7 @@ public class Inventory {
     }
 
     public void updatePosition(Vector2F newPosition) {
-        primarySlot.get(selectedPrimary).setRelativeLocation(newPosition);
+        primarySlot.get(selectedPrimary).setLocation(newPosition);
     }
 
 

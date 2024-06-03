@@ -9,7 +9,7 @@ import Structure.Vector2F;
 import java.awt.*;
 import java.util.*;
 
-public class Enemy extends GameCharacter {
+public class Enemy extends Entity {
 
     public final static double defaultHeight = 5;
     public final static double defaultWidth = 2;
@@ -168,7 +168,7 @@ public class Enemy extends GameCharacter {
         return playerPos.getEuclideanDistance(enemyPos);
     }
 
-    public GameCharacter getSwing() {
+    public Entity getSwing() {
         return null;
     }
 

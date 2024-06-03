@@ -1,6 +1,6 @@
 package Universal;
 
-import Entities.GameCharacter;
+import Entities.Entity;
 import Entities.Player;
 import Items.WeaponType;
 import Structure.Hitbox;
@@ -59,7 +59,7 @@ public class Camera {
         }
     }
 
-    public void drawGameCharacter(GameCharacter e) {
+    public void drawGameCharacter(Entity e) {
         if (renderWallsOnly) {
             if (e instanceof Player) {
                 drawCoordinate(e.getCenterVector(), Color.BLUE);
