@@ -152,7 +152,6 @@ public class Entity {
 
     private void updateVelocity() {
         velocity.translateInPlace(constantVelocity.getTranslated(velocity.getNegative()).multiply(0.8));
-        System.out.println(constantVelocity);
         // Gravity
         if (affectedByGravity) constantVelocity.changeY(0.1);
     }
