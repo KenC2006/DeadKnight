@@ -9,7 +9,7 @@ import Structure.Vector2F;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GameCharacter {
+public class Entity {
     private Vector2F position, velocity, lastVelocity;
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
@@ -18,21 +18,21 @@ public class GameCharacter {
     private boolean toDelete;
 
 
-    public GameCharacter(double x, double y, double width, double height, int health) {
+    public Entity(double x, double y, double width, double height, int health) {
         position = new Vector2F(x, y);
         velocity = new Vector2F();
         hitbox = new Hitbox(x, y, x + width, y + height);
         this.health = health;
     }
 
-    public GameCharacter(Vector2F position, Vector2F size, Vector2F velocity) {
+    public Entity(Vector2F position, Vector2F size, Vector2F velocity) {
         this.position = new Vector2F(position);
         this.velocity = new Vector2F(velocity);
         hitbox = new Hitbox(position, position.getTranslated(size));
 
     }
 
-    public GameCharacter(Vector2F position, Vector2F size) {
+    public Entity(Vector2F position, Vector2F size) {
         this(position, size, new Vector2F(0, 0));
     }
 
@@ -40,10 +40,14 @@ public class GameCharacter {
         c.drawGameCharacter(this);
     }
 
-    public GameCharacter getSwing() {
+    public Entity getSwing() {
         return null;
     }
 
+    /**
+     * Resets entity values for next frame <br>
+     * - Colliding set to false
+     */
     public void updateValues() {
         updateVelocity();
         colliding = false;
@@ -61,6 +65,11 @@ public class GameCharacter {
         if (!p.getHitbox().getEnabled() || !lastMovement.quickIntersect(p.getLastMovement())) return false;
         return lastMovement.intersects(p.getLastMovement());
 
+    }
+
+    public boolean collidesWith(Entity e) {
+        if (!e.getHitbox().getEnabled() || !lastMovement.quickIntersect(e.getLastMovement())) return false;
+        return lastMovement.intersects(e.getLastMovement());
     }
 
     private boolean collidesWithRoom(Room r, Hitbox movementBox) {
