@@ -22,3 +22,10 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+/out/production/Final2024/Items/WeaponData/BasicSword.txt
+/out/production/Final2024/Rooms/Set1/room3.txt
+/out/production/Final2024/Rooms/Set1/room12.txt
+/out/production/Final2024/Rooms/Set1/room13.txt
+/out/production/Final2024/Rooms/Set1/room14.txt
+/out/production/Final2024/Rooms/Set1/room15.txt
+/out/production/Final2024/Rooms/Set1/room16.txt

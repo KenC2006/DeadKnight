@@ -77,11 +77,11 @@ public class MeleeWeapon extends Weapon {
             Hitbox h = hitboxes.get(t);
             if (e.getLastMovement().quickIntersect(h) && e.getLastMovement().intersects(h)) {
                 e.setColliding(true);
-                double kb = 0;
+                int kb = 0;
                 if (t == ActivationType.RIGHT) {
-                    kb = 3;
+                    kb = 3000;
                 } else if (t == ActivationType.LEFT) {
-                    kb = -3;
+                    kb = -3000;
                 }
                 e.setActualVX(kb);
             }

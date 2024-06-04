@@ -7,8 +7,8 @@ public class ShortMeleeEnemy extends Enemy {
     private Entity swing;
     private Player player;
 
-    public ShortMeleeEnemy(double x, double y, int health, Player player) {
-        super(x, y, 2, 5, health, 500, player);
+    public ShortMeleeEnemy(int x, int y, int health, Player player) {
+        super(x, y, 2000, 5000, health, 500000, player);
 //        right = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(0, 7),
 //                new Vector2F(4, 6), new Vector2F(6, 3),
 //                new Vector2F(4, 1))));
@@ -21,7 +21,7 @@ public class ShortMeleeEnemy extends Enemy {
 //        up = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(3, 0),
 //                new Vector2F(2, 2), new Vector2F(0, 4),
 //                new Vector2F(-2, 2), new Vector2F(-3, 0))));
-        swing = new Entity(0, 0, 5, 5, 10);
+        swing = new Entity(0, 0, 5000, 5000, 10);
         swing.setAffectedByGravity(false);
         this.player = player;
     }
@@ -36,11 +36,11 @@ public class ShortMeleeEnemy extends Enemy {
 
     public void startDashLeft() {
         isDashing = true;
-        setIntendedVX(getVX() + 10);
+        setIntendedVX(getVX() + 10000);
     }
     public void startDashRight() {
         isDashing = true;
-        setIntendedVX(getVX() - 10);
+        setIntendedVX(getVX() - 10000);
     }
     public void swingSword() {
         isAttacking = true;
@@ -56,7 +56,7 @@ public class ShortMeleeEnemy extends Enemy {
         super.updateValues();
 
 
-        if (getSquareDistToPlayer() < 100000) {
+        if (getSquareDistToPlayer() < 100000000) {
             //swing at the player
             if (player.getY() + 1 < getY()) {
                 swing.setY(getY() - swing.getHeight());

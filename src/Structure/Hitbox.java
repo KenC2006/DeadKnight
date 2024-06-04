@@ -22,7 +22,7 @@ public class Hitbox {
 
     }
 
-    public Hitbox(double x1, double y1, double x2, double y2) {
+    public Hitbox(int x1, int y1, int x2, int y2) {
         this(new Vector2F(x1, y1), new Vector2F(x2, y2));
     }
 
@@ -49,12 +49,12 @@ public class Hitbox {
         setY(point.getY());
     }
 
-    public void setX(double x) {
-        double dist = x - getTopLeft().getX();
+    public void setX(int x) {
+        int dist = x - getTopLeft().getX();
         changeX(dist);
     }
 
-    public void changeX(double dx) {
+    public void changeX(int dx) {
         for (Vector2F point : shape.getPoints()) {
             point.changeX(dx);
         }
@@ -62,12 +62,12 @@ public class Hitbox {
         getBottomRight().changeX(dx);
     }
 
-    public void setY(double y) {
-        double dist = y - getTopLeft().getY();
+    public void setY(int y) {
+        int dist = y - getTopLeft().getY();
         changeY(dist);
     }
 
-    public void changeY(double dy) {
+    public void changeY(int dy) {
         for (Vector2F point : shape.getPoints()) {
             point.changeY(dy);
         }
@@ -95,27 +95,27 @@ public class Hitbox {
         return shape.getBottomRight();
     }
 
-    public double getTop() {
+    public int getTop() {
         return getTopLeft().getY();
     }
 
-    public double getBottom() {
+    public int getBottom() {
         return getBottomRight().getY();
     }
 
-    public double getLeft() {
+    public int getLeft() {
         return getTopLeft().getX();
     }
 
-    public double getRight() {
+    public int getRight() {
         return getBottomRight().getX();
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return getRight() - getLeft();
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return getBottom() - getTop();
     }
 

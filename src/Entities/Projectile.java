@@ -24,10 +24,10 @@ public class Projectile extends Entity {
 
     public void doKB(Entity e) {
         if (getVX() > 0) {
-            e.setActualVX(1);
+            e.setActualVX(1000);
 
         } else if (getVX() < 0) {
-            e.setActualVX(-1);
+            e.setActualVX(-1000);
 
         }
     }

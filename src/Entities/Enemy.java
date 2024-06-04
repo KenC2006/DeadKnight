@@ -5,18 +5,18 @@ import Structure.Vector2F;
 
 public class Enemy extends Entity {
 
-    public final static double defaultHeight = 5;
-    public final static double defaultWidth = 2;
-    public final static double defaultWalkSpeed = 0.05;
+    public final static int defaultHeight = 5000;
+    public final static int defaultWidth = 2000;
+    public final static int defaultWalkSpeed = 50;
 
     private int state, prevState;
     private int id;
-    private double sightRadius;
+    private int sightRadius;
     private Player player;
 
     private static int enemyCount;
 
-    public Enemy(double x, double y, int width, int height, int health, double sightRadius, Player player) {
+    public Enemy(int x, int y, int width, int height, int health, int sightRadius, Player player) {
         super(x, y, width, height, health);
         this.sightRadius = sightRadius;
         this.player = player;
@@ -57,10 +57,10 @@ public class Enemy extends Entity {
 
     private void followPlayer() {
         if (player.getX() - getX() < 0) {
-            setIntendedVX(-0.1);
+            setIntendedVX(-100);
         }
         else {
-            setIntendedVX(0.1);
+            setIntendedVX(100);
         }
     }
 
@@ -90,7 +90,7 @@ public class Enemy extends Entity {
         }
     }
 
-    public double getSquareDistToPlayer() {
+    public long getSquareDistToPlayer() {
         Vector2F playerPos = new Vector2F(player.getX(), player.getY());
         Vector2F enemyPos = new Vector2F(getX(), getY());
         return playerPos.getEuclideanDistance(enemyPos);
@@ -104,7 +104,7 @@ public class Enemy extends Entity {
         return "Enemy";
     }
 
-    public double getSightRadius() {
+    public int getSightRadius() {
         return sightRadius;
     }
 
@@ -134,11 +134,11 @@ public class Enemy extends Entity {
         prevState = state;
     }
 
-    private void moveLeft(double xChange) {
+    private void moveLeft(int xChange) {
         setIntendedVX((getVX() - xChange));
     }
 
-    private void moveRight(double xChange) {
+    private void moveRight(int xChange) {
         setIntendedVX((getVX() + xChange));
     }
 
@@ -147,7 +147,7 @@ public class Enemy extends Entity {
     }
 
     public void jump() {
-        setIntendedVY(getVY() - 2);
+        setIntendedVY(getVY() - 2000);
     }
 
     public void drawEnemy(Camera c) {

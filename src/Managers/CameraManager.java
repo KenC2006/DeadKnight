@@ -13,8 +13,8 @@ public class CameraManager {
     private final Player player;
     public CameraManager(Player p) {
         player = p;
-        gameCamera = new Camera(20);
-        mapCamera = new Camera(3, new Vector2F(0, 0), 0.2);
+        gameCamera = new Camera(0.02);
+        mapCamera = new Camera(0.003, new Vector2F(0, 0), 0.2);
         mapCamera.setMapCamera(true);
     }
 

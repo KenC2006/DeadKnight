@@ -5,8 +5,8 @@ import Universal.Camera;
 import java.awt.*;
 
 public class Entrance {
-    private final int VERTICAL_ENTRANCE_LENGTH = 7;
-    private final int HORIZONTAL_ENTRANCE_LENGTH = 5;
+    private final int VERTICAL_ENTRANCE_LENGTH = 7000;
+    private final int HORIZONTAL_ENTRANCE_LENGTH = 5000;
     private Vector2F relativeLocation;
     private Vector2F absoluteLocation;
     private Vector2F connectionPoint;
@@ -21,27 +21,25 @@ public class Entrance {
         absoluteLocation = new Vector2F(location);
         if (location.getX() > connection.getX()) {
             type = EntranceType.LEFT;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -(int) (VERTICAL_ENTRANCE_LENGTH / 2))), location.getTranslated(new Vector2F(1, (int) (VERTICAL_ENTRANCE_LENGTH / 2) + 1)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -(VERTICAL_ENTRANCE_LENGTH / 2) -500)), location.getTranslated(new Vector2F(1000, (VERTICAL_ENTRANCE_LENGTH / 2) + 1500)));
             hitbox.setColour(Color.YELLOW);
 
         } else if (location.getX() < connection.getX()) {
             type = EntranceType.RIGHT;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -(int) (VERTICAL_ENTRANCE_LENGTH / 2))), location.getTranslated(new Vector2F(1, (int) (VERTICAL_ENTRANCE_LENGTH / 2) + 1)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F(0, -(VERTICAL_ENTRANCE_LENGTH / 2) - 500)), location.getTranslated(new Vector2F(1000, (VERTICAL_ENTRANCE_LENGTH / 2) + 1500)));
             hitbox.setColour(Color.ORANGE);
 
         } else if (location.getY() > connection.getY()) {
             type = EntranceType.DOWN;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F(-(int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F(-(HORIZONTAL_ENTRANCE_LENGTH / 2) - 500, 0)), location.getTranslated(new Vector2F((HORIZONTAL_ENTRANCE_LENGTH / 2) + 1500, 1000)));
             hitbox.setColour(Color.PINK);
 
         } else if (location.getY() < connection.getY()) {
-//            System.out.println(location + " " + connection + " left");
-
             type = EntranceType.UP;
-            hitbox = new Hitbox(location.getTranslated(new Vector2F(-(int) (HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((int) (HORIZONTAL_ENTRANCE_LENGTH / 2) + 1, 1)));
+            hitbox = new Hitbox(location.getTranslated(new Vector2F(-(HORIZONTAL_ENTRANCE_LENGTH / 2) - 500, 0)), location.getTranslated(new Vector2F((HORIZONTAL_ENTRANCE_LENGTH / 2) + 1500, 1000)));
             hitbox.setColour(Color.BLUE);
         } else {
-            System.out.println("ASDSADSADASDASDSAD\n");
+//            System.out.println("ASDSADSADASDASDSAD\n");
         }
     }
 
@@ -60,22 +58,22 @@ public class Entrance {
         this.connectionPoint.translateInPlace(delta);
     }
 
-    public void draw(Graphics g, int scaling) {
+    public void draw(Graphics g, double scaling) {
         if (type == EntranceType.DOWN || type == EntranceType.UP) {
-            g.fillRect(((int) relativeLocation.getX() - HORIZONTAL_ENTRANCE_LENGTH/2) * scaling, (int) relativeLocation.getY() * scaling, HORIZONTAL_ENTRANCE_LENGTH * scaling, scaling);
+            g.fillRect((int) ((relativeLocation.getX() - HORIZONTAL_ENTRANCE_LENGTH / 2) * scaling), (int) (relativeLocation.getY() * scaling), (int) (HORIZONTAL_ENTRANCE_LENGTH * scaling), (int) (scaling * 1000));
 
             if (type == EntranceType.UP) {
-                g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() + 1) * scaling, scaling, scaling);
+                g.fillRect((int) (relativeLocation.getX() * scaling), (int) ((relativeLocation.getY() + 1000) * scaling), (int) (scaling * 1000), (int) (scaling * 1000));
             } else {
-                g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() - 1) * scaling, scaling, scaling);
+                g.fillRect((int) (relativeLocation.getX() * scaling), (int) ((relativeLocation.getY() - 1000) * scaling), (int) (scaling * 1000), (int) (scaling * 1000));
             }
         } else {
-            g.fillRect((int) relativeLocation.getX() * scaling, ((int) relativeLocation.getY() - VERTICAL_ENTRANCE_LENGTH/2) * scaling, scaling, VERTICAL_ENTRANCE_LENGTH * scaling);
+            g.fillRect((int) (relativeLocation.getX() * scaling), (int) ((relativeLocation.getY() - VERTICAL_ENTRANCE_LENGTH / 2) * scaling), (int) (scaling * 1000), (int) (VERTICAL_ENTRANCE_LENGTH * scaling));
 
             if (type == EntranceType.LEFT) {
-                g.fillRect(((int) relativeLocation.getX() - 1) * scaling, (int) relativeLocation.getY() * scaling, scaling, scaling);
+                g.fillRect((int) ((relativeLocation.getX() - 1000) * scaling), (int) (relativeLocation.getY() * scaling), (int) (scaling * 1000), (int) (scaling * 1000));
             } else {
-                g.fillRect(((int) relativeLocation.getX() + 1) * scaling, (int) relativeLocation.getY() * scaling, scaling, scaling);
+                g.fillRect((int) ((relativeLocation.getX() + 1000) * scaling), (int) (relativeLocation.getY() * scaling), (int) (scaling * 1000), (int) (scaling * 1000));
             }
         }
     }

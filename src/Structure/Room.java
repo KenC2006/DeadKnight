@@ -1,5 +1,9 @@
 package Structure;
 
+import Entities.Player;
+import Items.GameItem;
+import Items.Item;
+import Items.ItemPickup;
 import Universal.Camera;
 
 import java.io.File;
@@ -12,14 +16,15 @@ public class Room {
     private HitboxGroup walls = new HitboxGroup();
     private HitboxGroup entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
+    private ArrayList<ItemPickup> groundedItems = new ArrayList<>();
 
     public Room(int x, int y, int width, int height) {
 //        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
-        walls.addHitbox(new Hitbox(x, y, x + 1, y + height));
-        walls.addHitbox(new Hitbox(x + width, y + height - 1, x, y + height));
-        walls.addHitbox(new Hitbox(x + width - 1, y + height, x + width, y));
-        walls.addHitbox(new Hitbox(x + width / 2.0, y + height * 3.0 / 4.0, x + width / 2.0 + 1, y + height));
-        walls.addHitbox(new Hitbox(x, y + height / 2.0, x + width * 3.0 / 4.0, y + height / 2.0 + 1));
+//        walls.addHitbox(new Hitbox(x, y, x + 1000, y + height));
+//        walls.addHitbox(new Hitbox(x + width, y + height - 1000, x, y + height));
+//        walls.addHitbox(new Hitbox(x + width - 1000, y + height, x + width, y));
+//        walls.addHitbox(new Hitbox(x + width / 2, y + height * 3 / 4, x + width / 2 + 1000, y + height));
+        walls.addHitbox(new Hitbox(x, y + height / 2, x + width * 3 / 4, y + height / 2 + 1000));
 
     }
 
@@ -31,6 +36,10 @@ public class Room {
         for (Entrance e: copy.entrances) {
             entrances.add(new Entrance(e));
         }
+//        for (ItemPickup i: copy.groundedItems) {
+//            groundedItems.add(ItemPickup(i));
+//        }
+//        groundedItems.add(new ItemPickup(getCenterLocation()));
     }
 
     public Room(File file) throws FileNotFoundException {
@@ -39,25 +48,27 @@ public class Room {
         int nHiboxes = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nHiboxes; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x1 = Integer.parseInt(temp[0]);
-            int y1 = Integer.parseInt(temp[1]);
-            int x2 = Integer.parseInt(temp[2]);
-            int y2 = Integer.parseInt(temp[3]);
+            int x1 = Integer.parseInt(temp[0]) * 1000;
+            int y1 = Integer.parseInt(temp[1]) * 1000;
+            int x2 = Integer.parseInt(temp[2]) * 1000;
+            int y2 = Integer.parseInt(temp[3]) * 1000;
             walls.addHitbox(new Hitbox(x1, y1, x2, y2));
         }
 
         int nEntrances = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nEntrances; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x1 = Integer.parseInt(temp[0]);
-            int y1 = Integer.parseInt(temp[1]);
-            int x2 = Integer.parseInt(temp[2]);
-            int y2 = Integer.parseInt(temp[3]);
+            int x1 = Integer.parseInt(temp[0]) * 1000;
+            int y1 = Integer.parseInt(temp[1]) * 1000;
+            int x2 = Integer.parseInt(temp[2]) * 1000;
+            int y2 = Integer.parseInt(temp[3]) * 1000;
 
             entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
             entranceHitboxes.addHitbox(new Hitbox(entrances.getLast().getHitbox()));
 
         }
+
+//        groundedItems.add(new ItemPickup(walls.getCenter()));
     }
 
     public Vector2F getCenterRelativeToRoom() {
@@ -88,7 +99,36 @@ public class Room {
 //        entranceHitboxes.draw(c);
         for (Entrance e: entrances) {
 //            e.draw(c);
+        }
 
+        for (ItemPickup item: groundedItems) {
+            item.paint(c);
+        }
+    }
+
+    public void updateValues() {
+        for (ItemPickup item: groundedItems) {
+            item.updateValues();
+
+        }
+    }
+
+    public void resolveRoomCollisions(ArrayList<Room> loadedRooms) {
+        for (ItemPickup item: groundedItems) {
+            item.resolveRoomCollisions(loadedRooms);
+        }
+
+    }
+
+    public void resolvePlayerCollisions(Player player) {
+        for (ItemPickup item: groundedItems) {
+            player.resolveEntityCollision(item);
+        }
+    }
+
+    public void updateData() {
+        for (ItemPickup item: groundedItems) {
+            item.updateData();
         }
     }
 
@@ -96,8 +136,12 @@ public class Room {
         for (Entrance e: entrances) {
             if (e.isConnected()) continue;
             walls.addHitbox(new Hitbox(e.getHitbox()));
-            System.out.println("HITBOX COLOUR IS " + e.getHitbox().getColour());
+//            System.out.println("HITBOX COLOUR IS " + e.getHitbox().getColour());
         }
+    }
+
+    public void addItemPickup(ItemPickup item) {
+        groundedItems.add(item);
     }
 
     public HitboxGroup getHitbox() {
@@ -106,6 +150,10 @@ public class Room {
 
     public ArrayList<Entrance> getEntrances() {
         return entrances;
+    }
+
+    public ArrayList<ItemPickup> getGroundedItems() {
+        return groundedItems;
     }
 
     public Vector2F getDrawLocation() {
