@@ -17,6 +17,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final int TILES_PER_HEIGHT = 100 * 1000;
     private Vector2F p1 = null, p2 = null, highlighted = new Vector2F();
     private double boxSize;
+    private int scaledBoxSize;
     private final ArrayList<Rectangle> walls = new ArrayList<>();
     private final ArrayList<Entrance> entrances = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
@@ -33,6 +34,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             public void componentResized(ComponentEvent componentEvent) {
 //                System.out.printf("min %d\n", Math.min(getHeight(), getWidth()));
                 boxSize = (double) Math.min(getHeight(), getWidth()) / (TILES_PER_HEIGHT);
+                scaledBoxSize = (int) (boxSize * 1000);
 //                System.out.printf("Grid box size = %f\n", boxSize);
                 repaint();
             }
@@ -60,48 +62,52 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void draw(Graphics g) {
         g.setColor(Color.LIGHT_GRAY.brighter());
-        g.fillRect((int) (highlighted.getX() * boxSize), 0, (int) (boxSize * 1000), getHeight());
-        g.fillRect(0, (int) (highlighted.getY() * boxSize), getWidth(), (int) (boxSize * 1000));
+        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), 0, (int) (scaledBoxSize / 1000 * 1000), getHeight());
+        g.fillRect(0, (int) (highlighted.getY() * scaledBoxSize / 1000), getWidth(), (int) (scaledBoxSize / 1000 * 1000));
 
         g.setColor(Color.LIGHT_GRAY);
-        g.fillRect((int) ((highlighted.getX() - 10000) * boxSize), (int) ((highlighted.getY() - 10000) * boxSize), (int) (boxSize * 21000), (int) (boxSize * 21000));
+        g.fillRect((int) ((highlighted.getX() - 10000) * scaledBoxSize / 1000), (int) ((highlighted.getY() - 10000) * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 21000), (int) (scaledBoxSize / 1000 * 21000));
 
         g.setColor(Color.LIGHT_GRAY.darker());
-        g.fillRect((int) (highlighted.getX() * boxSize), (int) ((highlighted.getY() - 20000) * boxSize), (int) (boxSize * 1000), (int) (boxSize * 41000));
-        g.fillRect((int) ((highlighted.getX() - 20000) * boxSize), (int) (highlighted.getY() * boxSize), (int) (boxSize * 41000), (int) (boxSize * 1000));
+        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 20000) * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 1000), (int) (scaledBoxSize / 1000 * 41000));
+        g.fillRect((int) ((highlighted.getX() - 20000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 41000), (int) (scaledBoxSize / 1000 * 1000));
 
         g.setColor(Color.DARK_GRAY.brighter());
-        g.fillRect((int) (highlighted.getX() * boxSize), (int) ((highlighted.getY() - 5000) * boxSize), (int) (boxSize * 1000), (int) (boxSize * 11000));
-        g.fillRect((int) ((highlighted.getX() - 5000) * boxSize), (int) (highlighted.getY() * boxSize), (int) (boxSize * 11000), (int) (boxSize * 1000));
+        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 5000) * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 1000), (int) (scaledBoxSize / 1000 * 11000));
+        g.fillRect((int) ((highlighted.getX() - 5000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 11000), (int) (scaledBoxSize / 1000 * 1000));
 
 
         g.setColor(Color.DARK_GRAY);
-        g.fillRect((int) (highlighted.getX() * boxSize), (int) ((highlighted.getY() - 3000) * boxSize), (int) (boxSize * 1000), (int) (boxSize * 7000));
-        g.fillRect((int) ((highlighted.getX() - 2000) * boxSize), (int) (highlighted.getY() * boxSize), (int) (boxSize * 5000), (int) (boxSize * 1000));
+        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 3000) * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 1000), (int) (scaledBoxSize / 1000 * 7000));
+        g.fillRect((int) ((highlighted.getX() - 2000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 5000), (int) (scaledBoxSize / 1000 * 1000));
 
 
         for (Rectangle wall : walls) {
             if (selected.getObject() == wall) g.setColor(Color.GREEN);
             else g.setColor(Color.RED);
-            g.fillRect((int) (wall.x * boxSize), (int) (wall.y * boxSize), (int) (wall.width * boxSize), (int) (wall.height * boxSize));
+            g.fillRect((int) (wall.x * scaledBoxSize / 1000), (int) (wall.y * scaledBoxSize / 1000), (int) (wall.width * scaledBoxSize / 1000), (int) (wall.height * scaledBoxSize / 1000));
         }
         for (Entrance entrance : entrances) {
             if (selected.getObject() == entrance) g.setColor(Color.GREEN);
             else g.setColor(Color.BLUE);
-            entrance.draw(g, boxSize);
+            entrance.draw(g, scaledBoxSize);
         }
 
         g.setColor(Color.GREEN);
         if (p2 == null && p1 != null) {
-            g.fillRect((int) (p1.getX() * boxSize), (int) (p1.getY() * boxSize), (int) (boxSize * 1000), (int) (boxSize * 1000));
+            g.fillRect((int) (p1.getX() * scaledBoxSize / 1000), (int) (p1.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize), (int) (scaledBoxSize));
         }
 
         g.setColor(Color.BLACK);
+        System.out.printf("%f %d\n", boxSize, getWidth());
         if (boxSize <= 0) return;
-        for (double i = 0; i < getWidth(); i += boxSize * 1000) {
+        int last = 0;
+        for (int i = 0; i < getWidth(); i += scaledBoxSize) {
+            System.out.println((int) i - last);
+            last = (int) i;
             g.drawLine((int) i, 0, (int) i, getHeight());
         }
-        for (double i = 0; i < getHeight(); i += boxSize * 1000) {
+        for (int i = 0; i < getHeight(); i += scaledBoxSize) {
             g.drawLine(0, (int) i, getWidth(), (int) i);
         }
     }
@@ -245,7 +251,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int mouseX = (int) ((e.getX() / boxSize) / 1000) * 1000, mouseY = (int) ((e.getY() / boxSize) / 1000) * 1000;
+        int mouseX = (int) ((e.getX() / scaledBoxSize) * 1000), mouseY = (int) ((e.getY() / scaledBoxSize) * 1000);
         if (p1 == null) {
             p1 = new Vector2F(mouseX, mouseY);
             selected.setObject(returnSelected());
@@ -282,7 +288,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (selected.getObject() != null) {
-            selected.setLocation((int) (e.getX() / boxSize), (int) (e.getY() / boxSize));
+            selected.setLocation((int) (e.getX() / scaledBoxSize) * 1000, (int) (e.getY() / scaledBoxSize) * 1000);
 
             repaint();
         }
@@ -294,7 +300,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     @Override
     public void mouseMoved(MouseEvent e) {
         if (boxSize == 0) return;
-        int mouseX = (int) ((e.getX() / boxSize) / 1000) * 1000, mouseY = (int) ((e.getY() / boxSize) / 1000) * 1000;
+        int mouseX = (int) (e.getX() / scaledBoxSize) * 1000, mouseY = (int) (e.getY() / scaledBoxSize) * 1000;
         highlighted = new Vector2F(mouseX, mouseY);
 //        System.out.println(highlighted);
         repaint();

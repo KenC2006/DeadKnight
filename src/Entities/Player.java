@@ -107,12 +107,12 @@ public class Player extends Entity {
 
 
         if (framesSinceDash == 0 && manager.getPressed(KeyEvent.VK_SHIFT)) {
-            framesSinceDash = 75;
+            framesSinceDash = 30;
         }
 
-        if (framesSinceDash > 60) {
-            if (direction == Direction.LEFT) dx = -1400;
-            else dx = 1400;
+        if (framesSinceDash > 20) {
+            if (direction == Direction.LEFT) dx = -2000;
+            else dx = 2000;
             getHitbox().setEnabled(false);
             setAffectedByGravity(false);
         } else {

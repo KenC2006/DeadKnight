@@ -162,7 +162,7 @@ public class Entity {
             }
         }
         minTime -= 1;
-        System.out.println(minTime);
+//        System.out.println(minTime);
 //        System.out.println(startingVelocity);
 //        System.out.println(startingVelocity.multiply(minTime / 1000.0));
 
