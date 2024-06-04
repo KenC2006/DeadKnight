@@ -30,7 +30,7 @@ public class Enemy extends GameCharacter {
         this.sightRadius = sightRadius;
         id = enemyCount;
         enemyCount++;
-        enemyPos = new Vector2F(4.5, 22); // temp bc no enemy spawn locs
+        enemyPos = new Vector2F(-2, 23); // temp bc no enemy spawn locs
         startWander();
     }
 
@@ -128,6 +128,9 @@ public class Enemy extends GameCharacter {
             }
             for (Vector2F node : graph.getEdges().get(cur_node)) {
                 if (v.get(node) == null) {
+                    if (node.getYDistance(cur_node) > 17) {
+                        continue;
+                    }
                     q.add(new Edge(cur_node.getEuclideanDistance(node) + cur_dist + node.getEuclideanDistance(playerPos), node, cur_node));
                 }
             }
@@ -147,6 +150,7 @@ public class Enemy extends GameCharacter {
     public void updateEnemy(Player player) {
         if (getSquareDistToPlayer(player) < sightRadius) {
             playerPos = new Vector2F(player.getX() + player.getWidth()/2, player.getY() + player.getHeight() - 1);
+//            System.out.println(playerPos);
             followPlayer();
         }
         else {

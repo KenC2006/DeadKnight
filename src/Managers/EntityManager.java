@@ -21,7 +21,7 @@ public class EntityManager {
         entityList.add(player);
         entityList.add(new GameCharacter(20, 20, 3, 4,100));
         for (int i = 0; i < 1; i++) {
-            entityList.add(new ShortMeleeEnemy(3, 17, 2));
+            entityList.add(new ShortMeleeEnemy(-2, 15, 2));
 
         }
     }
@@ -48,6 +48,7 @@ public class EntityManager {
             g.updateData();
             if (!g.equals(entityList.get(2))) continue; // need to know enemy spawns to have working grid generation and pathfinding
             g.generatePath(g.getPos(), roomManager.getLoadedRooms().getFirst().getNodeMap());
+//            System.out.println(g.getBottomPos());
         }
 
         ArrayList<GameCharacter> newEntityList = new ArrayList<>();
