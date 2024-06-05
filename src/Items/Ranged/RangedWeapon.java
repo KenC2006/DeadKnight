@@ -25,15 +25,15 @@ public class RangedWeapon extends Weapon {
     @Override
     public void activate(ActivationType dir, ActionManager ac) {
         if (fireCooldownTimer.isReady() && (ac.getPressed(KeyEvent.VK_RIGHT) || ac.getPressed(KeyEvent.VK_LEFT) || ac.getPressed(KeyEvent.VK_UP) || ac.getPressed(KeyEvent.VK_DOWN))) {
-            double vx = 0, vy = 0;
+            int vx = 0, vy = 0;
 
             fireCooldownTimer.reset();
-            if (ac.getPressed(KeyEvent.VK_RIGHT)) vx = 2;
-            else if (ac.getPressed(KeyEvent.VK_LEFT)) vx = -2;
-            else if (ac.getPressed(KeyEvent.VK_DOWN)) vy = 2;
-            else if (ac.getPressed(KeyEvent.VK_UP)) vy = -2;
+            if (ac.getPressed(KeyEvent.VK_RIGHT)) vx = 2000;
+            else if (ac.getPressed(KeyEvent.VK_LEFT)) vx = -2000;
+            else if (ac.getPressed(KeyEvent.VK_DOWN)) vy = 2000;
+            else if (ac.getPressed(KeyEvent.VK_UP)) vy = -2000;
 
-            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-0.5, -0.5)), new Vector2F(1, 1), new Vector2F(vx, vy));
+            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy));
             playerProjectileList.add(bullet);
         }
     }
@@ -41,7 +41,7 @@ public class RangedWeapon extends Weapon {
 //    @Override
 //    public void activate(ActivationType dir, ActionManager ac) {
 //        if (fireCooldownTimer.isReady() && (ac.getPressed(KeyEvent.VK_RIGHT) || ac.getPressed(KeyEvent.VK_LEFT) || ac.getPressed(KeyEvent.VK_UP) || ac.getPressed(KeyEvent.VK_DOWN))) {
-//            double vx = 0, vy = 0;
+//            int vx = 0, vy = 0;
 //            if (ac.getPressed(KeyEvent.VK_RIGHT)) vx = 1;
 //            else if (ac.getPressed(KeyEvent.VK_LEFT)) vx = -1;
 //            else if (ac.getPressed(KeyEvent.VK_DOWN)) vy = 1;

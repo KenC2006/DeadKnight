@@ -10,24 +10,28 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Entity {
-    private Vector2F position, velocity, lastVelocity;
+    private Vector2F position, velocity, lastVelocity, constantVelocity;
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
+    private Hitbox testHitbox = new Hitbox(0, 0, 1, 1);
     private int health;
     private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, onLeft, onRight, destroyedOnWallImpact;
     private boolean toDelete;
 
 
-    public Entity(double x, double y, double width, double height, int health) {
+    public Entity(int x, int y, int width, int height, int health) {
         position = new Vector2F(x, y);
         velocity = new Vector2F();
+        constantVelocity = new Vector2F();
         hitbox = new Hitbox(x, y, x + width, y + height);
         this.health = health;
     }
 
-    public Entity(Vector2F position, Vector2F size, Vector2F velocity) {
+    public Entity(Vector2F position, Vector2F size, Vector2F constantVelocity) {
         this.position = new Vector2F(position);
-        this.velocity = new Vector2F(velocity);
+        this.velocity = new Vector2F();
+        this.constantVelocity = new Vector2F(constantVelocity);
+
         hitbox = new Hitbox(position, position.getTranslated(size));
 
     }
@@ -38,6 +42,8 @@ public class Entity {
 
     public void paint(Camera c) {
         c.drawGameCharacter(this);
+//        new HitboxGroup(lastMovement).draw(c);
+        c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 
     public Entity getSwing() {
@@ -74,6 +80,7 @@ public class Entity {
 
     private boolean collidesWithRoom(Room r, Hitbox movementBox) {
         if (!movementBox.quickIntersect(r.getHitbox())) return false;
+//        System.out.println("ASDASDS = " + movementBox.intersects(r.getHitbox()));
         return movementBox.intersects(r.getHitbox());
     }
 
@@ -81,16 +88,26 @@ public class Entity {
         lastMovement = new HitboxGroup();
         lastVelocity = new Vector2F();
         Hitbox initialTest = createMovementBox(velocity);
+        testHitbox = initialTest;
+//        for (Vector2F v: initialTest.getPoints()) {
+//            System.out.println(v);
+//        }
+//        System.out.println(initialTest);
         boolean collides = false;
+//        System.out.println(roomList.size());
         for (Room r: roomList) {
+//            System.out.println("TEMP = " + collidesWithRoom(r, initialTest));
             if (collidesWithRoom(r, initialTest)) {
                 collides = true;
                 break;
             }
         }
 
+//        System.out.println("COLLDES = " + collides);
+
         Vector2F newVelocity = velocity;
         if (collides) {
+//            System.out.println("Collides = " + collides);
             newVelocity = binarySearchVelocity(velocity, roomList);
 
         }
@@ -98,8 +115,8 @@ public class Entity {
         lastMovement.addHitbox(createMovementBox(newVelocity));
         lastVelocity = lastVelocity.getTranslated(newVelocity);
 
-        double remainingX = velocity.getX() - newVelocity.getX();
-        double remainingY = velocity.getY() - newVelocity.getY();
+        int remainingX = velocity.getX() - newVelocity.getX();
+        int remainingY = velocity.getY() - newVelocity.getY();
 
         if (destroyedOnWallImpact && Math.abs(remainingX) + Math.abs(remainingY) > 0) {
             markToDelete(true);
@@ -107,11 +124,13 @@ public class Entity {
         }
         if ((onFloor(roomList) && remainingY > 0) || (onCeiling(roomList) && remainingY < 0)) {
             velocity.setY(0);
+            setIntendedVY(0);
             remainingY = 0;
         }
 
         if ((onLeftWall(roomList) && remainingX < 0) || (onRightWall(roomList) && remainingX > 0)) {
             velocity.setX(0);
+            setIntendedVX(0);
             remainingX = 0;
         }
 
@@ -124,11 +143,12 @@ public class Entity {
     }
 
     private Vector2F binarySearchVelocity(Vector2F startingVelocity, ArrayList<Room> roomList) {
-        double minTime = 0, maxTime = 1;
-        while (maxTime - minTime > 0.001) {
-            double mid = (minTime + maxTime) / 2.0;
-            Hitbox movementBox = createMovementBox(startingVelocity.multiply(mid));
+        int minTime = 0, maxTime = 1000;
+        while (minTime < maxTime) {
+            int mid = (minTime + maxTime + 1) / 2;
+            Hitbox movementBox = createMovementBox(startingVelocity.multiply(mid / 1000.0));
             boolean collides = false;
+//            System.out.printf("min = %d max = %d\n", minTime, maxTime);
             for (Room r: roomList) {
                 if (collidesWithRoom(r, movementBox)) {
                     collides = true;
@@ -136,18 +156,23 @@ public class Entity {
                 }
             }
             if (collides) {
-                maxTime = mid - 0.001;
+                maxTime = mid - 1;
             } else {
                 minTime = mid;
             }
         }
+        minTime -= 1;
+//        System.out.println(minTime);
+//        System.out.println(startingVelocity);
+//        System.out.println(startingVelocity.multiply(minTime / 1000.0));
 
-        return startingVelocity.multiply(minTime);
+        return startingVelocity.multiply(minTime / 1000.0);
     }
 
     private void updateVelocity() {
+        velocity.translateInPlace(constantVelocity.getTranslated(velocity.getNegative()).multiply(0.3));
         // Gravity
-        if (affectedByGravity) velocity.changeY(0.1);
+        if (affectedByGravity) constantVelocity.changeY(100);
     }
 
     public HitboxGroup getLastMovement() {
@@ -162,7 +187,7 @@ public class Entity {
     }
 
     private boolean onFloor(ArrayList<Room> roomList) {
-        Hitbox belowFeet = createMovementBox(new Vector2F(0, 0.01));
+        Hitbox belowFeet = createMovementBox(new Vector2F(0, 10));
         for (Room r: roomList) {
             if (collidesWithRoom(r, belowFeet)) return true;
         }
@@ -170,7 +195,7 @@ public class Entity {
     }
 
     private boolean onLeftWall(ArrayList<Room> roomList) {
-        Hitbox leftSide = createMovementBox(new Vector2F(-0.01, 0));
+        Hitbox leftSide = createMovementBox(new Vector2F(-10, 0));
         for (Room r: roomList) {
             if (collidesWithRoom(r, leftSide)) return true;
         }
@@ -178,7 +203,7 @@ public class Entity {
     }
 
     private boolean onRightWall(ArrayList<Room> roomList) {
-        Hitbox rightSide = createMovementBox(new Vector2F(0.01, 0));
+        Hitbox rightSide = createMovementBox(new Vector2F(10, 0));
         for (Room r: roomList) {
             if (collidesWithRoom(r, rightSide)) return true;
         }
@@ -186,7 +211,7 @@ public class Entity {
     }
 
     private boolean onCeiling(ArrayList<Room> roomList) {
-        Hitbox aboveHead = createMovementBox(new Vector2F(0, -0.01));
+        Hitbox aboveHead = createMovementBox(new Vector2F(0, -10));
         for (Room r: roomList) {
             if (collidesWithRoom(r, aboveHead)) return true;
         }
@@ -204,60 +229,85 @@ public class Entity {
     }
 
     private void updatePosition(Vector2F velocity) {
+//        System.out.println("Moving with " + velocity);
         position.translateInPlace(velocity);
         hitbox.translateInPlace(velocity);
     }
 
-    public void setX(double x) {
+    public void setX(int x) {
         position.setX(x);
         hitbox.setX(x);
     }
 
-    public void setY(double y) {
+    public void setY(int y) {
         position.setY(y);
         hitbox.setY(y);
     }
 
-    public void changeX(double dx) {
-        position.changeX(dx);
-        hitbox.changeX(dx);
+    public void changeX(int dx) {
+        changeVX(dx);
     }
 
-    public void changeY(double dy) {
-        position.changeY(dy);
-        hitbox.changeY(dy);
+    public void changeY(int dy) {
+        changeVY(dy);
     }
 
-    public double getX() {
+    public int getX() {
         return position.getX();
     }
 
-    public double getY() {
+    public int getY() {
         return position.getY();
     }
 
-    public double getVX() {
+    public int getVX() {
         return velocity.getX();
     }
 
-    public double getVY() {
+    public int getVY() {
         return velocity.getY();
     }
 
-    public double getHeight() {
+    public int getIntendedVX() {
+        return constantVelocity.getX();
+    }
+
+    public int getIntendedVY() {
+        return constantVelocity.getY();
+    }
+
+    public void changeVX(int dx) {
+        velocity.setX(getX() + dx);
+    }
+
+    public void changeVY(int dy) {
+        velocity.setY(getY() + dy);
+    }
+
+    public int getHeight() {
         return hitbox.getHeight();
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return hitbox.getWidth();
     }
 
-    public void setVX(double vX) {
-        velocity.setX(vX);
+    public void setIntendedVX(int vx) {
+        constantVelocity.setX(vx);
     }
 
-    public void setVY(double vY) {
+    public void setIntendedVY(int vy) {
+        constantVelocity.setY(vy);
+    }
+
+    public void setActualVX(int vX) {
+        velocity.setX(vX);
+//        constantVelocity.setX(vX);
+    }
+
+    public void setActualVY(int vY) {
         velocity.setY(vY);
+//        constantVelocity.setY(vY);
     }
 
     public Hitbox getHitbox() {
@@ -300,12 +350,12 @@ public class Entity {
         return toDelete;
     }
 
-    public double getCenterX() {
-        return hitbox.getLeft() + hitbox.getWidth() / 2.0;
+    public int getCenterX() {
+        return (int) (hitbox.getLeft() + hitbox.getWidth() / 2.0);
     }
 
-    public double getCenterY() {
-        return hitbox.getTop() + hitbox.getHeight() / 2.0;
+    public int getCenterY() {
+        return (int) (hitbox.getTop() + hitbox.getHeight() / 2.0);
     }
 
     public Vector2F getCenterVector() {
