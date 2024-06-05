@@ -18,10 +18,12 @@ public class RoomEditor extends JFrame {
     public RoomEditor() {
 
         grid = new Grid();
+//        System.out.println("HERE");
         add(grid);
+//        System.out.println("HERE 2");
         setLayout(new BorderLayout());
         add(grid,BorderLayout.CENTER);
-        pack();
+//        pack();
 
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,10 +33,10 @@ public class RoomEditor extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
 
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT) grid.addEntrance(1, 0);
-                if (e.getKeyCode() == KeyEvent.VK_LEFT) grid.addEntrance(-1, 0);
-                if (e.getKeyCode() == KeyEvent.VK_UP) grid.addEntrance(0, -1);
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) grid.addEntrance(0, 1);
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT) grid.addEntrance(1000, 0);
+                if (e.getKeyCode() == KeyEvent.VK_LEFT) grid.addEntrance(-1000, 0);
+                if (e.getKeyCode() == KeyEvent.VK_UP) grid.addEntrance(0, -1000);
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) grid.addEntrance(0, 1000);
 
                 if (e.getKeyCode() == KeyEvent.VK_P) grid.addPlayerSpawn();
                 if (e.getKeyCode() == KeyEvent.VK_I) grid.addItemSpawn();
@@ -93,6 +95,8 @@ public class RoomEditor extends JFrame {
                 }
             }
         });
+
+        System.out.println("DONE SETup");
     }
 
 

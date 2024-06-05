@@ -1,13 +1,13 @@
 package Structure;
 
 public class Vector2F {
-    private double x = 0, y = 0;
+    private int x = 0, y = 0;
 
     public Vector2F() {
 
     }
 
-    public Vector2F(double x, double y) {
+    public Vector2F(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -17,27 +17,27 @@ public class Vector2F {
         this.y = v.y;
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
-    public void setX(double x) {
+    public void setX(int x) {
         this.x = x;
     }
 
-    public void setY(double y) {
+    public void setY(int y) {
         this.y = y;
     }
 
-    public void changeX(double dx) {
+    public void changeX(int dx) {
         this.x += dx;
     }
 
-    public void changeY(double dy) {
+    public void changeY(int dy) {
         this.y += dy;
     }
 
@@ -52,7 +52,7 @@ public class Vector2F {
      * @param p the point to compare
      * @return the horizontal distance between the points
      */
-    public double getYDistance(Vector2F p) {
+    public int getYDistance(Vector2F p) {
         return p.getY() - getY();
     }
 
@@ -62,7 +62,7 @@ public class Vector2F {
      * @param p the point to compare
      * @return the horizontal distance between the points
      */
-    public double getXDistance(Vector2F p) {
+    public int getXDistance(Vector2F p) {
         return p.getX() - getX();
     }
 
@@ -71,12 +71,12 @@ public class Vector2F {
      * @param p the coordinate to compare
      * @return the square of the straight line distance between two points
      */
-    public double getEuclideanDistance(Vector2F p) {
-        double dx = getYDistance(p), dy = getXDistance(p);
-        return dx * dx + dy * dy;
+    public long getEuclideanDistance(Vector2F p) {
+        long dx = getYDistance(p), dy = getXDistance(p);
+        return (dx * dx + dy * dy);
     }
 
-    public double getManhattanDistance(Vector2F p) {
+    public int getManhattanDistance(Vector2F p) {
         return Math.abs(getXDistance(p)) + Math.abs(getYDistance(p));
     }
 
@@ -90,15 +90,15 @@ public class Vector2F {
     }
 
     public Vector2F multiply(double factor) {
-        return new Vector2F(getX() * factor, getY() * factor);
+        return new Vector2F((int) (getX() * factor), (int) (getY() * factor));
     }
 
-    public double getLength() {
+    public int getLength() {
         return getX() * getX() + getY() * getY();
     }
 
-    public double dotProduct(Vector2F p) {
-        return getX() * p.getX() + getY() * p.getY();
+    public long dotProduct(Vector2F p) {
+        return (long) getX() * p.getX() + (long) getY() * p.getY();
     }
 
     public Vector2F normal() {
@@ -106,7 +106,7 @@ public class Vector2F {
     }
 
     public Vector2F normalize() {
-        double d = Math.sqrt(getLength());
+        int d = (int) Math.sqrt(getLength());
         if (d == 0) {
             d = 1;
         }

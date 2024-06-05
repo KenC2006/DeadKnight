@@ -20,6 +20,7 @@ public class GamePanel extends JPanel{
         this.setFocusable(true);
         this.setVisible(true);
         new RoomEditor();
+
         actionManager = new ActionManager();
         entityManager = new EntityManager();
         cameraManager = new CameraManager(entityManager.getPlayer());

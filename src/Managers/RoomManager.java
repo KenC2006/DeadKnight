@@ -22,7 +22,7 @@ public class RoomManager {
     }
 
     public void createRectangleRoom() {
-        Room newRoom = new Room(-40, -40, 80, 80);
+        Room newRoom = new Room(-40000, -40000, 80000, 80000);
         allRooms.add(newRoom);
         loadedRooms.add(newRoom);
     }
@@ -69,7 +69,7 @@ public class RoomManager {
             ArrayList<Room> compatibleRooms = new ArrayList<>();
             for (Room newRoom: allPossibleRooms) {
                 Room testRoom = new Room(newRoom);
-                testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getLocation()));
+                testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getConnection()));
                 for (Entrance connectingEntrance: testRoom.getEntrances()) {
                     if (!e.connects(connectingEntrance)) continue;
                     testRoom.centerAroundPointInRoom(connectingEntrance.getConnection());
