@@ -3,7 +3,7 @@ package Structure;
 import java.awt.*;
 import java.util.*;
 
-import Camera.Camera;
+import Universal.Camera;
 
 public class NodeMap {
 

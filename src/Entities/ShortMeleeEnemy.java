@@ -1,6 +1,6 @@
 package Entities;
 
-import Camera.Camera;
+import Universal.Camera;
 
 public class ShortMeleeEnemy extends Enemy {
 
