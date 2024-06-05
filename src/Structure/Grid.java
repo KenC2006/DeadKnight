@@ -96,17 +96,17 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         for (PlayerSpawn playerSpawn : playerSpawns) {
             if (selected.getObject() == playerSpawn) g.setColor(Color.GREEN);
             else g.setColor(Color.YELLOW);
-            g.fillRect(playerSpawn.x * boxSize, playerSpawn.y * boxSize, playerSpawn.width * boxSize, playerSpawn.height * boxSize);
+            g.fillRect(playerSpawn.x * scaledBoxSize / 1000, playerSpawn.y * scaledBoxSize / 1000, playerSpawn.width * scaledBoxSize / 1000, playerSpawn.height * scaledBoxSize / 1000);
         }
         for (ItemSpawn itemSpawn : itemSpawns) {
             if (selected.getObject() == itemSpawn) g.setColor(Color.GREEN);
             else g.setColor(Color.MAGENTA);
-            g.fillRect(itemSpawn.x * boxSize, itemSpawn.y * boxSize, itemSpawn.width * boxSize, itemSpawn.height * boxSize);
+            g.fillRect(itemSpawn.x * scaledBoxSize / 1000, itemSpawn.y * scaledBoxSize / 1000, itemSpawn.width * scaledBoxSize / 1000, itemSpawn.height * scaledBoxSize / 1000);
         }
         for (EnemySpawn enemySpawn : enemySpawns) {
             if (selected.getObject() == enemySpawn) g.setColor(Color.GREEN);
             else g.setColor(Color.BLACK);
-            g.fillRect(enemySpawn.x * boxSize, enemySpawn.y * boxSize, enemySpawn.width * boxSize, enemySpawn.height * boxSize);
+            g.fillRect(enemySpawn.x * scaledBoxSize / 1000, enemySpawn.y * scaledBoxSize / 1000, enemySpawn.width * scaledBoxSize / 1000, enemySpawn.height * scaledBoxSize / 1000);
         }
 
         g.setColor(Color.GREEN);
@@ -173,7 +173,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void undoLastMove() {
         if (stack.isEmpty()) return;
-<<<<<<< room-creator
         if (stack.getLast() == 1) {
             getEntrances().removeLast();
         } else if (stack.getLast() == 2) {
@@ -184,12 +183,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             getItemSpawns().removeLast();
         } else if (stack.getLast() == 5) {
             getEnemySpawns().removeLast();
-=======
-        if (stack.get(stack.size() - 1) == 1) {
-            getEntrances().remove(stack.size() - 1);
-        } else {
-            getWalls().remove(getWalls().size() - 1);
->>>>>>> main
         }
         stack.pop();
         p1 = null;
@@ -220,7 +213,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void addPlayerSpawn(){
         if (p1 == null) return;
-        playerSpawns.add(new PlayerSpawn((int)p1.getX(),(int)p1.getY(),1,1));
+        playerSpawns.add(new PlayerSpawn((int)p1.getX(),(int)p1.getY(),1000,1000));
         stack.add(3);
         p1=null;
         repaint();
@@ -228,7 +221,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void addItemSpawn(){
         if (p1 == null) return;
-        itemSpawns.add(new ItemSpawn((int)p1.getX(),(int)p1.getY(),1,1));
+        itemSpawns.add(new ItemSpawn((int)p1.getX(),(int)p1.getY(),1000,1000));
         stack.add(4);
         p1=null;
         repaint();
@@ -236,7 +229,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void addEnemySpawn(){
         if (p1 == null) return;
-        enemySpawns.add(new EnemySpawn((int)p1.getX(),(int)p1.getY(),1,1));
+        enemySpawns.add(new EnemySpawn((int)p1.getX(),(int)p1.getY(),1000,1000));
         stack.add(5);
         p1=null;
         repaint();
@@ -402,12 +395,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (selected.getObject() != null) {
-<<<<<<< room-creator
-            selected.setLocation(e.getX() / boxSize, e.getY() / boxSize);
-=======
             selected.setLocation((int) (e.getX() / scaledBoxSize) * 1000, (int) (e.getY() / scaledBoxSize) * 1000);
-
->>>>>>> main
             repaint();
         }
     }
