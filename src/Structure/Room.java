@@ -64,7 +64,7 @@ public class Room {
             int y2 = Integer.parseInt(temp[3]) * 1000;
 
             entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
-            entranceHitboxes.addHitbox(new Hitbox(entrances.getLast().getHitbox()));
+            entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
 
         }
 

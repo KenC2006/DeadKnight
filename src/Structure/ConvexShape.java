@@ -15,8 +15,8 @@ public class ConvexShape {
         }
         this.points = jarvisMarch(points);
 //        System.out.printf("Shape made with %d points\n", this.points.size());
-        topLeft.copy(points.getFirst());
-        bottomRight.copy(points.getFirst());
+        topLeft.copy(points.get(0));
+        bottomRight.copy(points.get(0));
         for (Vector2F c : points) {
             topLeft.setX(Math.min(topLeft.getX(), c.getX()));
             topLeft.setY(Math.min(topLeft.getY(), c.getY()));
@@ -79,7 +79,7 @@ public class ConvexShape {
     }
 
     private Vector2F findFurthestPoint(ArrayList<Vector2F> points) {
-        Vector2F max = new Vector2F(points.getFirst());
+        Vector2F max = new Vector2F(points.get(0));
         for (Vector2F p: points) {
             if (max.getX() < p.getX() || (max.getX() == p.getX() && max.getY() < p.getY())) max.copy(p);
         }
@@ -102,7 +102,7 @@ public class ConvexShape {
     }
 
     private Projection getProjection(Vector2F axis) {
-        long min = axis.dotProduct(points.getFirst());
+        long min = axis.dotProduct(points.get(0));
         long max = min;
         for (int i =  1; i < points.size(); i++) {
             long p = axis.dotProduct(points.get(i));

@@ -135,10 +135,10 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void undoLastMove() {
         if (stack.isEmpty()) return;
-        if (stack.getLast() == 1) {
-            getEntrances().removeLast();
+        if (stack.get(stack.size() - 1) == 1) {
+            getEntrances().remove(stack.size() - 1);
         } else {
-            getWalls().removeLast();
+            getWalls().remove(getWalls().size() - 1);
         }
         stack.pop();
         p1 = null;
@@ -302,7 +302,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         if (boxSize == 0) return;
         int mouseX = (int) (e.getX() / scaledBoxSize) * 1000, mouseY = (int) (e.getY() / scaledBoxSize) * 1000;
         highlighted = new Vector2F(mouseX, mouseY);
-        System.out.println(highlighted);
+//        System.out.println(highlighted);
         repaint();
     }
 }
