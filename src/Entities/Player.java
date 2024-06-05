@@ -3,6 +3,7 @@ package Entities;
 import Items.*;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
+import Items.Melee.MeleeWeapon;
 import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
 import Universal.Camera;
@@ -26,18 +27,17 @@ public class Player extends Entity {
     private int framesPassed, lastUpPressed;
     private Inventory playerInventory;
 
-    public Player(double x, double y){
-        super(x, y, 2, 5,100);
+    public Player(int x, int y){
+        super(x, y, 2000, 5000,100);
         playerInventory = new Inventory();
         playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
         playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
-
     }
 
     public void updateKeyPresses(ActionManager manager) {
-        double dx = 0;
+        int dx = 0;
         framesPassed++;
         framesSinceFiredProjectile++;
         if (framesSinceDash > 0) framesSinceDash--;
@@ -71,22 +71,22 @@ public class Player extends Entity {
 
         if (jumping) {
             if (framesPassed - framesSinceStartedJumping < 10) {
-                setVY(-1 - (10 - (framesPassed - framesSinceStartedJumping)) / 10.0);
+                setIntendedVY(-1 - (10 - (framesPassed - framesSinceStartedJumping)) * 300);
             } else {
                 jumping = false;
             }
         } else if (!isGrounded()) {
-            setVY(Math.max(-0, getVY()));
+            setIntendedVY(Math.max(-0, getIntendedVY()));
 
         }
 
         if (manager.getPressed(KeyEvent.VK_D)) {
-            dx += 0.7;
+            dx += 700;
             direction = Direction.RIGHT;
         }
 
         if (manager.getPressed(KeyEvent.VK_A)) {
-            dx -= 0.7;
+            dx -= 700;
             direction = Direction.LEFT;
         }
 
@@ -107,19 +107,21 @@ public class Player extends Entity {
 
 
         if (framesSinceDash == 0 && manager.getPressed(KeyEvent.VK_SHIFT)) {
-            framesSinceDash = 75;
+            framesSinceDash = 30;
         }
 
-        if (framesSinceDash > 60) {
-            if (direction == Direction.LEFT) dx = -1.4;
-            else dx = 1.4;
+        if (framesSinceDash > 20) {
+            if (direction == Direction.LEFT) dx = -2000;
+            else dx = 2000;
             getHitbox().setEnabled(false);
+            setAffectedByGravity(false);
         } else {
+            setAffectedByGravity(true);
             getHitbox().setEnabled(true);
         }
 
 
-        setVX(dx);
+        setIntendedVX(dx);
     }
 
     public WeaponType getPrimaryType() {
@@ -138,14 +140,20 @@ public class Player extends Entity {
                 e.setColliding(true);
                 p.setColliding(true);
                 p.markToDelete(true);
+                p.doKB(e);
             }
         }
 
-        e.updateEnemy(this);
+        if (playerInventory.getCurrentPrimaryItem() instanceof MeleeWeapon) {
+            ((MeleeWeapon) playerInventory.getCurrentPrimaryItem()).doCollisionCheck(e);
+
+        }
+
     }
 
     @Override
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
+//        System.out.println("SOLVING " + roomList.size());
         super.resolveRoomCollisions(roomList);
         for (Projectile p: projectiles) {
             p.resolveRoomCollisions(roomList);

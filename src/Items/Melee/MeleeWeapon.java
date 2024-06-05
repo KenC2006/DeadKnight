@@ -1,5 +1,6 @@
 package Items.Melee;
 
+import Entities.Entity;
 import Items.ActivationType;
 import Items.Weapon;
 import Items.WeaponType;
@@ -68,6 +69,23 @@ public class MeleeWeapon extends Weapon {
 
         } catch (FileNotFoundException e) {
             System.out.println("File not found: " + e);
+        }
+    }
+
+    public void doCollisionCheck(Entity e) {
+        for (ActivationType t : hitboxes.keySet()) {
+            Hitbox h = hitboxes.get(t);
+            if (e.getLastMovement().quickIntersect(h) && e.getLastMovement().intersects(h)) {
+                e.setColliding(true);
+                int kb = 0;
+                if (t == ActivationType.RIGHT) {
+                    kb = 3000;
+                } else if (t == ActivationType.LEFT) {
+                    kb = -3000;
+                }
+                e.setActualVX(kb);
+            }
+
         }
     }
 

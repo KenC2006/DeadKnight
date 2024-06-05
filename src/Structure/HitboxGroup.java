@@ -8,13 +8,13 @@ public class HitboxGroup {
     private ArrayList<Hitbox> hitboxes;
     private Hitbox boundingBox;
     public HitboxGroup() {
-        boundingBox = new Hitbox(0, 0, 0, 0);
+        boundingBox = new Hitbox(0, 0, 1, 1);
         hitboxes = new ArrayList<>();
     }
 
     public HitboxGroup(HitboxGroup copy) {
         hitboxes = new ArrayList<>();
-        boundingBox = new Hitbox(0, 0, 0, 0);
+        boundingBox = new Hitbox(0, 0, 1, 1);
         for (Hitbox h: copy.hitboxes) {
             addHitbox(new Hitbox(h));
         }
@@ -71,6 +71,7 @@ public class HitboxGroup {
                 if (h1.intersects(h2)) return true;
             }
         }
+//        System.out.println("NO INTERSECTS SDJASPDOJS");
         return false;
     }
 
@@ -78,6 +79,8 @@ public class HitboxGroup {
         for (Hitbox h1 : hitboxes) {
             if (h1.intersects(hitbox)) return true;
         }
+//        System.out.println("NO INTERSECTS SDJASPDOJS");
+
         return false;
     }
 

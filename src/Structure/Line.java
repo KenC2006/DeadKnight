@@ -43,26 +43,26 @@ public class Line {
         x = h.getLeft();
         y = (slope * x + b);
         if (h.getTop() <=  y && y <= h.getBottom()) {
-            intersectionPoints.add(new Vector2F(x, y));
+            intersectionPoints.add(new Vector2F((int) x, (int) y));
         }
 
         x = h.getRight();
         y = (slope * x + b);
         if (h.getTop() <= y && y <= h.getBottom()) {
-            intersectionPoints.add(new Vector2F(x, y));
+            intersectionPoints.add(new Vector2F((int) x, (int) y));
         }
 
         y = h.getTop();
         x = ((y - b) / slope);
         if (h.getLeft() <= x && x <= h.getRight()) {
-            intersectionPoints.add(new Vector2F(x, y));
+            intersectionPoints.add(new Vector2F((int) x, (int) y));
 
         }
 
         y = h.getBottom();
         x = ((y - b) / slope);
         if (h.getLeft() <= x && x <= h.getRight()) {
-            intersectionPoints.add(new Vector2F(x, y));
+            intersectionPoints.add(new Vector2F((int) x, (int) y));
 
         }
 

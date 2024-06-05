@@ -8,18 +8,15 @@ import Structure.Vector2F;
 import java.util.*;
 import java.awt.Color;
 
-import java.awt.*;
-import java.util.*;
-
 public class Enemy extends Entity {
 
-    public final static double defaultHeight = 5;
-    public final static double defaultWidth = 2;
-    public final static double defaultWalkSpeed = 0.05;
+    public final static int defaultHeight = 5000;
+    public final static int defaultWidth = 2000;
+    public final static int defaultWalkSpeed = 50;
 
     private int state, prevState;
     private int id;
-    private double sightRadius;
+    private int sightRadius;
     private Vector2F playerPos = new Vector2F();
     private Vector2F enemyPos = new Vector2F();
     private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
@@ -27,7 +24,7 @@ public class Enemy extends Entity {
 
     private static int enemyCount;
 
-    public Enemy(double x, double y, int width, int height, int health, double sightRadius) {
+    public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
         super(x, y, width, height, health);
         this.sightRadius = sightRadius;
         id = enemyCount;
@@ -75,7 +72,7 @@ public class Enemy extends Entity {
         if (!isPlayerFound) return;
         isPlayerFound = false;
 //        System.out.println(path.getFirst() + " " + new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5 ) + " " + path.getFirst().getEuclideanDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)));
-        if (path.getFirst().getEuclideanDistance(getBottomPos()) < 2) {
+        if (path.getFirst().getEuclideanDistance(getBottomPos()) < 2000) {
             path.removeFirst();
             if (path.isEmpty()) {
                 stopXMovement();
@@ -84,16 +81,16 @@ public class Enemy extends Entity {
         }
         stopXMovement();
         if (getBottomPos().getXDistance(path.getFirst()) < 0) {
-            moveLeft(defaultWalkSpeed * 2);
+            setIntendedVX(-100);
         }
         else {
-            moveRight(defaultWalkSpeed * 2);
+            setIntendedVX(100);
         }
 //        System.out.println(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5).getYDistance(path.getFirst()));
-        if (path.getFirst().getYDistance(new Vector2F(super.getBottomPos().getX(), super.getBottomPos().getY())) > 2) {
+        if (path.getFirst().getYDistance(new Vector2F(super.getBottomPos().getX(), super.getBottomPos().getY())) > 2000) {
             double xDist = Math.abs(path.getFirst().getXDistance(getBottomPos()));
 //            System.out.println(xDist);
-            if (xDist < 3 && isGrounded()) {
+            if (xDist < 3000 && isGrounded()) {
                 jump();
             }
         }
@@ -108,7 +105,7 @@ public class Enemy extends Entity {
         Vector2F cur_node = new Vector2F(), prev_node;
         double cur_dist;
 
-        q.add(new Edge(0.0, start, start));
+        q.add(new Edge(0, start, start));
 //        System.out.println(start);
         while (!q.isEmpty()) {
             cur_node = q.peek().getNode1();
@@ -121,7 +118,7 @@ public class Enemy extends Entity {
             }
 //            System.out.println(cur_node.getEuclideanDistance(playerPos));
             // if we reach a node within 4 units of player pos, we good
-            if (cur_node.getEuclideanDistance(playerPos) < 25) {
+            if (cur_node.getEuclideanDistance(playerPos) < 25000) {
                 isPlayerFound = true;
                 break;
             }
@@ -130,7 +127,7 @@ public class Enemy extends Entity {
             }
             for (Vector2F node : graph.getEdges().get(cur_node)) {
                 if (v.get(node) == null) {
-                    if (node.getYDistance(cur_node) > 17) {
+                    if (node.getYDistance(cur_node) > 17000) {
                         continue;
                     }
                     q.add(new Edge(cur_node.getEuclideanDistance(node) + cur_dist + node.getEuclideanDistance(playerPos), node, cur_node));
@@ -151,7 +148,7 @@ public class Enemy extends Entity {
 
     public void updateEnemy(Player player) {
         if (getSquareDistToPlayer(player) < sightRadius) {
-            playerPos = new Vector2F(player.getX() + player.getWidth()/2, player.getY() + player.getHeight() - 1);
+            playerPos = new Vector2F(player.getX() + player.getWidth()/2, player.getY() + player.getHeight() - 1000);
 //            System.out.println(playerPos);
             followPlayer();
         }
@@ -164,7 +161,7 @@ public class Enemy extends Entity {
         }
     }
 
-    public double getSquareDistToPlayer(Player player) {
+    public long getSquareDistToPlayer(Player player) {
         Vector2F playerPos = new Vector2F(player.getX(), player.getY());
         Vector2F enemyPos = new Vector2F(getX(), getY());
         return playerPos.getEuclideanDistance(enemyPos);
@@ -178,7 +175,7 @@ public class Enemy extends Entity {
         return "Enemy";
     }
 
-    public double getSightRadius() {
+    public int getSightRadius() {
         return sightRadius;
     }
 
@@ -208,20 +205,20 @@ public class Enemy extends Entity {
         prevState = state;
     }
 
-    private void moveLeft(double xChange) {
-        setVX((getVX() - xChange));
+    private void moveLeft(int xChange) {
+        setIntendedVX((getVX() - xChange));
     }
 
-    private void moveRight(double xChange) {
-        setVX((getVX() + xChange));
+    private void moveRight(int xChange) {
+        setIntendedVX((getVX() + xChange));
     }
 
     public void stopXMovement() {
-        setVX(0);
+        setIntendedVX(0);
     }
 
     public void jump() {
-        setVY(getVY() - 2);
+        setIntendedVY(getVY() - 2000);
     }
 
     public Vector2F getPos() {

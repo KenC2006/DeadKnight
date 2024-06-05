@@ -10,10 +10,13 @@ public class ConvexShape {
     // SOURCE https://github.com/ClaymoreAdrendamar/Separating-Axis-Theorem/blob/master/Java/Collisions.java
 
     public ConvexShape(ArrayList<Vector2F> points) {
+        for (Vector2F p: points) {
+//            System.out.println(p);
+        }
         this.points = jarvisMarch(points);
 //        System.out.printf("Shape made with %d points\n", this.points.size());
-        topLeft.copy(points.getFirst());
-        bottomRight.copy(points.getFirst());
+        topLeft.copy(points.get(0));
+        bottomRight.copy(points.get(0));
         for (Vector2F c : points) {
             topLeft.setX(Math.min(topLeft.getX(), c.getX()));
             topLeft.setY(Math.min(topLeft.getY(), c.getY()));
@@ -39,20 +42,20 @@ public class ConvexShape {
         int count = 0;
         while (true) {
             count++;
-//            System.out.printf("Pivot at %f %f\n", pivot.getX(), pivot.getY());
+//            System.out.printf("Pivot at %d %d\n", pivot.getX(), pivot.getY());
             for (Vector2F candidate: points) {
                 if (candidate.getX() == pivot.getX() && candidate.getY() == pivot.getY()) continue; // Skip if comparing to pivot point
                 int rotation = orientation(pivot, best, candidate); // Check if points are cw (-1), ccw (1), or colinear (0) (checking if candidate is further cw than best)
-                int dist = compare(pivot.getEuclideanDistance(candidate), pivot.getEuclideanDistance(best));
-//                System.out.printf("%f %f %d %d\n", candidate.getX(), candidate.getY(), rotation, dist);
+                long dist = compare(pivot.getEuclideanDistance(candidate), pivot.getEuclideanDistance(best));
+//                System.out.printf("%d %d %d %d\n", candidate.getX(), candidate.getY(), rotation, dist);
                 if (rotation == -1 || rotation == 0 && dist == 1) best.copy(candidate); // get the point furthest most rotated point from the pivot (if same rotation get closest)
             }
-            if (best.getManhattanDistance(maxPoint) < 0.0001) break; // Done when made a full loop back to starting point
-//            System.out.printf("best (%f, %f) max (%f, %f) %f %b\n", best.getX(), best.getY(), maxPoint.getX(), maxPoint.getY(), best.getManhattanDistance(maxPoint), best.getManhattanDistance(maxPoint) == 0);
+            if (best.getManhattanDistance(maxPoint) == 0) break; // Done when made a full loop back to starting point
+//            System.out.printf("best (%d %d) max (%d %d) %d %b\n", best.getX(), best.getY(), maxPoint.getX(), maxPoint.getY(), best.getManhattanDistance(maxPoint), best.getManhattanDistance(maxPoint) == 0);
             if (count > 100) {
                 System.out.println("BROKEN");
                 for (Vector2F p: points) {
-                    System.out.printf("%f %f\n", p.getX(), p.getY());
+//                    System.out.printf("%d %d\n", p.getX(), p.getY());
                 }
                 System.exit(-1);
 
@@ -65,18 +68,18 @@ public class ConvexShape {
         return results;
     }
 
-    private int compare(double a, double b) {
+    private int compare(long a, long b) {
         if (a == b) return 0;
         return a > b ? 1 : -1;
     }
 
     private int orientation(Vector2F a, Vector2F b, Vector2F c) {
-        return compare(((b.getX()-a.getX())*(c.getY()-a.getY())) - ((b.getY()-a.getY())*(c.getX()-a.getX())),0);
+        return compare(((long) (b.getX() - a.getX()) * (c.getY() - a.getY())) - ((long) (b.getY() - a.getY()) *(c.getX() - a.getX())), 0);
 
     }
 
     private Vector2F findFurthestPoint(ArrayList<Vector2F> points) {
-        Vector2F max = new Vector2F(points.getFirst());
+        Vector2F max = new Vector2F(points.get(0));
         for (Vector2F p: points) {
             if (max.getX() < p.getX() || (max.getX() == p.getX() && max.getY() < p.getY())) max.copy(p);
         }
@@ -91,18 +94,18 @@ public class ConvexShape {
         for (Vector2F v: axis) {
             Projection pA = getProjection(v);
             Projection pB = other.getProjection(v);
-//            System.out.printf("On axis %f %f, overlap ? %b\n", v.getX(), v.getY(), pA.overlap(pB));
-
+//            System.out.printf("On axis %d %d, overlap ? %b\n", v.getX(), v.getY(), pA.overlap(pB));
             if (!pA.overlap(pB)) return false;
         }
+//        System.out.println("INTERSECTS");
         return true;
     }
 
     private Projection getProjection(Vector2F axis) {
-        double min = axis.dotProduct(points.getFirst());
-        double max = min;
+        long min = axis.dotProduct(points.get(0));
+        long max = min;
         for (int i =  1; i < points.size(); i++) {
-            double p = axis.dotProduct(points.get(i));
+            long p = axis.dotProduct(points.get(i));
             if (p > max) max = p;
             else if (p < min) min = p;
         }
