@@ -62,24 +62,24 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void draw(Graphics g) {
         g.setColor(Color.LIGHT_GRAY.brighter());
-        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), 0, (int) (scaledBoxSize / 1000 * 1000), getHeight());
-        g.fillRect(0, (int) (highlighted.getY() * scaledBoxSize / 1000), getWidth(), (int) (scaledBoxSize / 1000 * 1000));
+        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), 0, (int) (scaledBoxSize), getHeight());
+        g.fillRect(0, (int) (highlighted.getY() * scaledBoxSize / 1000), getWidth(), (int) (scaledBoxSize));
 
         g.setColor(Color.LIGHT_GRAY);
-        g.fillRect((int) ((highlighted.getX() - 10000) * scaledBoxSize / 1000), (int) ((highlighted.getY() - 10000) * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 21000), (int) (scaledBoxSize / 1000 * 21000));
+        g.fillRect((int) ((highlighted.getX() - 10000) * scaledBoxSize / 1000), (int) ((highlighted.getY() - 10000) * scaledBoxSize / 1000), (int) (scaledBoxSize * 21), (int) (scaledBoxSize * 21));
 
         g.setColor(Color.LIGHT_GRAY.darker());
-        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 20000) * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 1000), (int) (scaledBoxSize / 1000 * 41000));
-        g.fillRect((int) ((highlighted.getX() - 20000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 41000), (int) (scaledBoxSize / 1000 * 1000));
+        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 20000) * scaledBoxSize / 1000), (int) (scaledBoxSize), (int) (scaledBoxSize * 41));
+        g.fillRect((int) ((highlighted.getX() - 20000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize * 41), (int) (scaledBoxSize));
 
         g.setColor(Color.DARK_GRAY.brighter());
-        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 5000) * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 1000), (int) (scaledBoxSize / 1000 * 11000));
-        g.fillRect((int) ((highlighted.getX() - 5000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 11000), (int) (scaledBoxSize / 1000 * 1000));
+        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 5000) * scaledBoxSize / 1000), (int) (scaledBoxSize), (int) (scaledBoxSize * 11));
+        g.fillRect((int) ((highlighted.getX() - 5000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize* 11), (int) (scaledBoxSize));
 
 
         g.setColor(Color.DARK_GRAY);
-        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 3000) * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 1000), (int) (scaledBoxSize / 1000 * 7000));
-        g.fillRect((int) ((highlighted.getX() - 2000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize / 1000 * 5000), (int) (scaledBoxSize / 1000 * 1000));
+        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 3000) * scaledBoxSize / 1000), (int) (scaledBoxSize), (int) (scaledBoxSize * 7));
+        g.fillRect((int) ((highlighted.getX() - 2000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize * 5), (int) (scaledBoxSize));
 
 
         for (Rectangle wall : walls) {
@@ -99,11 +99,11 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
 
         g.setColor(Color.BLACK);
-        System.out.printf("%f %d\n", boxSize, getWidth());
+//        System.out.printf("%f %d\n", boxSize, getWidth());
         if (boxSize <= 0) return;
         int last = 0;
         for (int i = 0; i < getWidth(); i += scaledBoxSize) {
-            System.out.println((int) i - last);
+//            System.out.println((int) i - last);
             last = (int) i;
             g.drawLine((int) i, 0, (int) i, getHeight());
         }
@@ -302,7 +302,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         if (boxSize == 0) return;
         int mouseX = (int) (e.getX() / scaledBoxSize) * 1000, mouseY = (int) (e.getY() / scaledBoxSize) * 1000;
         highlighted = new Vector2F(mouseX, mouseY);
-//        System.out.println(highlighted);
+        System.out.println(highlighted);
         repaint();
     }
 }
