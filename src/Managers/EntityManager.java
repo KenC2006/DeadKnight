@@ -20,7 +20,7 @@ public class EntityManager {
         entityList.add(player);
 //        entityList.add(new Entity(20, 20, 3, 4,100));
         for (int i = 0; i < 10; i++) {
-            entityList.add(new ShortMeleeEnemy(0, 0, 2, player));
+            entityList.add(new ShortMeleeEnemy(0, -6000, 2));
 
         }
 //        entityList.add(entityList.get(2).getSwing());
@@ -29,7 +29,7 @@ public class EntityManager {
     public void updateKeyPresses(ActionManager manager) {
         player.updateKeyPresses(manager);
     }
-
+    boolean temp;
     public void update() {
         for (Entity g: entityList) { // Set pre conditions and intital values
             g.updateValues();
@@ -57,6 +57,13 @@ public class EntityManager {
 
         for (Entity g: entityList) { // Update visuals based on data
             g.updateData();
+            if (g.equals(entityList.get(0))) continue; // need to know enemy spawns to have working grid generation and pathfinding
+//            if (!temp) {
+//            System.out.println(g.getPos());
+                g.generatePath(g.getPos(), roomManager.getLoadedRooms().getFirst().getNodeMap());
+//                temp = true;
+//            }
+//            System.out.println(g.getBottomPos());
         }
 
         for (Room r: roomManager.getLoadedRooms()) {

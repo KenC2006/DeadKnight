@@ -1,10 +1,7 @@
 package Entities;
 
 import Universal.Camera;
-import Structure.Hitbox;
-import Structure.HitboxGroup;
-import Structure.Room;
-import Structure.Vector2F;
+import Structure.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -65,6 +62,10 @@ public class Entity {
         } else {
             hitbox.setColour(Color.GREEN);
         }
+    }
+
+    public void updatePlayerPos(Player player) {
+
     }
 
     public boolean collidesWithPlayer(Player p) {
@@ -140,6 +141,10 @@ public class Entity {
         updatePosition(newVelocity);
 
         movementCheck(roomList);
+    }
+
+    public void generatePath(Vector2F start, NodeMap nodeMap) {
+
     }
 
     private Vector2F binarySearchVelocity(Vector2F startingVelocity, ArrayList<Room> roomList) {
@@ -343,7 +348,7 @@ public class Entity {
     }
 
     public void markToDelete(boolean delete) {
-        toDelete = true;
+        toDelete = delete;
     }
 
     public boolean getToDelete() {
@@ -362,7 +367,11 @@ public class Entity {
         return new Vector2F(getCenterX(), getCenterY());
     }
 
+    public Vector2F getPos() { return new Vector2F(getX(), getY()); }
+    public Vector2F getBottomPos() { return new Vector2F(getX() + getWidth()/2, getY() + getHeight() - 1000); }
+
     public Vector2F getLastVelocity() {
         return lastVelocity;
     }
+
 }

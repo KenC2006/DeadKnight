@@ -5,6 +5,7 @@ import Items.GameItem;
 import Items.Item;
 import Items.ItemPickup;
 import Universal.Camera;
+import Entities.Enemy;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,6 +18,8 @@ public class Room {
     private HitboxGroup entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
     private ArrayList<ItemPickup> groundedItems = new ArrayList<>();
+    private NodeMap nodeMap;
+    private ArrayList<Enemy> enemies;
 
     public Room(int x, int y, int width, int height) {
 //        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
@@ -25,7 +28,8 @@ public class Room {
 //        walls.addHitbox(new Hitbox(x + width - 1000, y + height, x + width, y));
 //        walls.addHitbox(new Hitbox(x + width / 2, y + height * 3 / 4, x + width / 2 + 1000, y + height));
         walls.addHitbox(new Hitbox(x, y + height / 2, x + width * 3 / 4, y + height / 2 + 1000));
-
+        nodeMap = new NodeMap(this);
+        enemies = new ArrayList<Enemy> ();
     }
 
     public Room(Room copy) {
@@ -36,6 +40,7 @@ public class Room {
         for (Entrance e: copy.entrances) {
             entrances.add(new Entrance(e));
         }
+        nodeMap = new NodeMap(copy);
 //        for (ItemPickup i: copy.groundedItems) {
 //            groundedItems.add(ItemPickup(i));
 //        }
@@ -67,6 +72,7 @@ public class Room {
             entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
 
         }
+        nodeMap = new NodeMap(this);
 
 //        groundedItems.add(new ItemPickup(walls.getCenter()));
     }
@@ -78,6 +84,7 @@ public class Room {
     public void setDrawLocation(Vector2F newDrawLocation) {
         walls.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         entranceHitboxes.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
+        nodeMap.setTranslateOffset(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         }
@@ -87,6 +94,7 @@ public class Room {
     public void centerAroundPointInRoom(Vector2F newCenter) {
         walls.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         entranceHitboxes.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+        nodeMap.setTranslateOffset(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
 
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
@@ -104,6 +112,7 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.paint(c);
         }
+        nodeMap.drawNodes(c);
     }
 
     public void updateValues() {
@@ -163,6 +172,8 @@ public class Room {
     public Vector2F getCenterLocation() {
         return center;
     }
+
+    public NodeMap getNodeMap() {return nodeMap; }
 
     public boolean quickIntersect(Room other) {
         return walls.quickIntersect(other.walls);
