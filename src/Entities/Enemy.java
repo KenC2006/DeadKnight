@@ -33,6 +33,14 @@ public class Enemy extends Entity {
         startWander();
     }
 
+    public Enemy(Enemy copy) {
+        super(copy.getX(), copy.getY(), copy.getWidth(), copy.getHeight(), 100);
+        enemyPos = new Vector2F(copy.enemyPos);
+        sightRadius = copy.sightRadius;
+
+
+    }
+
     private void startWander() {
         if (getOnLeft()) {
             stopXMovement();
@@ -151,18 +159,21 @@ public class Enemy extends Entity {
 
     public void updatePlayerPos(Player player) {
 //        System.out.println (getSquareDistToPlayer(player) + " " + sightRadius);
-        if (getSquareDistToPlayer(player) < sightRadius * sightRadius) {
-            playerPos = new Vector2F(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() - 1000);
-//            System.out.println(playerPos);
-            followPlayer();
-//            startWander();
-        } else {
+//        if (getSquareDistToPlayer(player) < sightRadius * sightRadius) {
+//            playerPos = new Vector2F(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() - 1000);
+////            System.out.println(playerPos);
+//            followPlayer();
+////            startWander();
+//        } else {
             startWander();
 
             if (Math.random() < 0.02) {
                 if (isGrounded()) jump();
             }
-        }
+//        }
+        playerPos = new Vector2F(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() - 1000);
+//            System.out.println(playerPos);
+//        followPlayer();
     }
 
     public long getSquareDistToPlayer(Player player) {

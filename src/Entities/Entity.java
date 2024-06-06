@@ -64,10 +64,6 @@ public class Entity {
         }
     }
 
-    public void updatePlayerPos(Player player) {
-
-    }
-
     public boolean collidesWithPlayer(Player p) {
         if (!p.getHitbox().getEnabled() || !lastMovement.quickIntersect(p.getLastMovement())) return false;
         return lastMovement.intersects(p.getLastMovement());
@@ -141,10 +137,6 @@ public class Entity {
         updatePosition(newVelocity);
 
         movementCheck(roomList);
-    }
-
-    public void generatePath(Vector2F start, NodeMap nodeMap) {
-
     }
 
     private Vector2F binarySearchVelocity(Vector2F startingVelocity, ArrayList<Room> roomList) {

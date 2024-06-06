@@ -129,6 +129,10 @@ public class Player extends Entity {
         return playerInventory.getCurrentPrimaryItem().getType();
     }
 
+    public void updateEnemyData(Enemy e) {
+        e.updatePlayerPos(this);
+    }
+
     public void resolveEntityCollision(Entity e) {
         if (e.collidesWithPlayer(this)) {
             e.setColliding(true);
@@ -143,7 +147,6 @@ public class Player extends Entity {
                 p.doKB(e);
             }
         }
-        e.updatePlayerPos(this);
 
         if (playerInventory.getCurrentPrimaryItem() instanceof MeleeWeapon) {
             ((MeleeWeapon) playerInventory.getCurrentPrimaryItem()).doCollisionCheck(e);
