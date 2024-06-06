@@ -1,6 +1,7 @@
 package Structure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Line {
     double slope, b;
@@ -66,6 +67,30 @@ public class Line {
         }
 
         return intersectionPoints;
+    }
+
+    public boolean doesIntersect(Line other) {
+        ArrayList<Vector2F> points = new ArrayList<Vector2F> (Arrays.asList(start, end, other.getStart(), other.getEnd()));
+        ConvexShape lines = new ConvexShape(points);
+//        System.out.println(lines.getPoints());
+        if (lines.getPoints().size() != 4) {
+            return false;
+        }
+        // if the two points on one of the line are on opposite sites of the convex shape seperated
+        // by the points of the other line, then lines intersect
+        return start.compareTo(lines.getPoints().getFirst()) == 0 && end.compareTo(lines.getPoints().get(2)) == 0 ||
+            start.compareTo(lines.getPoints().get(2)) == 0 && end.compareTo(lines.getPoints().getFirst()) == 0 ||
+            start.compareTo(lines.getPoints().get(1)) == 0 && end.compareTo(lines.getPoints().get(3)) == 0 ||
+            start.compareTo(lines.getPoints().get(3)) == 0 && end.compareTo(lines.getPoints().get(1)) == 0;
+    }
+
+    public boolean doesIntersect(Hitbox hitbox) {
+        Line top = new Line(hitbox.getTopLeft(), new Vector2F(hitbox.getRight(), hitbox.getTop()));
+        Line bottom = new Line(hitbox.getBottomRight(), new Vector2F(hitbox.getLeft(), hitbox.getBottom()));
+        Line left = new Line(hitbox.getTopLeft(), new Vector2F(hitbox.getLeft(), hitbox.getBottom()));
+        Line right = new Line(hitbox.getBottomRight(), new Vector2F(hitbox.getRight(), hitbox.getTop()));
+
+        return doesIntersect(top) || doesIntersect(bottom) || doesIntersect(left) || doesIntersect(right);
     }
 
     public Vector2F getStart() {

@@ -1,10 +1,7 @@
 package Entities;
 
 import Universal.Camera;
-import Structure.Hitbox;
-import Structure.HitboxGroup;
-import Structure.Room;
-import Structure.Vector2F;
+import Structure.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -356,7 +353,7 @@ public class Entity {
     }
 
     public void markToDelete(boolean delete) {
-        toDelete = true;
+        toDelete = delete;
     }
 
     public boolean getToDelete() {
@@ -375,7 +372,11 @@ public class Entity {
         return new Vector2F(getCenterX(), getCenterY());
     }
 
+    public Vector2F getPos() { return new Vector2F(getX(), getY()); }
+    public Vector2F getBottomPos() { return new Vector2F(getX() + getWidth()/2, getY() + getHeight() - 1000); }
+
     public Vector2F getLastVelocity() {
         return lastVelocity;
     }
+
 }

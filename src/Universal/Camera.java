@@ -86,16 +86,16 @@ public class Camera {
     public void drawCoordinate(Vector2F c, Color color) {
         graphics.setColor(color);
         graphics.setStroke(new BasicStroke(1f));
-        double x1 = scaleAndShiftX(c.getX());
-        double y1 = scaleAndShiftY(c.getY());
+        int x1 = (int) scaleAndShiftX(c.getX());
+        int y1 = (int) scaleAndShiftY(c.getY());
         if (x1 - absoluteOffset.getX() >  renderWidth || y1 - absoluteOffset.getY() > renderHeight) return;
         if (x1 - absoluteOffset.getX() < -renderWidth || y1 - absoluteOffset.getY() < -renderHeight) return;
 
         if (renderWallsOnly) {
             if (color != Color.RED && color != Color.BLUE) return;
-            graphics.fillOval((int) x1, (int) y1, (int) scaling * 2000, (int) scaling * 2000);
+            graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000), (int) (scaling * 1000));
         } else {
-            graphics.fillOval((int) x1, (int) y1, (int) scaling, (int) scaling);
+            graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000), (int) (scaling * 1000));
 
         }
 
@@ -105,7 +105,7 @@ public class Camera {
         drawCoordinate(c, Color.BLACK);
     }
 
-    private void drawLine(Vector2F p1, Vector2F p2, Color c) {
+    public void drawLine(Vector2F p1, Vector2F p2, Color c) {
         graphics.setColor(c);
         graphics.setStroke(new BasicStroke(2f * (float) (Math.max(1.0, scaling * 1000 / 7.0))));
         double x1 = scaleAndShiftX(p1.getX());

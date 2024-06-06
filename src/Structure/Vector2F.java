@@ -1,6 +1,11 @@
 package Structure;
 
-public class Vector2F {
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+public class Vector2F implements Comparable<Vector2F> {
     private int x = 0, y = 0;
 
     public Vector2F() {
@@ -117,11 +122,25 @@ public class Vector2F {
         return new Vector2F(-getX(), -getY());
     }
 
+    @Override
     public int compareTo(Vector2F other) {
         if (other.getX() == getX() && other.getY() == getY()) return 0;
         if (other.getX() < getX()) return 1;
         if (other.getX() == getX() && other.getY() < getY()) return 1;
         return -1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector2F vector2F = (Vector2F) o;
+        return x == vector2F.x && y == vector2F.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     public Vector2F getMin(Vector2F v) {
