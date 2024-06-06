@@ -2,10 +2,13 @@ import Managers.CameraManager;
 import Managers.EntityManager;
 import Managers.ActionManager;
 import Structure.RoomEditor;
+import UI.GameUIManager;
 import Universal.GameTimer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.IOException;
 
 
@@ -13,6 +16,7 @@ public class GamePanel extends JPanel{
     private final ActionManager actionManager;
     private final EntityManager entityManager;
     private final CameraManager cameraManager;
+    private final GameUIManager gameUIManager;
     private boolean isRunning = true;
 
     public GamePanel() throws IOException {
@@ -24,7 +28,15 @@ public class GamePanel extends JPanel{
         actionManager = new ActionManager();
         entityManager = new EntityManager();
         cameraManager = new CameraManager(entityManager.getPlayer());
+        gameUIManager=new GameUIManager(entityManager.getPlayer());
         actionManager.addPanel(this);
+        this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                gameUIManager.setPanelWidth(getWidth());
+                gameUIManager.setPanelHeight(getHeight());
+                gameUIManager.resize();
+            }
+        });
     }
 
     public void paintComponent(Graphics g) {
@@ -34,6 +46,8 @@ public class GamePanel extends JPanel{
 
     public void draw(Graphics g) {
         cameraManager.draw(g, entityManager);
+        gameUIManager.draw(g);
+
     }
 
     public void update() {

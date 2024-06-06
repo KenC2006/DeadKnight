@@ -17,6 +17,7 @@ public class Entity {
     private int health;
     private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, onLeft, onRight, destroyedOnWallImpact;
     private boolean toDelete;
+    private int maxHealth;
 
 
     public Entity(int x, int y, int width, int height, int health) {
@@ -25,6 +26,7 @@ public class Entity {
         constantVelocity = new Vector2F();
         hitbox = new Hitbox(x, y, x + width, y + height);
         this.health = health;
+        maxHealth=health;
     }
 
     public Entity(Vector2F position, Vector2F size, Vector2F constantVelocity) {
@@ -35,6 +37,7 @@ public class Entity {
         hitbox = new Hitbox(position, position.getTranslated(size));
 
     }
+
 
     public Entity(Vector2F position, Vector2F size) {
         this(position, size, new Vector2F(0, 0));
@@ -57,6 +60,14 @@ public class Entity {
     public void updateValues() {
         updateVelocity();
         colliding = false;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public int getHealth() {
+        return health;
     }
 
     public void updateData() {
@@ -84,7 +95,7 @@ public class Entity {
         return movementBox.intersects(r.getHitbox());
     }
 
-    public void resolveRoomCollisions(ArrayList<Room> roomList) { // TODO add the binary search
+    public void resolveRoomCollisions(ArrayList<Room> roomList) {// TODO add the binary search
         lastMovement = new HitboxGroup();
         lastVelocity = new Vector2F();
         Hitbox initialTest = createMovementBox(velocity);
@@ -109,6 +120,7 @@ public class Entity {
         if (collides) {
 //            System.out.println("Collides = " + collides);
             newVelocity = binarySearchVelocity(velocity, roomList);
+
 
         }
         updatePosition(newVelocity);
@@ -161,8 +173,8 @@ public class Entity {
                 minTime = mid;
             }
         }
+
         minTime -= 1;
-//        System.out.println(minTime);
 //        System.out.println(startingVelocity);
 //        System.out.println(startingVelocity.multiply(minTime / 1000.0));
 
@@ -170,6 +182,7 @@ public class Entity {
     }
 
     private void updateVelocity() {
+        if (constantVelocity.getX()-velocity.getX()<=10) velocity.setX(constantVelocity.getX());
         velocity.translateInPlace(constantVelocity.getTranslated(velocity.getNegative()).multiply(0.3));
         // Gravity
         if (affectedByGravity) constantVelocity.changeY(100);

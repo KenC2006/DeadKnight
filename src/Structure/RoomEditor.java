@@ -71,8 +71,6 @@ public class RoomEditor extends JFrame {
                 }
             }
         });
-
-        System.out.println("DONE SETup");
     }
 
 
