@@ -8,8 +8,8 @@ public class ShortMeleeEnemy extends Enemy {
 //    private Hitbox up, down, left, right; // change to gamecharacter when polygon hitbox support added
     private Entity swing;
 
-    public ShortMeleeEnemy(int x, int y, int health, Player player) {
-        super(x, y, 2000, 5000, health, 500000, player);
+    public ShortMeleeEnemy(int x, int y, int health) {
+        super(x, y, 2000, 5000, health, 25000000);
 //        right = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(0, 7),
 //                new Vector2F(4, 6), new Vector2F(6, 3),
 //                new Vector2F(4, 1))));
@@ -47,9 +47,9 @@ public class ShortMeleeEnemy extends Enemy {
 
     }
 
-    public void updateEnemy(Player player) {
-        super.updateEnemy(player);
-        if (getSquareDistToPlayer(player) < 1000) {
+    public void updatePlayerPos(Player player) {
+        super.updatePlayerPos(player);
+        if (getSquareDistToPlayer(player) < 1) {
             swing.markToDelete(false);
             //swing at the player
             if (player.getY() + 1 < getY()) {

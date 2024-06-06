@@ -84,7 +84,7 @@ public class Room {
     public void setDrawLocation(Vector2F newDrawLocation) {
         walls.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         entranceHitboxes.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
-        nodeMap.translateNodes(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
+        nodeMap.setTranslateOffset(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         }
@@ -94,7 +94,7 @@ public class Room {
     public void centerAroundPointInRoom(Vector2F newCenter) {
         walls.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         entranceHitboxes.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
-        nodeMap.translateNodes(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+        nodeMap.setTranslateOffset(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
 
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
@@ -112,6 +112,7 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.paint(c);
         }
+        nodeMap.drawNodes(c);
     }
 
     public void updateValues() {
@@ -138,8 +139,6 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.updateData();
         }
-
-        nodeMap.drawNodes(c);
     }
 
     public void closeEntrances() {

@@ -64,7 +64,7 @@ public class Entity {
         }
     }
 
-    public void updateEnemy(Player player) {
+    public void updatePlayerPos(Player player) {
 
     }
 
@@ -348,7 +348,7 @@ public class Entity {
     }
 
     public void markToDelete(boolean delete) {
-        toDelete = true;
+        toDelete = delete;
     }
 
     public boolean getToDelete() {

@@ -143,6 +143,7 @@ public class Player extends Entity {
                 p.doKB(e);
             }
         }
+        e.updatePlayerPos(this);
 
         if (playerInventory.getCurrentPrimaryItem() instanceof MeleeWeapon) {
             ((MeleeWeapon) playerInventory.getCurrentPrimaryItem()).doCollisionCheck(e);

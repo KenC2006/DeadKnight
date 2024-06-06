@@ -135,13 +135,14 @@ public class Vector2F implements Comparable<Vector2F> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector2F vector2F = (Vector2F) o;
-        return Double.compare(x, vector2F.x) == 0 && Double.compare(y, vector2F.y) == 0;
+        return x == vector2F.x && y == vector2F.y;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
     public Vector2F getMin(Vector2F v) {
         if (v == null) return new Vector2F(getX(), getY());
         return new Vector2F(Math.min(getX(), v.getX()), Math.min(getY(), v.getY()));
