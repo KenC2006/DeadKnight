@@ -77,7 +77,7 @@ public class EntityManager {
         for (Room r: roomManager.getLoadedRooms()) {
             for (Enemy e : r.getEnemies()) {
                 e.updateData();
-                e.generatePath(e.getPos(), roomManager.getLoadedRooms().getFirst().getNodeMap());
+//                e.generatePath(e.getPos(), roomManager.getLoadedRooms().getFirst().getNodeMap());
             }
             r.updateData();
         }
