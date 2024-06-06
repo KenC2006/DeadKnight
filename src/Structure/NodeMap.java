@@ -9,6 +9,8 @@ public class NodeMap {
 
     private final ArrayList<Vector2F> nodes;
     private Map<Vector2F, ArrayList<Vector2F>> edges;
+    private ArrayList<EnemySpawn> enemySpawns;
+    private PlayerSpawn playerSpawn;
 
     private final int gridOffset = 500;
     private Vector2F translateOffset;
@@ -18,13 +20,15 @@ public class NodeMap {
     public NodeMap(Room room) {
         nodes = new ArrayList<Vector2F> ();
         edges = new HashMap<Vector2F, ArrayList<Vector2F>> (); //add edge connecting
+        enemySpawns = room.getEnemySpawns();
+        playerSpawn = room.getPlayerSpawns().getFirst();
 
         grid = new char[1000][1000];
 
         loadGrid(room);
-        loadNodes(new Vector2F(503, 503), room);
+        loadNodes(new Vector2F(playerSpawn.x/1000 + 500, playerSpawn.y/1000 + 500), room);
 //        loadNodes(new Vector2F(room.getCenterRelativeToRoom().getX() + 250, room.getCenterRelativeToRoom().getY() + 250), room);
-        nodes.add(new Vector2F(3000, 3000));
+        nodes.add(new Vector2F(playerSpawn.x, playerSpawn.y));
 //        int idx = 0;
 //        while (idx < nodes.size()) {
 //            System.out.println(nodes);
@@ -48,6 +52,15 @@ public class NodeMap {
 //        }
 //        System.out.println(nodes);
 //        System.out.println(nodes.size());
+    }
+
+    public NodeMap(NodeMap copy) {
+        nodes = copy.nodes;
+        edges = copy.edges;
+        enemySpawns = copy.enemySpawns;
+        playerSpawn = copy.playerSpawn;
+        grid = copy.grid;
+        translateOffset = new Vector2F();
     }
 
     private void loadGrid(Room room) {
@@ -146,7 +159,8 @@ public class NodeMap {
 //                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                     fillPlatForm(cur_node, start, room);
                 }
-                else if (grid[cur_node.getY()][cur_node.getX()-1] == 'X') {
+                else if (grid[cur_node.getY()][cur_node.getX()-1] == 'X' ||
+                        grid[cur_node.getY()][cur_node.getX()-1] == 'E') {
 //                    if (doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
 //                        continue;
 //                    }
@@ -157,7 +171,8 @@ public class NodeMap {
 //                    System.out.println("adding " + ogCur_node + " to " + ogStart);
                     fillPlatForm(cur_node, start, room);
                 }
-                else if (grid[cur_node.getY()][cur_node.getX()+1] == 'X') {
+                else if (grid[cur_node.getY()][cur_node.getX()+1] == 'X' ||
+                        grid[cur_node.getY()][cur_node.getX()+1] == 'E') {
 //                    if (doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
 //                        continue;
 //                    }
@@ -326,7 +341,8 @@ public class NodeMap {
         return translateOffset;
     }
     public void setTranslateOffset(Vector2F value) {
-        translateOffset = new Vector2F(value);
+        translateOffset = new Vector2F(translateOffset.getTranslated(value));
+//        System.out.println("Setting translateOffset to " + translateOffset);
     }
 
     public void drawNodes(Camera c) {
