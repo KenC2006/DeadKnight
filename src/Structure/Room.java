@@ -127,21 +127,21 @@ public class Room {
     }
 
     public void setDrawLocation(Vector2F newDrawLocation) {
-        System.out.println("setting draw location---------------");
-        System.out.println(newDrawLocation);
+//        System.out.println("setting draw location---------------");
+//        System.out.println(newDrawLocation);
         walls.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         entranceHitboxes.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         nodeMap.setTranslateOffset(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         }
-        System.out.println("done setting draw locations---------------");
+//        System.out.println("done setting draw locations---------------");
         drawLocation.copy(newDrawLocation);
     }
 
     public void centerAroundPointInRoom(Vector2F newCenter) {
-        System.out.println("centering around point -------");
-        System.out.println(newCenter);
+//        System.out.println("centering around point -------");
+//        System.out.println(newCenter);
         walls.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         entranceHitboxes.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         nodeMap.setTranslateOffset(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
@@ -150,7 +150,7 @@ public class Room {
             e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         }
         center.copy(newCenter);
-        System.out.println("Done centering around point ------");
+//        System.out.println("Done centering around point ------");
     }
 
     public void drawRoom(Camera c) {
