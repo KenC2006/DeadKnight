@@ -43,7 +43,7 @@ public class Entity {
     public void paint(Camera c) {
         c.drawGameCharacter(this);
 //        new HitboxGroup(lastMovement).draw(c);
-        c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
+//        c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 
     public Entity getSwing() {
@@ -68,6 +68,7 @@ public class Entity {
     }
 
     public void updateData() {
+        if (getIntendedVX() != 0) System.out.println(getIntendedVX());
         if (colliding) {
             hitbox.setColour(Color.RED);
         } else {
