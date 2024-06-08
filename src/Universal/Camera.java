@@ -196,6 +196,10 @@ public class Camera {
         scaling += change;
     }
 
+    public boolean isMapCamera() {
+        return renderWallsOnly;
+    }
+
     public void setMapCamera(boolean val) {
         renderWallsOnly = val;
     }

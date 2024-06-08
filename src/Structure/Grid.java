@@ -313,15 +313,15 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                     fileToSave = file;
                     int wallNum = in.nextInt();
                     for (int i = 0; i < wallNum; i++) {
-                        int x=in.nextInt() * 1000;
-                        int y=in.nextInt() * 1000;
+                        int x=in.nextInt();
+                        int y=in.nextInt();
                         topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
-                        walls.add(new Rectangle(x, y, (in.nextInt() * 1000) - x, (in.nextInt() * 1000) - y));
+                        walls.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
                         stack.add(2);
                     }
                     int entranceNum = in.nextInt();
                     for (int i = 0; i < entranceNum; i++) {
-                        Vector2F v1 = new Vector2F(in.nextInt() * 1000, in.nextInt() * 1000), v2 = new Vector2F(in.nextInt() * 1000, in.nextInt() * 1000);
+                        Vector2F v1 = new Vector2F(in.nextInt(), in.nextInt()), v2 = new Vector2F(in.nextInt(), in.nextInt());
                         topLeftPoint = v1.getMin(v2).getMin(topLeftPoint);
                         entrances.add(new Entrance(v1, v2));
                     }

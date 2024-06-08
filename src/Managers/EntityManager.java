@@ -31,6 +31,9 @@ public class EntityManager {
     }
 
     public void update() {
+
+        roomManager.update(player);
+
         for (Entity g: entityList) { // Set pre conditions and intital values
             g.updateValues();
         }

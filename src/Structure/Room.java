@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Room {
+    private static int numberOfUniqueRooms = 0;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup();
     private HitboxGroup entranceHitboxes = new HitboxGroup();
@@ -24,6 +25,7 @@ public class Room {
     private ArrayList<PlayerSpawn> playerSpawns = new ArrayList<>();
     private ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
+    private int roomID;
 
     public Room(int x, int y, int width, int height) {
 //        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
@@ -54,6 +56,7 @@ public class Room {
             enemies.add(new Enemy(e));
         }
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
+        roomID = copy.roomID;
 //        for (ItemPickup i: copy.groundedItems) {
 //            groundedItems.add(ItemPickup(i));
 //        }
@@ -61,25 +64,26 @@ public class Room {
     }
 
     public Room(File file) throws FileNotFoundException {
+        numberOfUniqueRooms++;
         Scanner in = new Scanner(file);
 
         int nHiboxes = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nHiboxes; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x1 = Integer.parseInt(temp[0]) * 1000;
-            int y1 = Integer.parseInt(temp[1]) * 1000;
-            int x2 = Integer.parseInt(temp[2]) * 1000;
-            int y2 = Integer.parseInt(temp[3]) * 1000;
+            int x1 = Integer.parseInt(temp[0]);
+            int y1 = Integer.parseInt(temp[1]);
+            int x2 = Integer.parseInt(temp[2]);
+            int y2 = Integer.parseInt(temp[3]);
             walls.addHitbox(new Hitbox(x1, y1, x2, y2));
         }
 
         int nEntrances = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nEntrances; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x1 = Integer.parseInt(temp[0]) * 1000;
-            int y1 = Integer.parseInt(temp[1]) * 1000;
-            int x2 = Integer.parseInt(temp[2]) * 1000;
-            int y2 = Integer.parseInt(temp[3]) * 1000;
+            int x1 = Integer.parseInt(temp[0]);
+            int y1 = Integer.parseInt(temp[1]);
+            int x2 = Integer.parseInt(temp[2]);
+            int y2 = Integer.parseInt(temp[3]);
 
             entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
             entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
@@ -89,10 +93,10 @@ public class Room {
 
         for (int i = 0; i < nPlayerSpawns; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x = Integer.parseInt(temp[0]) * 1000;
-            int y = Integer.parseInt(temp[1]) * 1000;
-            int width = Integer.parseInt(temp[2]) * 1000;
-            int height = Integer.parseInt(temp[3]) * 1000;
+            int x = Integer.parseInt(temp[0]);
+            int y = Integer.parseInt(temp[1]);
+            int width = Integer.parseInt(temp[2]);
+            int height = Integer.parseInt(temp[3]);
             playerSpawns.add(new PlayerSpawn(x, y, width, height));
 
         }
@@ -100,24 +104,26 @@ public class Room {
         int nItemSpawns = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nItemSpawns; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x = Integer.parseInt(temp[0]) * 1000;
-            int y = Integer.parseInt(temp[1]) * 1000;
-            int width = Integer.parseInt(temp[2]) * 1000;
-            int height = Integer.parseInt(temp[3]) * 1000;
+            int x = Integer.parseInt(temp[0]);
+            int y = Integer.parseInt(temp[1]);
+            int width = Integer.parseInt(temp[2]);
+            int height = Integer.parseInt(temp[3]);
             itemSpawns.add(new ItemSpawn(x, y, width, height));
         }
 
         int nEnemySpawns = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nEnemySpawns; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x = Integer.parseInt(temp[0]) * 1000;
-            int y = Integer.parseInt(temp[1]) * 1000;
-            int width = Integer.parseInt(temp[2]) * 1000;
-            int height = Integer.parseInt(temp[3]) * 1000;
+            int x = Integer.parseInt(temp[0]);
+            int y = Integer.parseInt(temp[1]);
+            int width = Integer.parseInt(temp[2]);
+            int height = Integer.parseInt(temp[3]);
             enemySpawns.add(new EnemySpawn(x, y, width, height));
             enemies.add(new ShortMeleeEnemy(x, y, 100));
         }
         nodeMap = new NodeMap(this);
+
+        roomID = numberOfUniqueRooms;
 
 //        groundedItems.add(new ItemPickup(walls.getCenter()));
     }
@@ -135,6 +141,7 @@ public class Room {
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         }
+
 //        System.out.println("done setting draw locations---------------");
         drawLocation.copy(newDrawLocation);
     }
@@ -200,6 +207,11 @@ public class Room {
         }
     }
 
+    public int getRoomID() {
+        return roomID;
+    }
+
+
     public void addItemPickup(ItemPickup item) {
         groundedItems.add(item);
     }
@@ -222,6 +234,10 @@ public class Room {
 
     public Vector2F getCenterLocation() {
         return center;
+    }
+
+    public Vector2F getAbsoluteCenter() {
+        return walls.getCenter();
     }
 
     public NodeMap getNodeMap() {return nodeMap; }
