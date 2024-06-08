@@ -89,7 +89,7 @@ public class Room {
             int y1 = Integer.parseInt(temp[1]);
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
-            
+
             entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
             entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
 
@@ -139,6 +139,9 @@ public class Room {
             e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         }
 
+        for (Enemy e : enemies) {
+            e.translateEnemy(newDrawLocation);
+        }
         drawLocation.copy(newDrawLocation);
     }
 
@@ -149,6 +152,9 @@ public class Room {
 
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+        }
+        for (Enemy e : enemies) {
+            e.translateEnemy(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         }
         center.copy(newCenter);
     }

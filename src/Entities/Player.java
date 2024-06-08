@@ -158,7 +158,6 @@ public class Player extends Entity {
             e.setColliding(true);
             setColliding(true);
         }
-
         for (Projectile p: projectiles) {
             if (e.collidesWith(p)) {
                 e.setColliding(true);

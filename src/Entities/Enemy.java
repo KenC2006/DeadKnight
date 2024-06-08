@@ -10,9 +10,9 @@ import java.awt.Color;
 
 public class Enemy extends Entity {
 
-    public final static int defaultHeight = 5000;
-    public final static int defaultWidth = 2000;
-    public final static int defaultWalkSpeed = 50;
+    private final static int defaultHeight = 5000;
+    private final static int defaultWidth = 2000;
+    private final static int defaultWalkSpeed = 50;
 
     private int state, prevState;
     private int id;
@@ -30,7 +30,7 @@ public class Enemy extends Entity {
         id = enemyCount;
         enemyCount++;
         enemyPos = new Vector2F(-2000, 23000); // temp bc no enemy spawn locs
-        startWander();
+//        startWander();
     }
 
     public Enemy(Enemy copy) {
@@ -165,7 +165,7 @@ public class Enemy extends Entity {
 //            followPlayer();
 ////            startWander();
 //        } else {
-            startWander();
+//            startWander();
 
             if (Math.random() < 0.02) {
                 if (isGrounded()) jump();
@@ -174,6 +174,11 @@ public class Enemy extends Entity {
         playerPos = new Vector2F(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() - 1000);
 //            System.out.println(playerPos);
 //        followPlayer();
+    }
+
+    public void translateEnemy(Vector2F offset) {
+        setX(getX() + offset.getX());
+        setY(getY() + offset.getY());
     }
 
     public long getSquareDistToPlayer(Player player) {
@@ -234,6 +239,18 @@ public class Enemy extends Entity {
 
     public Vector2F getPos() {
         return enemyPos;
+    }
+
+    public static int getDefaultHeight() {
+        return defaultHeight;
+    }
+
+    public static int getDefaultWidth() {
+        return defaultWidth;
+    }
+
+    public static int getDefaultWalkSpeed() {
+        return defaultWalkSpeed;
     }
 
     @Override

@@ -49,7 +49,7 @@ public class ShortMeleeEnemy extends Enemy {
 
     public void updatePlayerPos(Player player) {
         super.updatePlayerPos(player);
-        if (getSquareDistToPlayer(player) < 1) {
+        if (getSquareDistToPlayer(player) < 1000) {
             swing.markToDelete(false);
             //swing at the player
             if (player.getY() + 1 < getY()) {
@@ -72,10 +72,9 @@ public class ShortMeleeEnemy extends Enemy {
 
     @Override
     public void paint(Camera c) {
-        super.paint(c);
-//        System.out.println(swing.getToDelete());
         if (!swing.getToDelete()) {
             swing.paint(c);
         }
+        super.paint(c);
     }
 }

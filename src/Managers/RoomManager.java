@@ -1,6 +1,7 @@
 package Managers;
 
 import Entities.Player;
+import Entities.Enemy;
 import Universal.Camera;
 import Structure.Entrance;
 import Structure.NodeMap;
@@ -34,6 +35,9 @@ public class RoomManager {
     public void drawRooms(Camera c) {
         if (c.isMapCamera()) {
             for (Room room : allRooms) {
+                for (Enemy e : room.getEnemies()) {
+                    e.paint(c);
+                }
                 room.drawRoom(c);
             }
 
@@ -62,7 +66,7 @@ public class RoomManager {
         loadRoom(randomRoom);
 
         toGenerateNeighbours.add(randomRoom);
-        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 100) {
+        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 10) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
 
