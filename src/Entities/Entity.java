@@ -182,6 +182,7 @@ public class Entity {
     private void updateVelocity() {
         if (Math.abs(constantVelocity.getX()-velocity.getX())<=10) velocity.setX(constantVelocity.getX());
         velocity.translateInPlace(constantVelocity.getTranslated(velocity.getNegative()).multiply(0.3));
+
         // Gravity
         if (affectedByGravity) constantVelocity.changeY(100);
     }
