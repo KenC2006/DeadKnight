@@ -23,6 +23,7 @@ public class RoomManager {
 //        createRectangleRoom();
         loadRoomsFromFile();
         generateRooms();
+        setupRooms();
     }
 
     public void createRectangleRoom() {
@@ -112,6 +113,12 @@ public class RoomManager {
             addRoom(compatibleRooms.get(randomRoom));
             loadRoom(compatibleRooms.get(randomRoom));
             toGenerateNeighbours.add(compatibleRooms.get(randomRoom));
+        }
+    }
+
+    public void setupRooms() {
+        for (Room r: getAllRooms()) {
+            r.setupRoom();
         }
     }
 

@@ -1,11 +1,12 @@
 package Entities;
 
-import Items.*;
+import Items.ActivationType;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
 import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
+import Items.WeaponType;
 import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
