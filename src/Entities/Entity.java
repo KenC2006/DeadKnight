@@ -42,7 +42,6 @@ public class Entity {
 
     public void paint(Camera c) {
         c.drawGameCharacter(this);
-//        new HitboxGroup(lastMovement).draw(c);
         c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 
@@ -88,7 +87,6 @@ public class Entity {
 
     private boolean collidesWithRoom(Room r, Hitbox movementBox) {
         if (!movementBox.quickIntersect(r.getHitbox())) return false;
-//        System.out.println("ASDASDS = " + movementBox.intersects(r.getHitbox()));
         return movementBox.intersects(r.getHitbox());
     }
 
@@ -97,25 +95,16 @@ public class Entity {
         lastVelocity = new Vector2F();
         Hitbox initialTest = createMovementBox(velocity);
         testHitbox = initialTest;
-//        for (Vector2F v: initialTest.getPoints()) {
-//            System.out.println(v);
-//        }
-//        System.out.println(initialTest);
         boolean collides = false;
-//        System.out.println(roomList.size());
         for (Room r: roomList) {
-//            System.out.println("TEMP = " + collidesWithRoom(r, initialTest));
             if (collidesWithRoom(r, initialTest)) {
                 collides = true;
                 break;
             }
         }
 
-//        System.out.println("COLLDES = " + collides);
-
         Vector2F newVelocity = velocity;
         if (collides) {
-//            System.out.println("Collides = " + collides);
             newVelocity = binarySearchVelocity(velocity, roomList);
 
 
@@ -157,7 +146,6 @@ public class Entity {
             int mid = (minTime + maxTime + 1) / 2;
             Hitbox movementBox = createMovementBox(startingVelocity.multiply(mid / 1000.0));
             boolean collides = false;
-//            System.out.printf("min = %d max = %d\n", minTime, maxTime);
             for (Room r: roomList) {
                 if (collidesWithRoom(r, movementBox)) {
                     collides = true;
@@ -172,8 +160,6 @@ public class Entity {
         }
 
         minTime -= 1;
-//        System.out.println(startingVelocity);
-//        System.out.println(startingVelocity.multiply(minTime / 1000.0));
 
         return startingVelocity.multiply(minTime / 1000.0);
     }
@@ -233,13 +219,11 @@ public class Entity {
         for (Vector2F p: hitbox.getPoints()) {
             points.add(new Vector2F(p));
             points.add(p.getTranslated(velocity));
-//            System.out.printf("Adding point %f %f\n", p.getX(), p.getY());
         }
         return new Hitbox(points);
     }
 
     private void updatePosition(Vector2F velocity) {
-//        System.out.println("Moving with " + velocity);
         position.translateInPlace(velocity);
         hitbox.translateInPlace(velocity);
     }
@@ -312,12 +296,10 @@ public class Entity {
 
     public void setActualVX(int vX) {
         velocity.setX(vX);
-//        constantVelocity.setX(vX);
     }
 
     public void setActualVY(int vY) {
         velocity.setY(vY);
-//        constantVelocity.setY(vY);
     }
 
     public Hitbox getHitbox() {

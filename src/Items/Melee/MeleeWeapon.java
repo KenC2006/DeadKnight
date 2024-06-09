@@ -80,7 +80,6 @@ public class MeleeWeapon extends Weapon {
                 int kb = 0;
                 if (t == ActivationType.RIGHT) {
                     kb = 3000;
-                    System.out.println("SET KB RIGHT");
                 } else if (t == ActivationType.LEFT) {
                     kb = -3000;
                 }

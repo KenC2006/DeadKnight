@@ -3,6 +3,7 @@ package Structure;
 import Entities.Player;
 import Entities.ShortMeleeEnemy;
 import Items.GameItem;
+import Items.IntelligencePickup;
 import Items.Item;
 import Items.ItemPickup;
 import Universal.Camera;
@@ -60,6 +61,10 @@ public class Room {
 //        for (ItemPickup i: copy.groundedItems) {
 //            groundedItems.add(ItemPickup(i));
 //        }
+
+        for (ItemSpawn itemSpawn: itemSpawns) {
+            groundedItems.add(new IntelligencePickup(itemSpawn.getLocation()));
+        }
 //        groundedItems.add(new ItemPickup(getCenterLocation()));
     }
 
@@ -84,7 +89,7 @@ public class Room {
             int y1 = Integer.parseInt(temp[1]);
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
-
+            
             entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
             entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
 
@@ -95,9 +100,7 @@ public class Room {
             String[] temp = in.nextLine().trim().split(" ");
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
-            int width = Integer.parseInt(temp[2]);
-            int height = Integer.parseInt(temp[3]);
-            playerSpawns.add(new PlayerSpawn(x, y, width, height));
+            playerSpawns.add(new PlayerSpawn(x, y));
 
         }
 
@@ -106,9 +109,7 @@ public class Room {
             String[] temp = in.nextLine().trim().split(" ");
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
-            int width = Integer.parseInt(temp[2]);
-            int height = Integer.parseInt(temp[3]);
-            itemSpawns.add(new ItemSpawn(x, y, width, height));
+            itemSpawns.add(new ItemSpawn(x, y));
         }
 
         int nEnemySpawns = Integer.parseInt(in.nextLine());
@@ -116,9 +117,7 @@ public class Room {
             String[] temp = in.nextLine().trim().split(" ");
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
-            int width = Integer.parseInt(temp[2]);
-            int height = Integer.parseInt(temp[3]);
-            enemySpawns.add(new EnemySpawn(x, y, width, height));
+            enemySpawns.add(new EnemySpawn(x, y));
             enemies.add(new ShortMeleeEnemy(x, y, 100));
         }
         nodeMap = new NodeMap(this);
@@ -133,8 +132,6 @@ public class Room {
     }
 
     public void setDrawLocation(Vector2F newDrawLocation) {
-//        System.out.println("setting draw location---------------");
-//        System.out.println(newDrawLocation);
         walls.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         entranceHitboxes.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         nodeMap.setTranslateOffset(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
@@ -142,13 +139,10 @@ public class Room {
             e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         }
 
-//        System.out.println("done setting draw locations---------------");
         drawLocation.copy(newDrawLocation);
     }
 
     public void centerAroundPointInRoom(Vector2F newCenter) {
-//        System.out.println("centering around point -------");
-//        System.out.println(newCenter);
         walls.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         entranceHitboxes.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         nodeMap.setTranslateOffset(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
@@ -157,7 +151,6 @@ public class Room {
             e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         }
         center.copy(newCenter);
-//        System.out.println("Done centering around point ------");
     }
 
     public void drawRoom(Camera c) {

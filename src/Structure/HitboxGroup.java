@@ -71,7 +71,6 @@ public class HitboxGroup {
                 if (h1.intersects(h2)) return true;
             }
         }
-//        System.out.println("NO INTERSECTS SDJASPDOJS");
         return false;
     }
 
@@ -79,7 +78,6 @@ public class HitboxGroup {
         for (Hitbox h1 : hitboxes) {
             if (h1.intersects(hitbox)) return true;
         }
-//        System.out.println("NO INTERSECTS SDJASPDOJS");
 
         return false;
     }
