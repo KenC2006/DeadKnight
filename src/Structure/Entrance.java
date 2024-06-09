@@ -39,7 +39,6 @@ public class Entrance {
             hitbox = new Hitbox(location.getTranslated(new Vector2F(-(HORIZONTAL_ENTRANCE_LENGTH / 2), 0)), location.getTranslated(new Vector2F((HORIZONTAL_ENTRANCE_LENGTH / 2) + 1000, 1000)));
             hitbox.setColour(Color.BLUE);
         } else {
-//            System.out.println("ASDSADSADASDASDSAD\n");
         }
     }
 

@@ -3,6 +3,7 @@ package Structure;
 import Entities.Player;
 import Entities.ShortMeleeEnemy;
 import Items.GameItem;
+import Items.IntelligencePickup;
 import Items.Item;
 import Items.ItemPickup;
 import Universal.Camera;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Room {
+    private static int numberOfUniqueRooms = 0;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup();
     private HitboxGroup entranceHitboxes = new HitboxGroup();
@@ -24,6 +26,7 @@ public class Room {
     private ArrayList<PlayerSpawn> playerSpawns = new ArrayList<>();
     private ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
+    private int roomID;
 
     public Room(int x, int y, int width, int height) {
 //        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
@@ -54,33 +57,39 @@ public class Room {
             enemies.add(new Enemy(e));
         }
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
+        roomID = copy.roomID;
 //        for (ItemPickup i: copy.groundedItems) {
 //            groundedItems.add(ItemPickup(i));
 //        }
+
+        for (ItemSpawn itemSpawn: itemSpawns) {
+            groundedItems.add(new IntelligencePickup(itemSpawn.getLocation()));
+        }
 //        groundedItems.add(new ItemPickup(getCenterLocation()));
     }
 
     public Room(File file) throws FileNotFoundException {
+        numberOfUniqueRooms++;
         Scanner in = new Scanner(file);
 
         int nHiboxes = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nHiboxes; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x1 = Integer.parseInt(temp[0]) * 1000;
-            int y1 = Integer.parseInt(temp[1]) * 1000;
-            int x2 = Integer.parseInt(temp[2]) * 1000;
-            int y2 = Integer.parseInt(temp[3]) * 1000;
+            int x1 = Integer.parseInt(temp[0]);
+            int y1 = Integer.parseInt(temp[1]);
+            int x2 = Integer.parseInt(temp[2]);
+            int y2 = Integer.parseInt(temp[3]);
             walls.addHitbox(new Hitbox(x1, y1, x2, y2));
         }
 
         int nEntrances = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nEntrances; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x1 = Integer.parseInt(temp[0]) * 1000;
-            int y1 = Integer.parseInt(temp[1]) * 1000;
-            int x2 = Integer.parseInt(temp[2]) * 1000;
-            int y2 = Integer.parseInt(temp[3]) * 1000;
-
+            int x1 = Integer.parseInt(temp[0]);
+            int y1 = Integer.parseInt(temp[1]);
+            int x2 = Integer.parseInt(temp[2]);
+            int y2 = Integer.parseInt(temp[3]);
+            
             entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
             entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
 
@@ -89,35 +98,31 @@ public class Room {
 
         for (int i = 0; i < nPlayerSpawns; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x = Integer.parseInt(temp[0]) * 1000;
-            int y = Integer.parseInt(temp[1]) * 1000;
-            int width = Integer.parseInt(temp[2]) * 1000;
-            int height = Integer.parseInt(temp[3]) * 1000;
-            playerSpawns.add(new PlayerSpawn(x, y, width, height));
+            int x = Integer.parseInt(temp[0]);
+            int y = Integer.parseInt(temp[1]);
+            playerSpawns.add(new PlayerSpawn(x, y));
 
         }
 
         int nItemSpawns = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nItemSpawns; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x = Integer.parseInt(temp[0]) * 1000;
-            int y = Integer.parseInt(temp[1]) * 1000;
-            int width = Integer.parseInt(temp[2]) * 1000;
-            int height = Integer.parseInt(temp[3]) * 1000;
-            itemSpawns.add(new ItemSpawn(x, y, width, height));
+            int x = Integer.parseInt(temp[0]);
+            int y = Integer.parseInt(temp[1]);
+            itemSpawns.add(new ItemSpawn(x, y));
         }
 
         int nEnemySpawns = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nEnemySpawns; i++) {
             String[] temp = in.nextLine().trim().split(" ");
-            int x = Integer.parseInt(temp[0]) * 1000;
-            int y = Integer.parseInt(temp[1]) * 1000;
-            int width = Integer.parseInt(temp[2]) * 1000;
-            int height = Integer.parseInt(temp[3]) * 1000;
-            enemySpawns.add(new EnemySpawn(x, y, width, height));
+            int x = Integer.parseInt(temp[0]);
+            int y = Integer.parseInt(temp[1]);
+            enemySpawns.add(new EnemySpawn(x, y));
             enemies.add(new ShortMeleeEnemy(x, y, 100));
         }
         nodeMap = new NodeMap(this);
+
+        roomID = numberOfUniqueRooms;
 
 //        groundedItems.add(new ItemPickup(walls.getCenter()));
     }
@@ -127,21 +132,17 @@ public class Room {
     }
 
     public void setDrawLocation(Vector2F newDrawLocation) {
-//        System.out.println("setting draw location---------------");
-//        System.out.println(newDrawLocation);
         walls.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         entranceHitboxes.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         nodeMap.setTranslateOffset(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         for (Entrance e: entrances) {
             e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
         }
-//        System.out.println("done setting draw locations---------------");
+
         drawLocation.copy(newDrawLocation);
     }
 
     public void centerAroundPointInRoom(Vector2F newCenter) {
-//        System.out.println("centering around point -------");
-//        System.out.println(newCenter);
         walls.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         entranceHitboxes.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         nodeMap.setTranslateOffset(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
@@ -150,7 +151,6 @@ public class Room {
             e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         }
         center.copy(newCenter);
-//        System.out.println("Done centering around point ------");
     }
 
     public void drawRoom(Camera c) {
@@ -200,6 +200,11 @@ public class Room {
         }
     }
 
+    public int getRoomID() {
+        return roomID;
+    }
+
+
     public void addItemPickup(ItemPickup item) {
         groundedItems.add(item);
     }
@@ -222,6 +227,10 @@ public class Room {
 
     public Vector2F getCenterLocation() {
         return center;
+    }
+
+    public Vector2F getAbsoluteCenter() {
+        return walls.getCenter();
     }
 
     public NodeMap getNodeMap() {return nodeMap; }

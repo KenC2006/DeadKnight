@@ -1,8 +1,11 @@
 package Structure;
 
-public class PlayerSpawn extends Spawn{
-    public PlayerSpawn(int x, int y, int width, int height){
-        super(x,y,width,height);
+public class PlayerSpawn extends Spawn {
+    public PlayerSpawn(int x, int y) {
+        super(x,y);
     }
-    public PlayerSpawn(PlayerSpawn ps) { super(ps.x, ps.y, ps.width, ps.height); }
+
+    public PlayerSpawn(PlayerSpawn is) {
+        super(is.getX(), is.getY());
+    }
 }

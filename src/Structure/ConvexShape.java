@@ -10,11 +10,7 @@ public class ConvexShape {
     // SOURCE https://github.com/ClaymoreAdrendamar/Separating-Axis-Theorem/blob/master/Java/Collisions.java
 
     public ConvexShape(ArrayList<Vector2F> points) {
-        for (Vector2F p: points) {
-//            System.out.println(p);
-        }
         this.points = jarvisMarch(points);
-//        System.out.printf("Shape made with %d points\n", this.points.size());
         topLeft.copy(points.get(0));
         bottomRight.copy(points.get(0));
         for (Vector2F c : points) {
@@ -42,28 +38,16 @@ public class ConvexShape {
         int count = 0;
         while (true) {
             count++;
-//            System.out.printf("Pivot at %d %d\n", pivot.getX(), pivot.getY());
             for (Vector2F candidate: points) {
                 if (candidate.getX() == pivot.getX() && candidate.getY() == pivot.getY()) continue; // Skip if comparing to pivot point
                 int rotation = orientation(pivot, best, candidate); // Check if points are cw (-1), ccw (1), or colinear (0) (checking if candidate is further cw than best)
                 long dist = compare(pivot.getEuclideanDistance(candidate), pivot.getEuclideanDistance(best));
-//                System.out.printf("%d %d %d %d\n", candidate.getX(), candidate.getY(), rotation, dist);
                 if (rotation == -1 || rotation == 0 && dist == 1) best.copy(candidate); // get the point furthest most rotated point from the pivot (if same rotation get closest)
             }
             if (best.getManhattanDistance(maxPoint) == 0) break; // Done when made a full loop back to starting point
-//            System.out.printf("best (%d %d) max (%d %d) %d %b\n", best.getX(), best.getY(), maxPoint.getX(), maxPoint.getY(), best.getManhattanDistance(maxPoint), best.getManhattanDistance(maxPoint) == 0);
-            if (count > 100) {
-                System.out.println("BROKEN");
-                for (Vector2F p: points) {
-//                    System.out.printf("%d %d\n", p.getX(), p.getY());
-                }
-                System.exit(-1);
-
-            }
 
             results.add(new Vector2F(best));
             pivot.copy(best); // Set next pivot to candidate
-//            System.out.printf("Best is %d %d\n", best.getX(), best.getY());
         }
         return results;
     }
@@ -94,10 +78,8 @@ public class ConvexShape {
         for (Vector2F v: axis) {
             Projection pA = getProjection(v);
             Projection pB = other.getProjection(v);
-//            System.out.printf("On axis %d %d, overlap ? %b\n", v.getX(), v.getY(), pA.overlap(pB));
             if (!pA.overlap(pB)) return false;
         }
-//        System.out.println("INTERSECTS");
         return true;
     }
 
@@ -118,7 +100,6 @@ public class ConvexShape {
             Vector2F c = new Vector2F(points.get(i).getX() - points.get((i + 1) % points.size()).getX(), points.get(i).getY() - points.get((i + 1) % points.size()).getY());
             axis.add(c.normal().normalize());
         }
-//        System.out.printf("Axis %d\n", axis.size());
         return axis;
     }
 

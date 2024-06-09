@@ -52,9 +52,6 @@ public class Camera {
             absoluteOffset = topLeftLocation.getTranslated(new Vector2F(renderWidth / 2, renderHeight / 2));
 
         }
-//        System.out.println(absoluteOffset + "SET TO");
-//        System.out.println("TOP LEFT = " + topLeftLocation);
-//        System.out.printf("RW  = %d RH = %d\n", renderWidth, renderHeight);
     }
 
     public void drawHitbox(Hitbox h) {
@@ -173,11 +170,6 @@ public class Camera {
             graphics.fillRect((int) (scaleAndShiftX(offset.getX()) - renderWidth), (int) (scaleAndShiftY(offset.getY()) - renderHeight), (int) renderWidth * 2, (int) renderHeight * 2);
             double x1 = scaleAndShiftX(offset.getX());
             double y1 = scaleAndShiftY(offset.getY());
-//            System.out.println(offset.getX() + " " + offset.getY());
-//            System.out.println(x1 + " " + y1);
-//            System.out.printf("scaled x = %f\n", ((offset.getX() - offset.getX()) * scaling) + absoluteOffset.getX());
-//            System.out.println(scaling);
-//            System.out.println(absoluteOffset);
             graphics.drawOval((int) x1, (int) y1, (int) scaling, (int) scaling);
 
         }
@@ -194,6 +186,10 @@ public class Camera {
     public void changeScaling(double change) {
         if (scaling + change < 0.0002 || scaling + change > 0.005) return;
         scaling += change;
+    }
+
+    public boolean isMapCamera() {
+        return renderWallsOnly;
     }
 
     public void setMapCamera(boolean val) {
