@@ -1,5 +1,6 @@
 package Structure;
 
+import Entities.Entity;
 import Entities.Player;
 import Entities.ShortMeleeEnemy;
 import Items.GameItem;
@@ -167,7 +168,7 @@ public class Room {
 
     public void setupRoom() {
         for (ItemSpawn i: itemSpawns) {
-            addItemPickup(new ItemPickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
+            addItemPickup(new IntelligencePickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
         }
     }
 
@@ -205,6 +206,8 @@ public class Room {
     }
 
     public void updateData() {
+        groundedItems.removeIf(Entity::getToDelete);
+
         for (ItemPickup item: groundedItems) {
             item.updateData();
         }
