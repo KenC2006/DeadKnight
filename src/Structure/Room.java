@@ -208,7 +208,7 @@ public class Room {
                     e.generatePath(nodeMap);
                 }
             }
-            else {e.stopXMovement();}
+//            else {e.stopXMovement();}
             e.updateValues();
         }
     }

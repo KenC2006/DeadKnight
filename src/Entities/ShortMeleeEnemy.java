@@ -72,11 +72,6 @@ public class ShortMeleeEnemy extends Enemy {
         }
     }
 
-    public static void updatePlayerPos(Player player) {
-        Enemy.updatePlayerPos(player);
-        playerPos = player.getBottomPos();
-    }
-
     @Override
     public void paint(Camera c) {
         if (!swing.getToDelete()) {
