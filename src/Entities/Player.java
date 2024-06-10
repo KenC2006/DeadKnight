@@ -104,12 +104,12 @@ public class Player extends Entity {
         }
 
         if (manager.getPressed(KeyEvent.VK_D)) {
-            dx += 700;
+            dx += 500;
             direction = Direction.RIGHT;
         }
 
         if (manager.getPressed(KeyEvent.VK_A)) {
-            dx -= 700;
+            dx -= 500;
             direction = Direction.LEFT;
         }
 
@@ -134,8 +134,8 @@ public class Player extends Entity {
         }
 
         if (framesSinceDash > 20) {
-            if (direction == Direction.LEFT) dx = -2000;
-            else dx = 2000;
+            if (direction == Direction.LEFT) dx = -1500;
+            else dx = 1500;
             getHitbox().setEnabled(false);
             setAffectedByGravity(false);
         } else {

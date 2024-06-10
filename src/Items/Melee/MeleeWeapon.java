@@ -10,6 +10,7 @@ import Structure.Vector2F;
 import Universal.Camera;
 import Universal.GameTimer;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class MeleeWeapon extends Weapon {
 
             for (Hitbox h: hitboxes.values()) {
                 h.setEnabled(false);
+                h.setColour(Color.MAGENTA);
             }
 
         } catch (FileNotFoundException e) {

@@ -32,6 +32,7 @@ public class Enemy extends Entity {
         this.sightRadius = sightRadius;
         id = enemyCount;
         enemyCount++;
+        setDefaultColour(Color.ORANGE);
 //        startWander();
     }
 
@@ -39,6 +40,7 @@ public class Enemy extends Entity {
         super(copy.getX(), copy.getY(), copy.getWidth(), copy.getHeight(), 100);
         enemyPos = new Vector2F(copy.enemyPos);
         sightRadius = copy.sightRadius;
+        setDefaultColour(Color.ORANGE);
 
 
     }
