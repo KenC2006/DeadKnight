@@ -1,5 +1,7 @@
-package Structure;
+package RoomEditor;
 
+import Structure.Hitbox;
+import Structure.Vector2F;
 import Universal.Camera;
 
 import java.awt.*;

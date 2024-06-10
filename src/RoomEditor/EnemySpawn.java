@@ -1,4 +1,4 @@
-package Structure;
+package RoomEditor;
 
 public class EnemySpawn extends Spawn {
     public EnemySpawn(int x, int y) {

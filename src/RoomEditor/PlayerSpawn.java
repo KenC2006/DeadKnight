@@ -1,4 +1,4 @@
-package Structure;
+package RoomEditor;
 
 public class PlayerSpawn extends Spawn {
     public PlayerSpawn(int x, int y) {

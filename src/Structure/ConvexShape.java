@@ -46,6 +46,15 @@ public class ConvexShape {
             }
             if (best.getManhattanDistance(maxPoint) == 0) break; // Done when made a full loop back to starting point
 
+            if (count > 100) {
+                System.out.println("BROKEN");
+                for (Vector2F p: points) {
+                    System.out.println(p);
+                }
+                System.exit(-1);
+
+            }
+
             results.add(new Vector2F(best));
             pivot.copy(best); // Set next pivot to candidate
         }

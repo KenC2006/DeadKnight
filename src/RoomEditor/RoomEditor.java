@@ -1,6 +1,4 @@
-package Structure;
-
-import Items.Item;
+package RoomEditor;
 
 import javax.swing.*;
 import java.awt.*;

@@ -3,8 +3,7 @@ package Managers;
 import Entities.Player;
 import Entities.Enemy;
 import Universal.Camera;
-import Structure.Entrance;
-import Structure.NodeMap;
+import RoomEditor.Entrance;
 import Structure.Room;
 import Structure.Vector2F;
 
@@ -70,7 +69,7 @@ public class RoomManager {
         loadRoom(randomRoom);
 
         toGenerateNeighbours.add(randomRoom);
-        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 10) {
+        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 100) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
 
@@ -93,7 +92,6 @@ public class RoomManager {
             for (Room newRoom: allPossibleRooms) {
                 Room testRoom = new Room(newRoom);
                 if (testRoom.getRoomID() == r.getRoomID()) continue;
-//                System.out.println("id: " + testRoom.getRoomID() + " | id2: " + r.getRoomID());
                 testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getConnection()));
                 for (Entrance connectingEntrance: testRoom.getEntrances()) {
                     if (!e.connects(connectingEntrance)) continue;
