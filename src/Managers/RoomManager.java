@@ -89,7 +89,7 @@ public class RoomManager {
             for (Room newRoom: allPossibleRooms) {
                 Room testRoom = new Room(newRoom);
                 if (testRoom.getRoomID() == r.getRoomID()) continue;
-                System.out.println("id: " + testRoom.getRoomID() + " | id2: " + r.getRoomID());
+//                System.out.println("id: " + testRoom.getRoomID() + " | id2: " + r.getRoomID());
                 testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getConnection()));
                 for (Entrance connectingEntrance: testRoom.getEntrances()) {
                     if (!e.connects(connectingEntrance)) continue;

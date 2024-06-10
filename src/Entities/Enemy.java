@@ -94,7 +94,8 @@ public class Enemy extends Entity {
 //                return;
 //            }
 //        }
-        stopXMovement();
+//        stopXMovement();
+        System.out.println(getBottomPos().getXDistance(path.getFirst()));
         if (getBottomPos().getXDistance(path.getFirst()) < 0) {
             moveX(-300);
         } else {
