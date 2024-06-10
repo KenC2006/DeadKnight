@@ -67,6 +67,7 @@ public class Entity {
     }
 
     public void updateData() {
+//        if (getIntendedVX() != 0) System.out.println(getIntendedVX());
         if (colliding) {
             hitbox.setColour(Color.RED);
         } else {

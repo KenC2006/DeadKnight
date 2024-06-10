@@ -3,6 +3,8 @@ package Managers;
 import Entities.Enemy;
 import Entities.Entity;
 import Entities.Player;
+import Structure.Hitbox;
+import Universal.GameTimer;
 import Structure.Room;
 import Universal.Camera;
 import Entities.ShortMeleeEnemy;
@@ -39,6 +41,11 @@ public class EntityManager {
         }
         for (Room r: roomManager.getLoadedRooms()) {
             for (Enemy e : r.getEnemies()) {
+                e.updateEnemyPos(r.getNodeMap());
+                e.updatePlayerPos(player);
+                if (player.isGrounded() && r.getHitbox().getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
+                    e.generatePath(r.getNodeMap());
+                }
                 e.updateValues();
             }
             r.updateValues();
