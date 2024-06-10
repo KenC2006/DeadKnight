@@ -1,8 +1,10 @@
 package Structure;
 
-import java.awt.*;
 import java.util.*;
 
+import RoomEditor.EnemySpawn;
+import RoomEditor.Entrance;
+import RoomEditor.PlayerSpawn;
 import Universal.Camera;
 
 public class NodeMap {

@@ -1,6 +1,6 @@
-package Structure;
+package RoomEditor;
 
-import java.awt.*;
+import Structure.Vector2F;
 
 public class Spawn {
     private Vector2F location;

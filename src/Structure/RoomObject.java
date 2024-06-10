@@ -1,5 +1,10 @@
 package Structure;
 
+import RoomEditor.EnemySpawn;
+import RoomEditor.Entrance;
+import RoomEditor.ItemSpawn;
+import RoomEditor.PlayerSpawn;
+
 import java.awt.*;
 
 

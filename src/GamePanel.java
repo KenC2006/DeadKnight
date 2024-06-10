@@ -1,7 +1,7 @@
 import Managers.CameraManager;
 import Managers.EntityManager;
 import Managers.ActionManager;
-import Structure.RoomEditor;
+import RoomEditor.RoomEditor;
 import UI.GameUIManager;
 import Universal.GameTimer;
 

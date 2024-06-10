@@ -48,7 +48,11 @@ public class ConvexShape {
 
             if (count > 100) {
                 System.out.println("BROKEN");
-                
+                for (Vector2F p: points) {
+                    System.out.println(p);
+                }
+                System.exit(-1);
+
             }
 
             results.add(new Vector2F(best));

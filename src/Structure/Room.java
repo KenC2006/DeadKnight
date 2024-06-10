@@ -3,10 +3,12 @@ package Structure;
 import Entities.Entity;
 import Entities.Player;
 import Entities.ShortMeleeEnemy;
-import Items.GameItem;
 import Items.IntelligencePickup;
-import Items.Item;
 import Items.ItemPickup;
+import RoomEditor.EnemySpawn;
+import RoomEditor.Entrance;
+import RoomEditor.ItemSpawn;
+import RoomEditor.PlayerSpawn;
 import Universal.Camera;
 import Entities.Enemy;
 
@@ -192,10 +194,22 @@ public class Room {
         nodeMap.drawNodes(c);
     }
 
-    public void updateValues() {
+    public void updateValues(Player player) {
         for (ItemPickup item: groundedItems) {
             item.updateValues();
 
+        }
+
+        for (Enemy e : enemies) {
+            if (walls.getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
+                if (player.isGrounded() && e.isGrounded()) {
+                    e.updatePlayerPos(player);
+                    e.updateEnemyPos(nodeMap);
+                    e.generatePath(nodeMap);
+                }
+            }
+            else {e.stopXMovement();}
+            e.updateValues();
         }
     }
 
@@ -204,11 +218,19 @@ public class Room {
             item.resolveRoomCollisions(loadedRooms);
         }
 
+        for (Enemy e : enemies) {
+            e.resolveRoomCollisions(loadedRooms);
+        }
+
     }
 
     public void resolvePlayerCollisions(Player player) {
         for (ItemPickup item: groundedItems) {
             player.resolveEntityCollision(item);
+        }
+
+        for (Enemy e : enemies) {
+            player.resolveEntityCollision(e);
         }
     }
 
@@ -217,6 +239,10 @@ public class Room {
 
         for (ItemPickup item: groundedItems) {
             item.updateData();
+        }
+
+        for (Enemy e : enemies) {
+            e.updateData();
         }
     }
 

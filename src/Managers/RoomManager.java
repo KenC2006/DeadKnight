@@ -3,8 +3,7 @@ package Managers;
 import Entities.Player;
 import Entities.Enemy;
 import Universal.Camera;
-import Structure.Entrance;
-import Structure.NodeMap;
+import RoomEditor.Entrance;
 import Structure.Room;
 import Structure.Vector2F;
 
@@ -70,7 +69,7 @@ public class RoomManager {
         loadRoom(randomRoom);
 
         toGenerateNeighbours.add(randomRoom);
-        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 10) {
+        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 100) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
 

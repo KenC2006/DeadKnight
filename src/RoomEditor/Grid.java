@@ -1,4 +1,8 @@
-package Structure;
+package RoomEditor;
+
+import Structure.Hitbox;
+import Structure.RoomObject;
+import Structure.Vector2F;
 
 import javax.swing.*;
 import java.awt.*;

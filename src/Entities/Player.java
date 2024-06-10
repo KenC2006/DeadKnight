@@ -192,20 +192,6 @@ public class Player extends Entity {
     }
 
     @Override
-    public boolean getToDelete() {
-        projectiles.removeIf(Entity::getToDelete);
-//        ArrayList<Projectile> newProjectiles = new ArrayList<>();
-//        for (Projectile p: projectiles) {
-//            if (p.getToDelete()) continue;
-//            newProjectiles.add(p);
-//        }
-//        projectiles.clear();
-//        projectiles.addAll(newProjectiles);
-
-        return super.getToDelete();
-    }
-
-    @Override
     public void paint(Camera c) {
         super.paint(c);
         for (Projectile p: new ArrayList<>(projectiles)) { // TODO currently temp fix for when the size of projectiles changes between a frame
@@ -227,8 +213,10 @@ public class Player extends Entity {
     public void updateData() {
         super.updateData();
         playerInventory.updatePosition(getHitbox().getCenter());
+        projectiles.removeIf(Entity::getToDelete);
         for (Projectile p: projectiles) {
             p.updateData();
         }
+
     }
 }
