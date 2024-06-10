@@ -43,6 +43,9 @@ public class RoomManager {
 
         } else {
             for (Room room : new ArrayList<>(loadedRooms)) {
+                for (Enemy e : room.getEnemies()) {
+                    e.paint(c);
+                }
                 room.drawRoom(c);
             }
         }

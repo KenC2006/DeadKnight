@@ -118,7 +118,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
-            enemies.add(new ShortMeleeEnemy(x, y, 100));
+            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 100));
         }
         nodeMap = new NodeMap(this);
 
@@ -142,6 +142,7 @@ public class Room {
         for (Enemy e : enemies) {
             e.translateEnemy(newDrawLocation);
         }
+//        System.out.println("done setting draw locations---------------");
         drawLocation.copy(newDrawLocation);
     }
 
@@ -157,6 +158,7 @@ public class Room {
             e.translateEnemy(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         }
         center.copy(newCenter);
+//        System.out.println("Done centering around point ------");
     }
 
     public void drawRoom(Camera c) {
