@@ -66,6 +66,10 @@ public class Entity {
         return health;
     }
 
+    public void changeHealth(int change) {
+        health += change;
+    }
+
     public void updateData() {
 //        if (getIntendedVX() != 0) System.out.println(getIntendedVX());
         if (colliding) {

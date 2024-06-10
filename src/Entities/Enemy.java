@@ -174,6 +174,10 @@ public class Enemy extends Entity {
 //        System.out.println(path);
     }
 
+    public void updateEnemyHealth(int change) {
+        changeHealth(change);
+    }
+
     public static void updatePlayerPos(Player player) {
 //        System.out.println (getSquareDistToPlayer(player) + " " + sightRadius);
 //        if (getSquareDistToPlayer(player) < sightRadius * sightRadius) {
