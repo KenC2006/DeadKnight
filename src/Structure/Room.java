@@ -94,7 +94,7 @@ public class Room {
             int y1 = Integer.parseInt(temp[1]);
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
-            
+
             entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
             entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
 
@@ -123,7 +123,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
-            enemies.add(new ShortMeleeEnemy(x, y, 100));
+            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 100));
         }
         nodeMap = new NodeMap(this);
 
@@ -146,6 +146,10 @@ public class Room {
             e.translateInPlace(change);
         }
 
+        for (Enemy e : enemies) {
+            e.translateEnemy(newDrawLocation);
+        }
+//        System.out.println("done setting draw locations---------------");
         drawLocation.copy(newDrawLocation);
     }
 
@@ -157,6 +161,9 @@ public class Room {
 
         for (Entrance e: entrances) {
             e.translateInPlace(change);
+        }
+        for (Enemy e : enemies) {
+            e.translateEnemy(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         }
         center.copy(newCenter);
 //        drawLocation.translateInPlace(change);

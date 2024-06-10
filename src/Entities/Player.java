@@ -152,16 +152,11 @@ public class Player extends Entity {
         return playerInventory.getCurrentPrimaryItem().getType();
     }
 
-    public void updateEnemyData(Enemy e) {
-        e.updatePlayerPos(this);
-    }
-
     public void resolveEntityCollision(Entity e) {
         if (e.collidesWithPlayer(this)) {
             e.setColliding(true);
             setColliding(true);
         }
-
         for (Projectile p: projectiles) {
             if (e.collidesWith(p)) {
                 e.setColliding(true);

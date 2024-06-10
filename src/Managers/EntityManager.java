@@ -1,7 +1,10 @@
 package Managers;
 
+import Entities.Enemy;
 import Entities.Entity;
 import Entities.Player;
+import Structure.Hitbox;
+import Universal.GameTimer;
 import Structure.Room;
 import Universal.Camera;
 import Entities.ShortMeleeEnemy;
@@ -17,11 +20,11 @@ public class EntityManager {
     public EntityManager() {
         player = new Player(-1000, -6000);
         entityList.add(player);
-//        entityList.add(new Entity(20, 20, 3, 4,100));
-//        for (int i = 0; i < 10; i++) {
-//            entityList.add(new ShortMeleeEnemy(0, 0, 2, player));
-//
-//        }
+        entityList.add(new Entity(20, 20, 3, 4,100));
+        for (int i = 0; i < 1; i++) {
+            entityList.add(new ShortMeleeEnemy(0, 0, 2));
+
+        }
 //        entityList.add(entityList.get(2).getSwing());
     }
 
@@ -37,6 +40,18 @@ public class EntityManager {
             g.updateValues();
         }
         for (Room r: roomManager.getLoadedRooms()) {
+            for (Enemy e : r.getEnemies()) {
+
+                if (r.getHitbox().getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
+                    if (player.isGrounded() && e.isGrounded()) {
+                        e.updatePlayerPos(player);
+                        e.updateEnemyPos(r.getNodeMap());
+                        e.generatePath(r.getNodeMap());
+                    }
+                }
+                else {e.stopXMovement();}
+                e.updateValues();
+            }
             r.updateValues();
         }
 
@@ -45,15 +60,22 @@ public class EntityManager {
         }
 
         for (Room r: roomManager.getLoadedRooms()) {
+            for (Enemy e : r.getEnemies()) {
+                e.resolveRoomCollisions(roomManager.getLoadedRooms());
+            }
             r.resolveRoomCollisions(roomManager.getLoadedRooms());
         }
 
         for (Entity g: entityList) { // Manage collisions with player
             if (g.equals(player)) continue;
             player.resolveEntityCollision(g);
+//            System.out.println(g.getVX());
         }
 
         for (Room r: roomManager.getLoadedRooms()) {
+            for (Enemy e : r.getEnemies()) {
+                player.resolveEntityCollision(e);
+            }
             r.resolvePlayerCollisions(player);
         }
 
@@ -62,6 +84,9 @@ public class EntityManager {
         }
 
         for (Room r: roomManager.getLoadedRooms()) {
+            for (Enemy e : r.getEnemies()) {
+                e.updateData();
+            }
             r.updateData();
         }
 

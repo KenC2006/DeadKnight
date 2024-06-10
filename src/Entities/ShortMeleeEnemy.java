@@ -1,5 +1,6 @@
 package Entities;
 
+import Structure.Vector2F;
 import Universal.Camera;
 
 public class ShortMeleeEnemy extends Enemy {
@@ -7,6 +8,8 @@ public class ShortMeleeEnemy extends Enemy {
     private boolean isDashing, isAttacking;
 //    private Hitbox up, down, left, right; // change to gamecharacter when polygon hitbox support added
     private Entity swing;
+    private static Vector2F playerPos = new Vector2F();
+    private static int playerWidth, playerHeight;
 
     public ShortMeleeEnemy(int x, int y, int health) {
         super(x, y, 2000, 5000, health, 25000000);
@@ -47,18 +50,17 @@ public class ShortMeleeEnemy extends Enemy {
 
     }
 
-    public void updatePlayerPos(Player player) {
-        super.updatePlayerPos(player);
-        if (getSquareDistToPlayer(player) < 1) {
+    public void updateData() {
+        if (playerPos.getEuclideanDistance(getBottomPos()) < 1000) {
             swing.markToDelete(false);
             //swing at the player
-            if (player.getY() + 1 < getY()) {
+            if (playerPos.getY() + 1 < getY()) {
                 swing.setY(getY() - swing.getHeight());
-                swing.setX(getX() - player.getWidth());
+                swing.setX(getX() - playerWidth);
             }
-            else if(getX() - player.getX() < 0) {
+            else if(getX() - playerPos.getX() < 0) {
                 swing.setY(getY());
-                swing.setX(getX() + player.getWidth());
+                swing.setX(getX() + playerWidth);
             }
             else {
                 swing.setY(getY());
@@ -70,12 +72,16 @@ public class ShortMeleeEnemy extends Enemy {
         }
     }
 
+    public static void updatePlayerPos(Player player) {
+        Enemy.updatePlayerPos(player);
+        playerPos = player.getBottomPos();
+    }
+
     @Override
     public void paint(Camera c) {
-        super.paint(c);
-//        System.out.println(swing.getToDelete());
         if (!swing.getToDelete()) {
             swing.paint(c);
         }
+        super.paint(c);
     }
 }
