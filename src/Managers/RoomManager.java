@@ -36,18 +36,18 @@ public class RoomManager {
     public void drawRooms(Camera c) {
         if (c.isMapCamera()) {
             for (Room room : allRooms) {
+                room.drawRoom(c);
                 for (Enemy e : room.getEnemies()) {
                     e.paint(c);
                 }
-                room.drawRoom(c);
             }
 
         } else {
             for (Room room : new ArrayList<>(loadedRooms)) {
+                room.drawRoom(c);
                 for (Enemy e : room.getEnemies()) {
                     e.paint(c);
                 }
-                room.drawRoom(c);
             }
         }
     }
