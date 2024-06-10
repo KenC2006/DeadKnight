@@ -43,9 +43,10 @@ public class EntityManager {
             for (Enemy e : r.getEnemies()) {
                 e.updateEnemyPos(r.getNodeMap());
                 e.updatePlayerPos(player);
-                if (player.isGrounded() && r.getHitbox().getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
-                    e.generatePath(r.getNodeMap());
+                if (r.getHitbox().getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
+                    if (player.isGrounded() && e.isGrounded()) e.generatePath(r.getNodeMap());
                 }
+                else {e.stopXMovement();}
                 e.updateValues();
             }
             r.updateValues();

@@ -79,8 +79,13 @@ public class Enemy extends Entity {
         if (path.isEmpty()) {
             return;
         }
-        if (!isPlayerFound) return;
+        if (!isPlayerFound) {
+            return;
+        }
         isPlayerFound = false;
+        if (Objects.equals(path.getFirst(), enemyPos) && path.size() > 1) {
+            path.removeFirst();
+        }
 //        System.out.println(path.getFirst() + " " + new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5 ) + " " + path.getFirst().getEuclideanDistance(new Vector2F(super.getPos().getX()+1, super.getPos().getY() + 5)));
 //        if (path.getFirst().getEuclideanDistance(getBottomPos()) < 2000) {
 //            path.removeFirst();
@@ -164,7 +169,7 @@ public class Enemy extends Entity {
             if (reversedMap.get(q2.peek()) == null) break;
             q2.add(reversedMap.get(q2.remove()).getFirst());
         }
-        path.removeFirst();
+//        path.removeFirst();
 //        System.out.println(path);
     }
 
@@ -276,7 +281,7 @@ public class Enemy extends Entity {
         for (int i = 0; i < path.size() - 1; i++) {
             if (i + 1 >= path.size()) break;
             if (path.get(i) == null || path.get(i+1) == null) continue;
-            c.drawLine(path.get(i), path.get(i + 1), Color.RED);
+//            c.drawLine(path.get(i), path.get(i + 1), Color.RED);
         }
     }
 }

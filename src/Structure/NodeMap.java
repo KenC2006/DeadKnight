@@ -247,7 +247,7 @@ public class NodeMap {
             cur_node = q.remove();
             ogCur_node = new Vector2F((cur_node.getX() - gridOffset) * 1000, (cur_node.getY() - gridOffset) * 1000);
 
-            if (cur_node.getEuclideanDistance(start) > 750) {
+            if (cur_node.getEuclideanDistance(start) > 500) {
                 continue;
             }
             if (Math.abs(cur_node.getXDistance(start)) > 20) {
@@ -257,7 +257,7 @@ public class NodeMap {
                 continue;
             }
 
-            if (grid[ cur_node.getY()][ cur_node.getX()] == 'V') {
+            if (grid[ cur_node.getY()][ cur_node.getX()] == 'V' && cur_node.getX() != start.getX()) {
 //                nodes.add(ogCur_node);
                 if (!doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
 //                    System.out.println("connecting " + ogCur_node + " " + ogCur_node);
@@ -357,7 +357,7 @@ public class NodeMap {
     public void drawNodes(Camera c) {
         for (Vector2F n : nodes) {
 //            System.out.println(n);
-            c.drawCoordinate(n.getTranslated(translateOffset));
+//            c.drawCoordinate(n.getTranslated(translateOffset));
 //            System.out.println(n + " " + edges.get(n));
 
             if (edges.get(n) == null) {
