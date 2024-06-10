@@ -1,11 +1,14 @@
 package Entities;
 
-import Items.*;
+import Items.ActivationType;
+import Items.IntelligencePickup;
+import Items.ItemPickup;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
 import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
+import Items.WeaponType;
 import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
@@ -167,6 +170,15 @@ public class Player extends Entity {
             ((MeleeWeapon) playerInventory.getCurrentPrimaryItem()).doCollisionCheck(e);
 
         }
+    }
+
+    public void resolveEntityCollision(ItemPickup item) {
+        if (!item.collidesWith(this)) return;
+//        resolveEntityCollision((Entity) item);
+        if (item instanceof IntelligencePickup) {
+            item.markToDelete(true);
+            intelligence++;
+        }
 
     }
 
@@ -181,14 +193,15 @@ public class Player extends Entity {
 
     @Override
     public boolean getToDelete() {
-        ArrayList<Projectile> newProjectiles = new ArrayList<>();
-        for (Projectile p: projectiles) {
-            if (p.getToDelete()) continue;
-            newProjectiles.add(p);
-        }
+        projectiles.removeIf(Entity::getToDelete);
+//        ArrayList<Projectile> newProjectiles = new ArrayList<>();
+//        for (Projectile p: projectiles) {
+//            if (p.getToDelete()) continue;
+//            newProjectiles.add(p);
+//        }
+//        projectiles.clear();
+//        projectiles.addAll(newProjectiles);
 
-        projectiles.clear();
-        projectiles.addAll(newProjectiles);
         return super.getToDelete();
     }
 

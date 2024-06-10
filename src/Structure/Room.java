@@ -1,5 +1,6 @@
 package Structure;
 
+import Entities.Entity;
 import Entities.Player;
 import Entities.ShortMeleeEnemy;
 import Items.GameItem;
@@ -53,18 +54,22 @@ public class Room {
         for (EnemySpawn es : copy.enemySpawns) {
             enemySpawns.add(new EnemySpawn(es));
         }
+        for (ItemSpawn itemSpawn: copy.itemSpawns) {
+            itemSpawns.add(new ItemSpawn(itemSpawn));
+        }
         for (Enemy e : copy.enemies) {
             enemies.add(new Enemy(e));
         }
+
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
         roomID = copy.roomID;
 //        for (ItemPickup i: copy.groundedItems) {
-//            groundedItems.add(ItemPickup(i));
+//            groundedItems.add(new ItemPickup(i));
 //        }
 
-        for (ItemSpawn itemSpawn: itemSpawns) {
-            groundedItems.add(new IntelligencePickup(itemSpawn.getLocation()));
-        }
+//        for (ItemSpawn itemSpawn: itemSpawns) {
+//            groundedItems.add(new IntelligencePickup(itemSpawn.getLocation()));
+//        }
 //        groundedItems.add(new ItemPickup(getCenterLocation()));
     }
 
@@ -132,11 +137,13 @@ public class Room {
     }
 
     public void setDrawLocation(Vector2F newDrawLocation) {
-        walls.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
-        entranceHitboxes.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
-        nodeMap.setTranslateOffset(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
+        Vector2F change = newDrawLocation.getTranslated(drawLocation.getNegative());
+
+        walls.translateInPlace(change);
+        entranceHitboxes.translateInPlace(change);
+        nodeMap.setTranslateOffset(change);
         for (Entrance e: entrances) {
-            e.translateInPlace(new Vector2F(drawLocation.getXDistance(newDrawLocation), drawLocation.getYDistance(newDrawLocation)));
+            e.translateInPlace(change);
         }
 
         for (Enemy e : enemies) {
@@ -147,26 +154,37 @@ public class Room {
     }
 
     public void centerAroundPointInRoom(Vector2F newCenter) {
-        walls.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
-        entranceHitboxes.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
-        nodeMap.setTranslateOffset(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+        Vector2F change = new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center));
+        walls.translateInPlace(change);
+        entranceHitboxes.translateInPlace(change);
+        nodeMap.setTranslateOffset(change);
 
         for (Entrance e: entrances) {
-            e.translateInPlace(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
+            e.translateInPlace(change);
         }
         for (Enemy e : enemies) {
             e.translateEnemy(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         }
         center.copy(newCenter);
-//        System.out.println("Done centering around point ------");
+//        drawLocation.translateInPlace(change);
+    }
+
+    public Vector2F getTopLeft() {
+        return walls.getBoundingBox().getTopLeft();
+    }
+
+    public void setupRoom() {
+        for (ItemSpawn i: itemSpawns) {
+            addItemPickup(new IntelligencePickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
+        }
     }
 
     public void drawRoom(Camera c) {
         walls.draw(c);
 //        entranceHitboxes.draw(c);
-        for (Entrance e: entrances) {
+//        for (Entrance e: entrances) {
 //            e.draw(c);
-        }
+//        }
 
         for (ItemPickup item: groundedItems) {
             item.paint(c);
@@ -195,6 +213,8 @@ public class Room {
     }
 
     public void updateData() {
+        groundedItems.removeIf(Entity::getToDelete);
+
         for (ItemPickup item: groundedItems) {
             item.updateData();
         }

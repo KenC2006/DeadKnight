@@ -18,12 +18,13 @@ public class RoomManager {
     private ArrayList<Room> allRooms = new ArrayList<>();
     private ArrayList<Room> loadedRooms = new ArrayList<>();
     private Deque<Room> toGenerateNeighbours = new ArrayDeque<>();
-    private int renderDistance = 300000;
+    private int renderDistance = 200000;
 
     public RoomManager() {
 //        createRectangleRoom();
         loadRoomsFromFile();
         generateRooms();
+        setupRooms();
     }
 
     public void createRectangleRoom() {
@@ -119,6 +120,12 @@ public class RoomManager {
             addRoom(compatibleRooms.get(randomRoom));
             loadRoom(compatibleRooms.get(randomRoom));
             toGenerateNeighbours.add(compatibleRooms.get(randomRoom));
+        }
+    }
+
+    public void setupRooms() {
+        for (Room r: getAllRooms()) {
+            r.setupRoom();
         }
     }
 
