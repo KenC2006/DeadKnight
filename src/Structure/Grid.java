@@ -343,7 +343,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                     for (int i = 0; i < enemySpawnNum; i++) {
                         int x=in.nextInt();
                         int y=in.nextInt();
-                        System.out.println(topLeftPoint);
+//                        System.out.println(topLeftPoint);
                         enemySpawns.add(new EnemySpawn(x,y,in.nextInt()-x,in.nextInt()-y));
                     }
 
