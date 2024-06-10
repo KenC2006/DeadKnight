@@ -1,5 +1,6 @@
 package Managers;
 
+import Entities.Player;
 import Entities.Enemy;
 import Universal.Camera;
 import Structure.Entrance;
@@ -17,6 +18,7 @@ public class RoomManager {
     private ArrayList<Room> allRooms = new ArrayList<>();
     private ArrayList<Room> loadedRooms = new ArrayList<>();
     private Deque<Room> toGenerateNeighbours = new ArrayDeque<>();
+    private int renderDistance = 300000;
 
     public RoomManager() {
 //        createRectangleRoom();
@@ -27,20 +29,34 @@ public class RoomManager {
     public void createRectangleRoom() {
         Room newRoom = new Room(-40000, -40000, 80000, 80000);
         allRooms.add(newRoom);
-        loadedRooms.add(newRoom);
+//        loadedRooms.add(newRoom);
     }
 
     public void drawRooms(Camera c) {
-        for (Room room : loadedRooms) {
-            for (Enemy e : room.getEnemies()) {
-                e.paint(c);
+        if (c.isMapCamera()) {
+            for (Room room : allRooms) {
+                for (Enemy e : room.getEnemies()) {
+                    e.paint(c);
+                }
+                room.drawRoom(c);
             }
-            room.drawRoom(c);
+
+        } else {
+            for (Room room : new ArrayList<>(loadedRooms)) {
+                for (Enemy e : room.getEnemies()) {
+                    e.paint(c);
+                }
+                room.drawRoom(c);
+            }
         }
     }
 
     public ArrayList<Room> getLoadedRooms() {
         return loadedRooms;
+    }
+
+    public ArrayList<Room> getAllRooms() {
+        return allRooms;
     }
 
     public void generateRooms() {
@@ -75,6 +91,8 @@ public class RoomManager {
             ArrayList<Room> compatibleRooms = new ArrayList<>();
             for (Room newRoom: allPossibleRooms) {
                 Room testRoom = new Room(newRoom);
+                if (testRoom.getRoomID() == r.getRoomID()) continue;
+                System.out.println("id: " + testRoom.getRoomID() + " | id2: " + r.getRoomID());
                 testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getConnection()));
                 for (Entrance connectingEntrance: testRoom.getEntrances()) {
                     if (!e.connects(connectingEntrance)) continue;
@@ -123,8 +141,17 @@ public class RoomManager {
         allRooms.add(r);
     }
 
-    public void update() {
+    public void update(Player player) {
+        ArrayList<Room> nextLoaded = new ArrayList<>();
+        for (Room r: allRooms) {
+            if (Math.abs(r.getAbsoluteCenter().getManhattanDistance(player.getCenterVector())) < renderDistance) {
+                nextLoaded.add(r);
+//                System.out.println(r.getCenterRelativeToRoom() + " " + r.getCenterLocation());
+            }
+        }
 
+        loadedRooms.clear();
+        loadedRooms.addAll(nextLoaded);
     }
 
 }

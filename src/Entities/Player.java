@@ -172,7 +172,6 @@ public class Player extends Entity {
 
     @Override
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
-//        System.out.println("SOLVING " + roomList.size());
         super.resolveRoomCollisions(roomList);
         for (Projectile p: projectiles) {
             p.resolveRoomCollisions(roomList);

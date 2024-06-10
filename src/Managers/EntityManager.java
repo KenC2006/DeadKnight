@@ -18,7 +18,6 @@ public class EntityManager {
     private RoomManager roomManager = new RoomManager();
 
     public EntityManager() {
-//        System.out.println("Sdas");
         player = new Player(-1000, -6000);
         entityList.add(player);
         entityList.add(new Entity(20, 20, 3, 4,100));
@@ -34,6 +33,9 @@ public class EntityManager {
     }
 
     public void update() {
+
+        roomManager.update(player);
+
         for (Entity g: entityList) { // Set pre conditions and intital values
             g.updateValues();
         }

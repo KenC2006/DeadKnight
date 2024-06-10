@@ -18,12 +18,9 @@ public class RoomEditor extends JFrame {
     public RoomEditor() {
 
         grid = new Grid();
-//        System.out.println("HERE");
         add(grid);
-//        System.out.println("HERE 2");
         setLayout(new BorderLayout());
         add(grid,BorderLayout.CENTER);
-//        pack();
 
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,17 +72,17 @@ public class RoomEditor extends JFrame {
 
                         fw.write(grid.getPlayerSpawns().size() + "\n");
                         for (PlayerSpawn r: grid.getPlayerSpawns()) {
-                            fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
+                            fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
                         }
 
                         fw.write(grid.getItemSpawns().size() + "\n");
                         for (ItemSpawn r: grid.getItemSpawns()) {
-                            fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
+                            fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
                         }
 
                         fw.write(grid.getEnemySpawns().size() + "\n");
                         for (EnemySpawn r: grid.getEnemySpawns()) {
-                            fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
+                            fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
                         }
 
                         fw.close();

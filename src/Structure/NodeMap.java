@@ -27,9 +27,9 @@ public class NodeMap {
         grid = new char[1000][1000];
 
         loadGrid(room);
-        loadNodes(new Vector2F(playerSpawn.x/1000 + 500, playerSpawn.y/1000 + 500), room);
+        loadNodes(new Vector2F(playerSpawn.getX()/1000 + 500, playerSpawn.getY()/1000 + 500), room);
 //        loadNodes(new Vector2F(room.getCenterRelativeToRoom().getX() + 250, room.getCenterRelativeToRoom().getY() + 250), room);
-        nodes.add(new Vector2F(playerSpawn.x, playerSpawn.y));
+        nodes.add(new Vector2F(playerSpawn.getX(), playerSpawn.getY()));
 //        int idx = 0;
 //        while (idx < nodes.size()) {
 //            System.out.println(nodes);
