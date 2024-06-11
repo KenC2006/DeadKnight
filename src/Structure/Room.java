@@ -5,6 +5,7 @@ import Entities.Player;
 import Entities.ShortMeleeEnemy;
 import Items.IntelligencePickup;
 import Items.ItemPickup;
+import Managers.ActionManager;
 import RoomEditor.EnemySpawn;
 import RoomEditor.Entrance;
 import RoomEditor.ItemSpawn;
@@ -125,7 +126,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
-            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 100)); // change when more types of enemies added
+            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 50)); // change when more types of enemies added
         }
         nodeMap = new NodeMap(this);
 
@@ -203,7 +204,7 @@ public class Room {
         for (Enemy e : enemies) {
             if (walls.getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
                 if (player.isGrounded() && e.isGrounded()) {
-                    e.updatePlayerPos(player);
+                    e.updatePlayerInfo(player);
                     e.updateEnemyPos(nodeMap);
                     e.generatePath(nodeMap);
                 }
@@ -243,6 +244,13 @@ public class Room {
 
         for (Enemy e : enemies) {
             e.updateData();
+        }
+    }
+
+    public void updateEnemies(ActionManager am) {
+        enemies.removeIf(Entity::getToDelete);
+        for (Enemy e : enemies) {
+            e.attack(am);
         }
     }
 

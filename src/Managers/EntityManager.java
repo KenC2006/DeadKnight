@@ -32,13 +32,14 @@ public class EntityManager {
         player.updateKeyPresses(manager);
     }
 
-    public void update() {
+    public void update(ActionManager manager) {
         roomManager.update(player);
 
         player.updateValues();
         ArrayList<Integer> toRemove = new ArrayList<Integer>();
         for (Room r: roomManager.getLoadedRooms()) {
             r.updateValues(player);
+            r.updateEnemies(manager);
             toRemove.clear();
             for (int i = 0; i < r.getEnemies().size(); i++) {
                 if (!r.getEnemies().get(i).getHitbox().quickIntersect(r.getHitbox().getBoundingBox())) {

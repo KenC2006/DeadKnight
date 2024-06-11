@@ -1,5 +1,11 @@
 package Entities;
 
+import Items.ActivationType;
+import Items.Melee.BasicSpear;
+import Items.Melee.BasicSword;
+import Items.Melee.MeleeWeapon;
+import Items.Melee.ShortSword;
+import Managers.ActionManager;
 import Structure.Edge;
 import Structure.NodeMap;
 import Structure.Vector2F;
@@ -10,30 +16,12 @@ import java.util.*;
 public class ShortMeleeEnemy extends Enemy {
 
     private boolean isDashing, isAttacking, isPlayerFound;
-//    private Hitbox up, down, left, right; // change to gamecharacter when polygon hitbox support added
-    private Entity swing;
+    private MeleeWeapon sword;
     private static int playerWidth, playerHeight;
 
     public ShortMeleeEnemy(int x, int y, int health) {
         super(x, y, 2000, 5000, health, 25000000);
-//        right = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(0, 7),
-//                new Vector2F(4, 6), new Vector2F(6, 3),
-//                new Vector2F(4, 1))));
-//        left = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(0, 7),
-//                new Vector2F(-4, 6), new Vector2F(-6, 3),
-//                new Vector2F(-4, 1))));
-//        down = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(3, 0),
-//                new Vector2F(2, -2), new Vector2F(0, -4),
-//                new Vector2F(-2, -2), new Vector2F(-3, 0))));
-//        up = new Hitbox(new ArrayList<Vector2F>(Arrays.asList(new Vector2F(0, 0), new Vector2F(3, 0),
-//                new Vector2F(2, 2), new Vector2F(0, 4),
-//                new Vector2F(-2, 2), new Vector2F(-3, 0))));
-        swing = new Entity(0, 0, 5000, 5000, 10);
-        swing.setAffectedByGravity(false);
-    }
-
-    public Entity getSwing() {
-        return swing;
+        sword = new ShortSword(getCenterVector());
     }
 
     public String getType() {
@@ -48,9 +36,11 @@ public class ShortMeleeEnemy extends Enemy {
         isDashing = true;
         setIntendedVX(getVX() - 10000);
     }
-    public void swingSword() {
-        isAttacking = true;
 
+    @Override
+    public void updatePlayerInfo(Player player) {
+        super.updatePlayerInfo(player);
+        sword.doCollisionCheck(player);
     }
 
     public void followPlayer() {
@@ -135,35 +125,27 @@ public class ShortMeleeEnemy extends Enemy {
     public void updateValues() {
         super.updateValues();
         followPlayer();
+        sword.setLocation(getCenterVector());
     }
 
-    public void updateData() {
-        if (getPlayerPos().getEuclideanDistance(getBottomPos()) < 1000) {
-            swing.markToDelete(false);
+    public void attack(ActionManager am) {
+        if (getPlayerPos().getEuclideanDistance(getBottomPos()) < 50000000) {
             //swing at the player
-            if (getPlayerPos().getY() + 1 < getY()) {
-                swing.setY(getY() - swing.getHeight());
-                swing.setX(getX() - playerWidth);
-            }
-            else if(getX() - getPlayerPos().getX() < 0) {
-                swing.setY(getY());
-                swing.setX(getX() + playerWidth);
+//            stopXMovement();
+//            System.out.println(getPlayerPos() + " " + getPos() + " " + getPlayerPos().getYDistance(getPos()));
+            if (getPlayerPos().getXDistance(getCenterVector()) > 0) {
+                sword.activate(ActivationType.LEFT, am);
             }
             else {
-                swing.setY(getY());
-                swing.setX(getX() - swing.getWidth());
+                sword.activate(ActivationType.RIGHT, am);
             }
         }
-        else {
-            swing.markToDelete(true);
-        }
+        sword.update();
     }
 
     @Override
     public void paint(Camera c) {
-        if (!swing.getToDelete()) {
-            swing.paint(c);
-        }
         super.paint(c);
+        sword.draw(c);
     }
 }

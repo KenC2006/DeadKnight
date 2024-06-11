@@ -36,7 +36,7 @@ public class RoomManager {
         if (c.isMapCamera()) {
             for (Room room : allRooms) {
                 room.drawRoom(c);
-                for (Enemy e : room.getEnemies()) {
+                for (Enemy e : new ArrayList<>(room.getEnemies())) {
                     e.paint(c);
                 }
             }
@@ -44,7 +44,7 @@ public class RoomManager {
         } else {
             for (Room room : new ArrayList<>(loadedRooms)) {
                 room.drawRoom(c);
-                for (Enemy e : room.getEnemies()) {
+                for (Enemy e : new ArrayList<>(room.getEnemies())) {
                     e.paint(c);
                 }
             }

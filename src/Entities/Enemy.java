@@ -1,14 +1,12 @@
 package Entities;
 
+import Managers.ActionManager;
 import Universal.Camera;
 import Structure.NodeMap;
-import Structure.Edge;
-import Structure.Room;
 import Structure.Vector2F;
 import Universal.GameTimer;
 
 import java.util.*;
-import java.awt.Color;
 
 public class Enemy extends Entity {
 
@@ -77,6 +75,9 @@ public class Enemy extends Entity {
 
     public void updateValues() {
         super.updateValues();
+        if (getHealth() <= 0) {
+            markToDelete(true);
+        }
     }
 
     public void generatePath(NodeMap graph) {
@@ -87,7 +88,7 @@ public class Enemy extends Entity {
     }
 
 
-    public void updatePlayerPos(Player player) {
+    public void updatePlayerInfo(Player player) {
         playerPos = player.getBottomPos();
 //        System.out.println(playerPos);
     }
@@ -113,8 +114,8 @@ public class Enemy extends Entity {
         super.updateData();
     }
 
-    public Entity getSwing() {
-        return null;
+    public void attack(ActionManager am) {
+
     }
 
     public Vector2F getPlayerPos() {
