@@ -80,9 +80,9 @@ public class Entrance {
     }
 
     public void draw(Camera c) {
-        c.drawCoordinate(absoluteLocation);
-        c.drawCoordinate(absoluteLocation.getTranslated(new Vector2F(relativeLocation.getXDistance(connectionPoint), relativeLocation.getYDistance(connectionPoint))));
-        c.drawHitbox(hitbox);
+//        c.drawCoordinate(absoluteLocation);
+//        c.drawCoordinate(absoluteLocation.getTranslated(new Vector2F(relativeLocation.getXDistance(connectionPoint), relativeLocation.getYDistance(connectionPoint))));
+        c.drawHitbox(hitbox, Color.GREEN);
     }
 
     public boolean connects(Entrance other) {

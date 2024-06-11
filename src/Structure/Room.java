@@ -5,6 +5,7 @@ import Entities.Player;
 import Entities.ShortMeleeEnemy;
 import Items.IntelligencePickup;
 import Items.ItemPickup;
+import Managers.ActionManager;
 import RoomEditor.EnemySpawn;
 import RoomEditor.Entrance;
 import RoomEditor.ItemSpawn;
@@ -12,6 +13,7 @@ import RoomEditor.PlayerSpawn;
 import Universal.Camera;
 import Entities.Enemy;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -19,9 +21,9 @@ import java.util.Scanner;
 
 public class Room {
     private static int numberOfUniqueRooms = 0;
+    private boolean visited = false;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
-    private HitboxGroup walls = new HitboxGroup();
-    private HitboxGroup entranceHitboxes = new HitboxGroup();
+    private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
     private ArrayList<ItemPickup> groundedItems = new ArrayList<>();
     private NodeMap nodeMap;
@@ -30,16 +32,6 @@ public class Room {
     private ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private int roomID;
-
-    public Room(int x, int y, int width, int height) {
-//        walls.addHitbox(new Hitbox(x, y, x + width, y + 1));
-//        walls.addHitbox(new Hitbox(x, y, x + 1000, y + height));
-//        walls.addHitbox(new Hitbox(x + width, y + height - 1000, x, y + height));
-//        walls.addHitbox(new Hitbox(x + width - 1000, y + height, x + width, y));
-//        walls.addHitbox(new Hitbox(x + width / 2, y + height * 3 / 4, x + width / 2 + 1000, y + height));
-        walls.addHitbox(new Hitbox(x, y + height / 2, x + width * 3 / 4, y + height / 2 + 1000));
-        nodeMap = new NodeMap(this);
-    }
 
     public Room(Room copy) {
         center = new Vector2F(copy.center);
@@ -60,19 +52,13 @@ public class Room {
             itemSpawns.add(new ItemSpawn(itemSpawn));
         }
         for (Enemy e : copy.enemies) {
-            enemies.add(new Enemy(e));
+            enemies.add(new ShortMeleeEnemy(e.getX(), e.getY(), e.getHealth())); // change when more types of enemies added
         }
 
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
         roomID = copy.roomID;
-//        for (ItemPickup i: copy.groundedItems) {
-//            groundedItems.add(new ItemPickup(i));
-//        }
+        visited = copy.visited;
 
-//        for (ItemSpawn itemSpawn: itemSpawns) {
-//            groundedItems.add(new IntelligencePickup(itemSpawn.getLocation()));
-//        }
-//        groundedItems.add(new ItemPickup(getCenterLocation()));
     }
 
     public Room(File file) throws FileNotFoundException {
@@ -125,13 +111,11 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
-            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 100));
+            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 50)); // change when more types of enemies added
         }
         nodeMap = new NodeMap(this);
 
         roomID = numberOfUniqueRooms;
-
-//        groundedItems.add(new ItemPickup(walls.getCenter()));
     }
 
     public Vector2F getCenterRelativeToRoom() {
@@ -168,7 +152,6 @@ public class Room {
             e.translateEnemy(new Vector2F(newCenter.getXDistance(center), newCenter.getYDistance(center)));
         }
         center.copy(newCenter);
-//        drawLocation.translateInPlace(change);
     }
 
     public Vector2F getTopLeft() {
@@ -179,6 +162,12 @@ public class Room {
         for (ItemSpawn i: itemSpawns) {
             addItemPickup(new IntelligencePickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
         }
+    }
+
+    public void spawnPlayer(Player p) {
+        PlayerSpawn spawn = playerSpawns.get((int) (Math.random() * playerSpawns.size()));
+        System.out.println("Spawning player at " + spawn.getLocation());
+        p.setLocation(getTopLeft().getTranslated(spawn.getLocation()).getTranslated(new Vector2F(-p.getWidth() / 2, -p.getHeight() * 9 / 10)));
     }
 
     public void drawRoom(Camera c) {
@@ -197,18 +186,19 @@ public class Room {
     public void updateValues(Player player) {
         for (ItemPickup item: groundedItems) {
             item.updateValues();
+            item.updateValues();
 
         }
 
         for (Enemy e : enemies) {
             if (walls.getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
                 if (player.isGrounded() && e.isGrounded()) {
-                    e.updatePlayerPos(player);
+                    e.updatePlayerInfo(player);
                     e.updateEnemyPos(nodeMap);
                     e.generatePath(nodeMap);
                 }
             }
-            else {e.stopXMovement();}
+//            else {e.stopXMovement();}
             e.updateValues();
         }
     }
@@ -246,18 +236,33 @@ public class Room {
         }
     }
 
+    public void updateEnemies(ActionManager am) {
+        enemies.removeIf(Entity::getToDelete);
+        for (Enemy e : enemies) {
+            e.attack(am);
+        }
+    }
+
     public void closeEntrances() {
         for (Entrance e: entrances) {
             if (e.isConnected()) continue;
+            e.getHitbox().setColour(Color.GREEN);
             walls.addHitbox(new Hitbox(e.getHitbox()));
 //            System.out.println("HITBOX COLOUR IS " + e.getHitbox().getColour());
         }
     }
 
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
     public int getRoomID() {
         return roomID;
     }
-
 
     public void addItemPickup(ItemPickup item) {
         groundedItems.add(item);
@@ -311,5 +316,10 @@ public class Room {
 
     public boolean intersects(Room other) {
         return walls.intersects(other.walls) || walls.intersects(other.entranceHitboxes) || entranceHitboxes.intersects(other.walls) || entranceHitboxes.intersects(other.entranceHitboxes);
+    }
+
+    @Override
+    public String toString() {
+        return "ROOM ID: " + getRoomID() + super.toString();
     }
 }

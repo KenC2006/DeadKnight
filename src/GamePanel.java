@@ -56,7 +56,7 @@ public class GamePanel extends JPanel{
 
         cameraManager.update(actionManager, entityManager);
         entityManager.updateKeyPresses(actionManager);
-        entityManager.update();
+        entityManager.update(actionManager);
         gameUIManager.update(actionManager);
     }
 

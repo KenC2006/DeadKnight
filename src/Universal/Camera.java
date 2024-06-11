@@ -3,7 +3,6 @@ package Universal;
 import Entities.Entity;
 import Entities.Player;
 import Items.IntelligencePickup;
-import Items.ItemPickup;
 import Items.WeaponType;
 import Structure.Hitbox;
 import Structure.Line;
@@ -20,15 +19,16 @@ public class Camera {
     private Vector2F offset = new Vector2F(-1000, -1000), targetOffset = new Vector2F(offset);
     private Vector2F absoluteOffset = new Vector2F(), topLeftLocation = new Vector2F();
     private Graphics2D graphics;
-    private double scaling;
+    private double scaling, initialScaling;
     private double renderScaling;
     private int renderWidth, renderHeight;
-    private boolean renderWallsOnly;
+    private boolean isMapCamera, centered, enabled;
 
     public Camera(double scalingFactor, Vector2F offset, double size) {
-        scaling = scalingFactor;
+        initialScaling = scalingFactor;
         renderScaling = size;
         this.topLeftLocation.copy(offset);
+        enabled = true;
     }
 
     public Camera(double scalingFactor) {
@@ -39,16 +39,25 @@ public class Camera {
         graphics = (Graphics2D) g;
         graphics.setStroke(new BasicStroke(1f));
         Rectangle screenSize = graphics.getClipBounds();
+        scaling = initialScaling * screenSize.getWidth() / 1280;
+        if (!enabled) {
+            renderHeight = 0;
+            renderWidth = 0;
+            return;
+        }
 
-        if (renderScaling == 0) {
+        if (renderScaling == 0 || centered) {
             renderWidth = screenSize.width;
             renderHeight = screenSize.height;
         } else {
             renderWidth = (int) (Math.min(screenSize.width, screenSize.height) * renderScaling);
             renderHeight = (int) (Math.min(screenSize.width, screenSize.height) * renderScaling);
         }
-        if (renderWallsOnly) {
+        if (isMapCamera) {
             absoluteOffset = topLeftLocation.getTranslated(new Vector2F(screenSize.width - renderWidth, renderHeight));
+            if (centered) {
+                absoluteOffset = new Vector2F(renderWidth / 2, renderHeight / 2);
+            }
 
         } else {
             absoluteOffset = topLeftLocation.getTranslated(new Vector2F(renderWidth / 2, renderHeight / 2));
@@ -69,7 +78,7 @@ public class Camera {
     }
 
     public void drawGameCharacter(Entity e) {
-        if (renderWallsOnly) {
+        if (isMapCamera) {
             if (e instanceof Player) {
                 drawCoordinate(e.getLocation(), Color.BLUE, 3);
             } else if (e instanceof IntelligencePickup) {
@@ -91,7 +100,7 @@ public class Camera {
         if (x1 - absoluteOffset.getX() >  renderWidth || y1 - absoluteOffset.getY() > renderHeight) return;
         if (x1 - absoluteOffset.getX() < -renderWidth || y1 - absoluteOffset.getY() < -renderHeight) return;
 
-        if (renderWallsOnly) {
+        if (isMapCamera) {
             if (color != Color.RED && color != Color.BLUE) return;
             graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000 * size), (int) (scaling * 1000 * size));
         } else {
@@ -136,7 +145,7 @@ public class Camera {
     }
 
     public void updateKeyPresses(ActionManager manager, WeaponType weaponType) {
-        if (weaponType == WeaponType.RANGED) {
+        if (weaponType == WeaponType.RANGED && !isMapCamera) {
             if (manager.getPressed(KeyEvent.VK_UP)) {
                 offset.changeY(-1500);
             }
@@ -151,7 +160,7 @@ public class Camera {
             }
         }
 
-        if (renderWallsOnly) {
+        if (isMapCamera) {
             if (manager.getPressed(KeyEvent.VK_PERIOD)) {
                 changeScaling(scaling * 0.1);
             }
@@ -160,9 +169,24 @@ public class Camera {
             }
 
         }
+
+        if (centered) {
+            if (manager.getPressed(KeyEvent.VK_UP)) {
+                offset.changeY(-8000);
+            }
+            if (manager.getPressed(KeyEvent.VK_DOWN)) {
+                offset.changeY(8000);
+            }
+            if (manager.getPressed(KeyEvent.VK_RIGHT)) {
+                offset.changeX(8000);
+            }
+            if (manager.getPressed(KeyEvent.VK_LEFT)) {
+                offset.changeX(-8000);
+            }
+        }
     }
 
-    public void setPosition(Vector2F p) {
+    public void setTargetOffset(Vector2F p) {
         targetOffset.copy(p);
         if (targetOffset.getEuclideanDistance(offset) > 0) {
             offset.translateInPlace(targetOffset.getTranslated(offset.getNegative()).multiply(0.1));
@@ -171,9 +195,15 @@ public class Camera {
 //        System.out.printf("%f %f\n", offset.getX(), offset.getY());
     }
 
+    public void setOffset(Vector2F p) {
+        offset.copy(p);
+    }
+
     public void paintBackground() {
         graphics.setColor(Color.BLACK);
-        if (renderWallsOnly) {
+        if (isMapCamera) {
+            if (centered) graphics.setColor(new Color(0, 0, 0, 120));
+
             graphics.fillRect((int) (scaleAndShiftX(offset.getX()) - renderWidth), (int) (scaleAndShiftY(offset.getY()) - renderHeight), (int) renderWidth * 2, (int) renderHeight * 2);
             double x1 = scaleAndShiftX(offset.getX());
             double y1 = scaleAndShiftY(offset.getY());
@@ -183,7 +213,7 @@ public class Camera {
     }
 
     public void paintForeground() {
-        if (renderWallsOnly) {
+        if (isMapCamera) {
             graphics.setStroke(new BasicStroke(10f));
             graphics.setColor(Color.YELLOW);
             graphics.drawRect((int) (scaleAndShiftX(offset.getX()) - renderWidth), (int) (scaleAndShiftY(offset.getY()) - renderHeight), (int) renderWidth * 2, (int) renderHeight * 2);
@@ -195,12 +225,28 @@ public class Camera {
         scaling += change;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isCentered() {
+        return centered;
+    }
+
+    public void setCentered(boolean centered) {
+        this.centered = centered;
+    }
+
     public boolean isMapCamera() {
-        return renderWallsOnly;
+        return isMapCamera;
     }
 
     public void setMapCamera(boolean val) {
-        renderWallsOnly = val;
+        isMapCamera = val;
     }
 
     private double scaleAndShiftX(double x) {
