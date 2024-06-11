@@ -1,18 +1,10 @@
 package Managers;
 
-import Entities.Enemy;
-import Entities.Entity;
 import Entities.Player;
-import Structure.Hitbox;
-import Universal.GameTimer;
 import Structure.Room;
 import Universal.Camera;
-import Entities.ShortMeleeEnemy;
 
 import java.awt.event.KeyEvent;
-import java.io.FileNotFoundException;
-import java.security.Key;
-import java.util.ArrayList;
 
 public class EntityManager {
     private final Player player;
@@ -61,7 +53,7 @@ public class EntityManager {
     }
 
     public void followPlayer(Camera c) {
-        c.setPosition(player.getCenterVector());
+        c.setTargetOffset(player.getCenterVector());
     }
 
     public void draw(Camera c) {
