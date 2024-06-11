@@ -30,13 +30,6 @@ public class Inventory {
         }
     }
 
-    public int getIntelligence() {
-        return intelligence;
-    }
-
-    public void setIntelligence(int intelligence) {
-        this.intelligence = intelligence;
-    }
 
     public void update() {
         for (Weapon w: primarySlot) {
@@ -105,4 +98,13 @@ public class Inventory {
             selectedSecondary--;
         }
     }
+
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public void setIntelligence(int intelligence) {
+        this.intelligence = intelligence;
+    }
+
 }
