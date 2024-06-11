@@ -257,6 +257,10 @@ public class Entity {
         changeVY(dy);
     }
 
+    public Vector2F getLocation() {
+        return new Vector2F(position);
+    }
+
     public int getX() {
         return position.getX();
     }

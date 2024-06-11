@@ -71,11 +71,11 @@ public class Camera {
     public void drawGameCharacter(Entity e) {
         if (renderWallsOnly) {
             if (e instanceof Player) {
-                drawCoordinate(e.getCenterVector(), Color.BLUE, 3);
+                drawCoordinate(e.getLocation(), Color.BLUE, 3);
             } else if (e instanceof IntelligencePickup) {
-                drawCoordinate(e.getCenterVector(), Color.YELLOW, 3);
+                drawCoordinate(e.getLocation(), Color.YELLOW, 3);
             } else {
-                drawCoordinate(e.getCenterVector(), Color.RED, 3);
+                drawCoordinate(e.getLocation(), Color.RED, 3);
             }
 
             return;
