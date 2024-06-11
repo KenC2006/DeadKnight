@@ -36,8 +36,23 @@ public class EntityManager {
         roomManager.update(player);
 
         player.updateValues();
+        ArrayList<Integer> toRemove = new ArrayList<Integer>();
         for (Room r: roomManager.getLoadedRooms()) {
             r.updateValues(player);
+            toRemove.clear();
+            for (int i = 0; i < r.getEnemies().size(); i++) {
+                if (!r.getEnemies().get(i).getHitbox().quickIntersect(r.getHitbox().getBoundingBox())) {
+                    for (Room room : roomManager.getLoadedRooms()) {
+                        if (r.getEnemies().get(i).getHitbox().quickIntersect(room.getHitbox().getBoundingBox())) {
+                            room.getEnemies().add(new ShortMeleeEnemy(r.getEnemies().get(i).getX(), r.getEnemies().get(i).getY(), r.getEnemies().get(i).getHealth())); // need to change for more types of enemies
+                            toRemove.addFirst(i);
+                        }
+                    }
+                }
+            }
+            for (int num : toRemove) {
+                r.getEnemies().remove(num);
+            }
         }
 
         player.resolveRoomCollisions(roomManager.getLoadedRooms());

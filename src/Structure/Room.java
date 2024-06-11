@@ -60,7 +60,7 @@ public class Room {
             itemSpawns.add(new ItemSpawn(itemSpawn));
         }
         for (Enemy e : copy.enemies) {
-            enemies.add(new Enemy(e));
+            enemies.add(new ShortMeleeEnemy(e.getX(), e.getY(), e.getHealth())); // change when more types of enemies added
         }
 
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
@@ -125,7 +125,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
-            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 100));
+            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 100)); // change when more types of enemies added
         }
         nodeMap = new NodeMap(this);
 

@@ -22,7 +22,6 @@ public class Enemy extends Entity {
     private int sightRadius;
     private Vector2F enemyPos = new Vector2F();
     private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
-    private boolean isPlayerFound;
     private GameTimer generatePathTimer = new GameTimer(30);
 
     private static int enemyCount;
@@ -73,110 +72,53 @@ public class Enemy extends Entity {
     }
 
     public void followPlayer() {
-        if (path.isEmpty()) {
-            return;
-        }
-        if (!isPlayerFound) {
-            return;
-        }
-        isPlayerFound = false;
-        if (Objects.equals(path.getFirst(), enemyPos) && path.size() > 1) {
-            path.removeFirst();
-        }
-        if (getBottomPos().getXDistance(path.getFirst()) < 0) {
-            moveX(-300);
-        } else {
-            moveX(300);
-        }
-        if (path.getFirst().getYDistance(new Vector2F(super.getBottomPos().getX(), super.getBottomPos().getY())) > 2000) {
-            double xDist = Math.abs(path.getFirst().getXDistance(getBottomPos()));
-            if (xDist < 10000 && isGrounded()) {
-                jump();
-            }
-        }
 
     }
 
     public void updateValues() {
         super.updateValues();
-        followPlayer();
     }
 
     public void generatePath(NodeMap graph) {
-        if (generatePathTimer.isReady()) {
-            generatePathTimer.reset();
-        }
-        else return;
-
-        PriorityQueue<Edge> q = new PriorityQueue<Edge>();
-        Map<Vector2F, ArrayList<Vector2F>> reversedMap = new HashMap<Vector2F, ArrayList<Vector2F>>();
-        Map<Vector2F, Boolean> v = new HashMap<Vector2F, Boolean>();
-
-        Vector2F cur_node = new Vector2F(), prev_node;
-        double cur_dist;
-        Vector2F start = enemyPos.getTranslated(graph.getTranslateOffset().getNegative());
-
-        q.add(new Edge(0.0, start, start));
-        while (!q.isEmpty()) {
-            cur_node = q.peek().getNode1();
-            prev_node = q.peek().getNode2();
-            cur_dist = q.remove().getDist();
-            v.put(cur_node, true);
-            if (cur_node != prev_node) {
-                reversedMap.computeIfAbsent(cur_node, k -> new ArrayList<Vector2F>()).add(prev_node);
-            }
-
-            if (Objects.equals(cur_node, graph.getNearestNode(playerPos.getTranslated(graph.getTranslateOffset().getNegative())))) {
-                isPlayerFound = true;
-                break;
-            }
-            if (graph.getEdges().get(cur_node) == null) {
-                continue;
-            }
-            for (Vector2F node : graph.getEdges().get(cur_node)) {
-                if (v.get(node) == null) {
-                    if (node.getYDistance(cur_node) > 1000000) {
-                        continue;
-                    }
-                    q.add(new Edge(cur_node.getEuclideanDistance(node) + cur_dist + node.getTranslated(graph.getTranslateOffset()).getEuclideanDistance(playerPos), node, cur_node));
-                }
-            }
-        }
-        Queue<Vector2F> q2 = new LinkedList<Vector2F>();
-        q2.add(cur_node);
-        path.clear();
-        while (!q2.isEmpty()) {
-            path.add(0, q2.peek().getTranslated(graph.getTranslateOffset()));
-            if (reversedMap.get(q2.peek()) == null) break;
-            q2.add(reversedMap.get(q2.remove()).getFirst());
-        }
     }
 
     public void updateEnemyHealth(int change) {
         changeHealth(change);
     }
 
-    // TODO FIX
+
     public void updatePlayerPos(Player player) {
         playerPos = player.getBottomPos();
+//        System.out.println(playerPos);
     }
 
     public void updateEnemyPos(NodeMap graph) {
-        enemyPos = graph.getNearestNode(getBottomPos().getTranslated(graph.getTranslateOffset().getNegative())).getTranslated(graph.getTranslateOffset());}
+
+    }
 
     public void translateEnemy(Vector2F offset) {
         setX(getX() + offset.getX());
         setY(getY() + offset.getY());
     }
 
-    public long getSquareDistToPlayer(Player player) {
-        Vector2F playerPos = new Vector2F(player.getX(), player.getY());
-        Vector2F enemyPos = new Vector2F(getX(), getY());
-        return playerPos.getEuclideanDistance(enemyPos);
+    public ArrayList<Vector2F> getPath() {
+        return path;
+    }
+
+    public GameTimer getPathTimer() {
+        return generatePathTimer;
+    }
+
+    public void updateData() {
+        super.updateData();
     }
 
     public Entity getSwing() {
         return null;
+    }
+
+    public Vector2F getPlayerPos() {
+        return playerPos;
     }
 
     public String getType() {
@@ -213,7 +155,7 @@ public class Enemy extends Entity {
         prevState = state;
     }
 
-    private void moveX(int xChange) {
+    public void moveX(int xChange) {
         setIntendedVX(xChange);
     }
 
@@ -227,6 +169,10 @@ public class Enemy extends Entity {
 
     public Vector2F getPos() {
         return enemyPos;
+    }
+
+    public void setPos(Vector2F newPos) {
+        enemyPos = new Vector2F(newPos);
     }
 
     public static int getDefaultHeight() {
