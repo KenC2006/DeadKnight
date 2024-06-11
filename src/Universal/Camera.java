@@ -19,13 +19,13 @@ public class Camera {
     private Vector2F offset = new Vector2F(-1000, -1000), targetOffset = new Vector2F(offset);
     private Vector2F absoluteOffset = new Vector2F(), topLeftLocation = new Vector2F();
     private Graphics2D graphics;
-    private double scaling;
+    private double scaling, initialScaling;
     private double renderScaling;
     private int renderWidth, renderHeight;
     private boolean isMapCamera, centered, enabled;
 
     public Camera(double scalingFactor, Vector2F offset, double size) {
-        scaling = scalingFactor;
+        initialScaling = scalingFactor;
         renderScaling = size;
         this.topLeftLocation.copy(offset);
         enabled = true;
@@ -39,6 +39,7 @@ public class Camera {
         graphics = (Graphics2D) g;
         graphics.setStroke(new BasicStroke(1f));
         Rectangle screenSize = graphics.getClipBounds();
+        scaling = initialScaling * screenSize.getWidth() / 1280;
         if (!enabled) {
             renderHeight = 0;
             renderWidth = 0;

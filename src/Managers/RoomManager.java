@@ -29,6 +29,7 @@ public class RoomManager {
     }
 
     public void drawRooms(Camera c) {
+        if (loadedRooms.isEmpty()) return;
         if (c.isMapCamera()) {
             for (Room room : allRooms) {
                 if (!room.isVisited()) continue;

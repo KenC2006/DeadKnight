@@ -15,7 +15,7 @@ public class CameraManager {
 
     public CameraManager(Player p) {
         player = p;
-        gameCamera = new Camera(0.035);
+        gameCamera = new Camera(0.02);
         minimapCamera = new Camera(0.003, new Vector2F(0, 0), 0.2);
         mapCamera = new Camera(0.003, new Vector2F(0, 0), 1);
         minimapCamera.setMapCamera(true);
