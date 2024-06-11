@@ -22,11 +22,15 @@ public class PlayerUI extends UI{
     private int boxHeight=brushStroke;
     private int hpFill=0;
     private int manaFill=0;
+    private int currentPlayerHealth;
+    private int currentPlayerMana;
 
 
 
     public PlayerUI(Player player) throws IOException {
         this.player=player;
+        currentPlayerHealth=player.getHealth();
+        currentPlayerMana=player.getMana();
         intelligenceIcon= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/intelligence.png")));
         killStreakIcon= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/skull.png")));
     }
@@ -60,18 +64,23 @@ public class PlayerUI extends UI{
     }
 
     private void drawPlayerHP(Graphics2D g) {
-        if (player.getDamageTaken()>0 && barWidth>0){
-            player.setDamageTaken(0);
-            hpFill=barWidth-(int)((double)player.getHealth()/ player.getMaxHealth() * barWidth);
+        if (player.getHealth()<currentPlayerHealth && barWidth>0){
+            double fill1=((double)currentPlayerHealth/player.getMaxHealth());
+            double fill2=((double)player.getHealth()/player.getMaxHealth());
+            hpFill=(int)((fill1-fill2)*barWidth)+hpFill;
+            currentPlayerHealth=player.getHealth();
+
         }
-        if (hpFill>0) hpFill-=2;
+        if (hpFill>0) hpFill--;
         drawBar(player.getHealth(), player.getMaxHealth(), Color.GREEN, g,hpFill);
     }
 
     private void drawPlayerMana(Graphics2D g) {
-        if (player.getManaUsed()>0 && barWidth>0){
-            player.setManaUsed(0);
-            manaFill=barWidth-(int)((double)player.getMana()/ player.getMaxMana() * barWidth);
+        if (player.getMana()<currentPlayerMana && barWidth>0){
+            double fill1=((double)currentPlayerMana/player.getMaxMana());
+            double fill2=((double)player.getMana()/player.getMaxHealth());
+            manaFill=(int)((fill1-fill2)*barWidth)+hpFill;
+            currentPlayerMana=player.getMana();
         }
         if (manaFill>0) manaFill-=2;
         drawBar(player.getMana(), player.getMaxMana(), Color.CYAN, g,manaFill);

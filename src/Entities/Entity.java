@@ -68,7 +68,8 @@ public class Entity {
     }
 
     public void changeHealth(int change) {
-        health += change;
+        if (health+change < 0) health = 0;
+        else health += change;
     }
 
     public void updateData() {
