@@ -37,6 +37,8 @@ public class RoomEditor extends JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_I) grid.addItemSpawn();
                 if (e.getKeyCode() == KeyEvent.VK_E) grid.addEnemySpawn();
 
+                if (e.getKeyCode() == KeyEvent.VK_H) grid.addHazard();
+
 
                 if (e.getKeyCode() == KeyEvent.VK_R) grid.reset();
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && grid.getSelected()!=null) grid.delete();
@@ -48,6 +50,7 @@ public class RoomEditor extends JFrame {
 
                 if (e.getKeyCode() == KeyEvent.VK_S) {
                     int fileNum = (Objects.requireNonNull(roomStorage.list()).length);
+                    System.out.println("saved");
                     File file;
                     if (grid.getFileToSave()==null) {
                         file = new File(roomStorage.getPath() + "/room" + (fileNum + 1) + ".txt");
@@ -56,7 +59,7 @@ public class RoomEditor extends JFrame {
                     else file = grid.getFileToSave();
                     try {
                         FileWriter fw = new FileWriter(file);
-                        int ox = (int) grid.getLeftMostPoint().getX(), oy = (int) grid.getLeftMostPoint().getY();
+                        int ox =  grid.getLeftMostPoint().getX(), oy =  grid.getLeftMostPoint().getY();
 
                         fw.write(grid.getWalls().size() + "\n");
                         for (Rectangle r: grid.getWalls()) {
@@ -65,7 +68,7 @@ public class RoomEditor extends JFrame {
 
                         fw.write(grid.getEntrances().size() + "\n");
                         for (Entrance entrance: grid.getEntrances()) {
-                            fw.write(((int) entrance.getLocation().getX() - ox) + " " + ((int) entrance.getLocation().getY() - oy) + " " + ((int) entrance.getConnection().getX() - ox) + " " + ((int) entrance.getConnection().getY() - oy) + "\n");
+                            fw.write(( entrance.getLocation().getX() - ox) + " " + ( entrance.getLocation().getY() - oy) + " " + ( entrance.getConnection().getX() - ox) + " " + ( entrance.getConnection().getY() - oy) + "\n");
                         }
 
                         fw.write(grid.getPlayerSpawns().size() + "\n");
@@ -81,6 +84,10 @@ public class RoomEditor extends JFrame {
                         fw.write(grid.getEnemySpawns().size() + "\n");
                         for (EnemySpawn r: grid.getEnemySpawns()) {
                             fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
+                        }
+                        fw.write(grid.getHazards().size() + "\n");
+                        for (Rectangle r: grid.getHazards()) {
+                            fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
                         }
 
                         fw.close();
