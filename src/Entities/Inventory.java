@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class Inventory {
     private ArrayList<Weapon> primarySlot = new ArrayList<>();
     private ArrayList<Item> secondarySlot = new ArrayList<>();
+    private ArrayList<Item> heldItems = new ArrayList<>();
     private GameTimer itemSwapCooldown;
     private int intelligence, selectedPrimary, selectedSecondary;
 
@@ -29,13 +30,6 @@ public class Inventory {
         }
     }
 
-    public int getIntelligence() {
-        return intelligence;
-    }
-
-    public void setIntelligence(int intelligence) {
-        this.intelligence = intelligence;
-    }
 
     public void update() {
         for (Weapon w: primarySlot) {
@@ -104,4 +98,13 @@ public class Inventory {
             selectedSecondary--;
         }
     }
+
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public void setIntelligence(int intelligence) {
+        this.intelligence = intelligence;
+    }
+
 }

@@ -1,35 +1,29 @@
 package Managers;
 
-import Entities.Enemy;
-import Entities.Entity;
 import Entities.Player;
-import Structure.Hitbox;
-import Universal.GameTimer;
 import Structure.Room;
 import Universal.Camera;
-import Entities.ShortMeleeEnemy;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
 
 public class EntityManager {
     private final Player player;
 //    private ArrayList<Entity> entityList = new ArrayList<>();
-    private RoomManager roomManager = new RoomManager();
+    private RoomManager roomManager;
 
     public EntityManager() {
         player = new Player(-1000, -6000);
-//        entityList.add(player);
-//        entityList.add(new Entity(20, 20, 3, 4,100));
-//        for (int i = 0; i < 1; i++) {
-//            entityList.add(new ShortMeleeEnemy(0, 0, 2));
-//
-//        }
-//        entityList.add(entityList.get(2).getSwing());
+
+        roomManager = new RoomManager();
+        roomManager.generateLevel(player, 1);
+
     }
 
     public void updateKeyPresses(ActionManager manager) {
         player.updateKeyPresses(manager);
+        if (manager.getPressed(KeyEvent.VK_L)) {
+            roomManager.generateLevel(player, 1);
+        }
     }
 
     public void update(ActionManager manager) {
@@ -75,7 +69,7 @@ public class EntityManager {
     }
 
     public void followPlayer(Camera c) {
-        c.setPosition(player.getCenterVector());
+        c.setTargetOffset(player.getCenterVector());
     }
 
     public void draw(Camera c) {

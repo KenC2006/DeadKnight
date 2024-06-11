@@ -12,29 +12,27 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class RoomManager {
-    private final ArrayList<Room> allPossibleRooms = new ArrayList<>();
-//    private NodeMap nodeMap;
-    private ArrayList<Room> allRooms = new ArrayList<>();
-    private ArrayList<Room> loadedRooms = new ArrayList<>();
-    private Deque<Room> toGenerateNeighbours = new ArrayDeque<>();
+    private ArrayList<Room> allRooms, loadedRooms, possibleBiomeRooms;
+    private Deque<Room> toGenerateNeighbours;
     private int renderDistance = 200000;
 
-    public RoomManager() {
-//        createRectangleRoom();
-        loadRoomsFromFile();
-        generateRooms();
-        setupRooms();
-    }
 
-    public void createRectangleRoom() {
-        Room newRoom = new Room(-40000, -40000, 80000, 80000);
-        allRooms.add(newRoom);
-//        loadedRooms.add(newRoom);
+    public void generateLevel(Player p, int setNumber) {
+        allRooms = new ArrayList<>();
+        loadedRooms = new ArrayList<>();
+        possibleBiomeRooms = new ArrayList<>();
+        toGenerateNeighbours = new ArrayDeque<>();
+
+        loadRoomsFromFile(setNumber);
+        generateRooms();
+        setupRooms(p);
     }
 
     public void drawRooms(Camera c) {
+        if (loadedRooms.isEmpty()) return;
         if (c.isMapCamera()) {
             for (Room room : allRooms) {
+                if (!room.isVisited()) continue;
                 room.drawRoom(c);
                 for (Enemy e : new ArrayList<>(room.getEnemies())) {
                     e.paint(c);
@@ -60,15 +58,15 @@ public class RoomManager {
     }
 
     public void generateRooms() {
-        if (allPossibleRooms.isEmpty()) return;
-//        Room randomRoom = allPossibleRooms.get((int) (Math.random() * allPossibleRooms.size()));
-        Room randomRoom = new Room(allPossibleRooms.get(8)); // TODO add player spawn locations to prevent spawning inside of walls
-        Vector2F center = randomRoom.getCenterRelativeToRoom();
-        randomRoom.centerAroundPointInRoom(center);
-        addRoom(randomRoom);
-        loadRoom(randomRoom);
+        if (possibleBiomeRooms.isEmpty()) return;
+        Room startingRoom = new Room(possibleBiomeRooms.get((int) (Math.random() * possibleBiomeRooms.size())));
+//        Room startingRoom = new Room(possibleBiomeRooms.get(8)); // TODO add player spawn locations to prevent spawning inside of walls
+        Vector2F center = startingRoom.getCenterRelativeToRoom();
+        startingRoom.centerAroundPointInRoom(center);
+        addRoom(startingRoom);
+        loadRoom(startingRoom);
 
-        toGenerateNeighbours.add(randomRoom);
+        toGenerateNeighbours.add(startingRoom);
         while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 100) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
@@ -89,7 +87,7 @@ public class RoomManager {
             Entrance e = entrancesToGenerate.get((int)(Math.random() * entrancesToGenerate.size())); // TODO generate rooms based on entrances closest to the center
             entrancesToGenerate.remove(e);
             ArrayList<Room> compatibleRooms = new ArrayList<>();
-            for (Room newRoom: allPossibleRooms) {
+            for (Room newRoom: possibleBiomeRooms) {
                 Room testRoom = new Room(newRoom);
                 if (testRoom.getRoomID() == r.getRoomID()) continue;
                 testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getConnection()));
@@ -121,16 +119,18 @@ public class RoomManager {
         }
     }
 
-    public void setupRooms() {
+    public void setupRooms(Player p) {
         for (Room r: getAllRooms()) {
             r.setupRoom();
         }
+        allRooms.get(0).spawnPlayer(p);
+        System.out.println(allRooms.get(0));
     }
 
-    public void loadRoomsFromFile() {
-        for (File f: Objects.requireNonNull(new File("src/Rooms/Set1").listFiles())) {
+    public void loadRoomsFromFile(int setNumber) {
+        for (File f: Objects.requireNonNull(new File("src/Rooms/Set" + setNumber).listFiles())) {
             try {
-                allPossibleRooms.add(new Room(f));
+                possibleBiomeRooms.add(new Room(f));
             } catch (FileNotFoundException e) {
                 System.out.println("Unable to load file " + f.getName());
                 System.out.println(e);
