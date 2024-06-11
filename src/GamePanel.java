@@ -19,16 +19,17 @@ public class GamePanel extends JPanel{
     private final GameUIManager gameUIManager;
     private boolean isRunning = true;
 
-    public GamePanel() throws IOException {
+    public GamePanel(Dimension size) throws IOException {
         this.setLayout(null);
         this.setFocusable(true);
         this.setVisible(true);
+        this.setSize(size);
         new RoomEditor();
 
         actionManager = new ActionManager();
         entityManager = new EntityManager();
         cameraManager = new CameraManager(entityManager.getPlayer());
-        gameUIManager=new GameUIManager(entityManager.getPlayer());
+        gameUIManager=new GameUIManager(entityManager.getPlayer(),this);
         actionManager.addPanel(this);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
@@ -54,9 +55,9 @@ public class GamePanel extends JPanel{
         GameTimer.update();
 
         cameraManager.update(actionManager, entityManager);
-
         entityManager.updateKeyPresses(actionManager);
         entityManager.update(actionManager);
+        gameUIManager.update(actionManager);
     }
 
     public void start() {

@@ -11,6 +11,7 @@ public class Entity {
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
     private Hitbox testHitbox = new Hitbox(0, 0, 1, 1);
+    private Color defaultColour = Color.GREEN;
     private int health;
     private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, onLeft, onRight, destroyedOnWallImpact;
     private boolean toDelete;
@@ -42,7 +43,7 @@ public class Entity {
 
     public void paint(Camera c) {
         c.drawGameCharacter(this);
-        c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
+      //  c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 
     public Entity getSwing() {
@@ -75,7 +76,7 @@ public class Entity {
         if (colliding) {
             hitbox.setColour(Color.RED);
         } else {
-            hitbox.setColour(Color.GREEN);
+            hitbox.setColour(defaultColour);
         }
     }
 
@@ -114,8 +115,8 @@ public class Entity {
 
 
         }
-        updatePosition(newVelocity);
         lastMovement.addHitbox(createMovementBox(newVelocity));
+        updatePosition(newVelocity);
         lastVelocity = lastVelocity.getTranslated(newVelocity);
 
         int remainingX = velocity.getX() - newVelocity.getX();
@@ -244,12 +245,24 @@ public class Entity {
         hitbox.setY(y);
     }
 
+    public Color getDefaultColour() {
+        return defaultColour;
+    }
+
+    public void setDefaultColour(Color defaultColour) {
+        this.defaultColour = defaultColour;
+    }
+
     public void changeX(int dx) {
         changeVX(dx);
     }
 
     public void changeY(int dy) {
         changeVY(dy);
+    }
+
+    public Vector2F getLocation() {
+        return new Vector2F(position);
     }
 
     public int getX() {

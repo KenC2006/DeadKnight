@@ -2,6 +2,8 @@ package Universal;
 
 import Entities.Entity;
 import Entities.Player;
+import Items.IntelligencePickup;
+import Items.ItemPickup;
 import Items.WeaponType;
 import Structure.Hitbox;
 import Structure.Line;
@@ -69,10 +71,11 @@ public class Camera {
     public void drawGameCharacter(Entity e) {
         if (renderWallsOnly) {
             if (e instanceof Player) {
-                drawCoordinate(e.getCenterVector(), Color.BLUE);
+                drawCoordinate(e.getLocation(), Color.BLUE, 3);
+            } else if (e instanceof IntelligencePickup) {
+                drawCoordinate(e.getLocation(), Color.YELLOW, 3);
             } else {
-                drawCoordinate(e.getCenterVector(), Color.RED);
-
+                drawCoordinate(e.getLocation(), Color.RED, 3);
             }
 
             return;
@@ -80,7 +83,7 @@ public class Camera {
         drawHitbox(e.getHitbox());
     }
 
-    public void drawCoordinate(Vector2F c, Color color) {
+    public void drawCoordinate(Vector2F c, Color color, float size) {
         graphics.setColor(color);
         graphics.setStroke(new BasicStroke(1f));
         int x1 = (int) scaleAndShiftX(c.getX());
@@ -90,9 +93,9 @@ public class Camera {
 
         if (renderWallsOnly) {
             if (color != Color.RED && color != Color.BLUE) return;
-            graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000), (int) (scaling * 1000));
+            graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000 * size), (int) (scaling * 1000 * size));
         } else {
-            graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000), (int) (scaling * 1000));
+            graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000 * size), (int) (scaling * 1000 * size));
 
         }
 
@@ -100,6 +103,10 @@ public class Camera {
 
     public void drawCoordinate(Vector2F c) {
         drawCoordinate(c, Color.BLACK);
+    }
+
+    public void drawCoordinate(Vector2F c, Color color) {
+        drawCoordinate(c, color, 1);
     }
 
     public void drawLine(Vector2F p1, Vector2F p2, Color c) {

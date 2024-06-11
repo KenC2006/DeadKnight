@@ -3,6 +3,8 @@ package Entities;
 import Structure.Vector2F;
 import Universal.GameTimer;
 
+import java.awt.*;
+
 public class Projectile extends Entity {
     private GameTimer lifespan;
     public Projectile(Vector2F position, Vector2F size, Vector2F velocity) {
@@ -10,6 +12,8 @@ public class Projectile extends Entity {
         setDestroyedOnWallImpact(true);
         setAffectedByGravity(false);
         lifespan = new GameTimer(30);
+        setDefaultColour(Color.CYAN);
+
     }
 
     public Projectile(Vector2F position, Vector2F size) {

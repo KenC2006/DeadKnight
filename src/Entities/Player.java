@@ -29,10 +29,12 @@ public class Player extends Entity {
     private int framesSinceFiredProjectile = 0;
     private int framesPassed, lastUpPressed;
     private Inventory playerInventory;
-    private int intelligence=0;
     private int mana=100;
     private int maxMana=mana;
     private int killStreak=0;
+    private int damageTaken=20;
+    private int manaUsed=20;
+    private final ArrayList<Integer> controls = new ArrayList<>();
 
     public Player(int x, int y){
         super(x, y, 2000, 5000,100);
@@ -41,6 +43,43 @@ public class Player extends Entity {
         playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
         playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
+        setDefaultControls();
+    }
+
+    public Inventory getPlayerInventory() {
+        return playerInventory;
+    }
+
+    public ArrayList<Integer> getControls() {
+        return controls;
+    }
+
+    public void setDefaultControls(){
+        controls.clear();
+        controls.add(KeyEvent.VK_W);
+        controls.add(KeyEvent.VK_D);
+        controls.add(KeyEvent.VK_A);
+        controls.add(KeyEvent.VK_E);
+        controls.add(KeyEvent.VK_Q);
+        controls.add(KeyEvent.VK_RIGHT);
+        controls.add(KeyEvent.VK_LEFT);
+        controls.add(KeyEvent.VK_SHIFT);
+    }
+
+    public int getDamageTaken() {
+        return damageTaken;
+    }
+
+    public void setDamageTaken(int damageTaken) {
+        this.damageTaken = damageTaken;
+    }
+
+    public int getManaUsed() {
+        return manaUsed;
+    }
+
+    public void setManaUsed(int manaUsed) {
+        this.manaUsed = manaUsed;
     }
 
     public int getKillStreak() {
@@ -55,9 +94,6 @@ public class Player extends Entity {
         return mana;
     }
 
-    public int getIntelligence() {
-        return intelligence;
-    }
 
     public void updateKeyPresses(ActionManager manager) {
         int dx = 0;
@@ -67,7 +103,7 @@ public class Player extends Entity {
         if (isGrounded()) framesSinceTouchedGround = framesPassed;
         if (isHittingCeiling()) framesSinceStartedJumping -= 10;
 
-        if (manager.getPressed(KeyEvent.VK_W)) {
+        if (manager.getPressed(controls.get(0))) {
             direction = Direction.UP;
             if (!upPressed) {
                 upPressed = true;
@@ -103,39 +139,39 @@ public class Player extends Entity {
 
         }
 
-        if (manager.getPressed(KeyEvent.VK_D)) {
-            dx += 700;
+        if (manager.getPressed(controls.get(1))) {
+            dx += 500;
             direction = Direction.RIGHT;
         }
 
-        if (manager.getPressed(KeyEvent.VK_A)) {
-            dx -= 700;
+        if (manager.getPressed(controls.get(2))) {
+            dx -= 500;
             direction = Direction.LEFT;
         }
 
-        if (manager.getPressed(KeyEvent.VK_E)) {
+        if (manager.getPressed(controls.get(3))) {
             playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() + 1);
         }
-        if (manager.getPressed(KeyEvent.VK_Q)) {
+        if (manager.getPressed(controls.get(4))) {
             playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() - 1);
         }
 
-        if (manager.getPressed(KeyEvent.VK_RIGHT)) {
+        if (manager.getPressed(controls.get(5))) {
             playerInventory.usePrimary(ActivationType.RIGHT, manager);
         }
 
-        if (manager.getPressed(KeyEvent.VK_LEFT)) {
+        if (manager.getPressed(controls.get(6))) {
             playerInventory.usePrimary(ActivationType.LEFT, manager);
         }
 
 
-        if (framesSinceDash == 0 && manager.getPressed(KeyEvent.VK_SHIFT)) {
+        if (framesSinceDash == 0 && manager.getPressed(controls.get(7))) {
             framesSinceDash = 30;
         }
 
         if (framesSinceDash > 20) {
-            if (direction == Direction.LEFT) dx = -2000;
-            else dx = 2000;
+            if (direction == Direction.LEFT) dx = -1500;
+            else dx = 1500;
             getHitbox().setEnabled(false);
             setAffectedByGravity(false);
         } else {
@@ -177,7 +213,7 @@ public class Player extends Entity {
 //        resolveEntityCollision((Entity) item);
         if (item instanceof IntelligencePickup) {
             item.markToDelete(true);
-            intelligence++;
+            playerInventory.setIntelligence(playerInventory.getIntelligence()+1);
         }
 
     }

@@ -7,6 +7,7 @@ import Structure.Vector2F;
 import Universal.GameTimer;
 
 import java.util.*;
+import java.awt.Color;
 
 public class Enemy extends Entity {
 
@@ -29,12 +30,15 @@ public class Enemy extends Entity {
         this.sightRadius = sightRadius;
         id = enemyCount;
         enemyCount++;
+        setDefaultColour(Color.ORANGE);
+//        startWander();
     }
 
     public Enemy(Enemy copy) {
         super(copy.getX(), copy.getY(), copy.getWidth(), copy.getHeight(), 100);
         enemyPos = new Vector2F(copy.enemyPos);
         sightRadius = copy.sightRadius;
+        setDefaultColour(Color.ORANGE);
 
 
     }
