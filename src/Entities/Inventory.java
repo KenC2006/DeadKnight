@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class Inventory {
     private ArrayList<Weapon> primarySlot = new ArrayList<>();
     private ArrayList<Item> secondarySlot = new ArrayList<>();
+    private ArrayList<Item> heldItems = new ArrayList<>();
     private GameTimer itemSwapCooldown;
     private int intelligence, selectedPrimary, selectedSecondary;
 

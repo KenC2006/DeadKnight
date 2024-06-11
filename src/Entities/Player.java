@@ -43,22 +43,6 @@ public class Player extends Entity {
         playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
     }
 
-    public int getKillStreak() {
-        return killStreak;
-    }
-
-    public int getMaxMana() {
-        return maxMana;
-    }
-
-    public int getMana() {
-        return mana;
-    }
-
-    public int getIntelligence() {
-        return intelligence;
-    }
-
     public void updateKeyPresses(ActionManager manager) {
         int dx = 0;
         framesPassed++;
@@ -185,10 +169,14 @@ public class Player extends Entity {
     @Override
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
         super.resolveRoomCollisions(roomList);
+        for (Room r: roomList) {
+            if (getHitbox().quickIntersect(r.getHitbox())) {
+                r.setVisited(true);
+            }
+        }
         for (Projectile p: projectiles) {
             p.resolveRoomCollisions(roomList);
         }
-
     }
 
     @Override
@@ -217,6 +205,22 @@ public class Player extends Entity {
         for (Projectile p: projectiles) {
             p.updateData();
         }
+    }
 
+
+    public int getKillStreak() {
+        return killStreak;
+    }
+
+    public int getMaxMana() {
+        return maxMana;
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
+    public int getIntelligence() {
+        return intelligence;
     }
 }

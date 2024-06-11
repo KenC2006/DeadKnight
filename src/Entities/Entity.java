@@ -94,7 +94,7 @@ public class Entity {
 
     public void resolveRoomCollisions(ArrayList<Room> roomList) {// TODO add the binary search
         lastMovement = new HitboxGroup();
-        lastVelocity = new Vector2F();
+//        lastVelocity = new Vector2F();
         Hitbox initialTest = createMovementBox(velocity);
         testHitbox = initialTest;
         boolean collides = false;
@@ -111,9 +111,9 @@ public class Entity {
 
 
         }
-        updatePosition(newVelocity);
         lastMovement.addHitbox(createMovementBox(newVelocity));
-        lastVelocity = lastVelocity.getTranslated(newVelocity);
+        updatePosition(newVelocity);
+//        lastVelocity = lastVelocity.getTranslated(newVelocity);
 
         int remainingX = velocity.getX() - newVelocity.getX();
         int remainingY = velocity.getY() - newVelocity.getY();
@@ -136,7 +136,7 @@ public class Entity {
 
         newVelocity = binarySearchVelocity(new Vector2F(remainingX, remainingY), roomList);
         lastMovement.addHitbox(createMovementBox(newVelocity));
-        lastVelocity = lastVelocity.getTranslated(newVelocity);
+//        lastVelocity = lastVelocity.getTranslated(newVelocity);
         updatePosition(newVelocity);
 
         movementCheck(roomList);
@@ -239,6 +239,11 @@ public class Entity {
     public void setY(int y) {
         position.setY(y);
         hitbox.setY(y);
+    }
+
+    public void setLocation(Vector2F location) {
+        position.copy(location);
+        hitbox.setLocation(location);
     }
 
     public Color getDefaultColour() {
