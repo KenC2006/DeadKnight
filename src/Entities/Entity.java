@@ -43,7 +43,7 @@ public class Entity {
 
     public void paint(Camera c) {
         c.drawGameCharacter(this);
-//        c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
+      //  c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 
     public Entity getSwing() {
@@ -111,8 +111,8 @@ public class Entity {
 
 
         }
-        updatePosition(newVelocity);
         lastMovement.addHitbox(createMovementBox(newVelocity));
+        updatePosition(newVelocity);
         lastVelocity = lastVelocity.getTranslated(newVelocity);
 
         int remainingX = velocity.getX() - newVelocity.getX();
