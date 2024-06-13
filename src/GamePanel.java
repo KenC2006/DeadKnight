@@ -17,6 +17,8 @@ public class GamePanel extends JPanel{
     private final EntityManager entityManager;
     private final CameraManager cameraManager;
     private final GameUIManager gameUIManager;
+    public enum GAME_STATE {ON, OFF}
+    private GAME_STATE gameState=GAME_STATE.OFF;
     private boolean isRunning = true;
 
     public GamePanel(Dimension size) throws IOException {
@@ -40,6 +42,14 @@ public class GamePanel extends JPanel{
         });
     }
 
+    public void setGameState(GAME_STATE gameState) {
+        this.gameState = gameState;
+    }
+
+    public GAME_STATE getGameState() {
+        return gameState;
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
@@ -52,12 +62,11 @@ public class GamePanel extends JPanel{
     }
 
     public void update() {
-        GameTimer.update();
-
-        cameraManager.update(actionManager, entityManager);
-        entityManager.updateKeyPresses(actionManager);
-        entityManager.update(actionManager);
-        gameUIManager.update(actionManager);
+            GameTimer.update();
+            cameraManager.update(actionManager, entityManager);
+            entityManager.updateKeyPresses(actionManager);
+            entityManager.update(actionManager);
+            gameUIManager.update(actionManager);
     }
 
     public void start() {
