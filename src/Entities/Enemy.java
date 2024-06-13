@@ -9,9 +9,9 @@ import Universal.GameTimer;
 import java.util.*;
 import java.awt.Color;
 
-public class Enemy extends Entity {
+public abstract class Enemy extends Entity {
 
-    private final static int defaultHeight = 5000;
+    private final static int defaultHeight = 2000; // asl
     private final static int defaultWidth = 2000;
     private final static int defaultWalkSpeed = 50;
     private Vector2F playerPos = new Vector2F();
@@ -24,7 +24,6 @@ public class Enemy extends Entity {
     private GameTimer generatePathTimer = new GameTimer(30);
 
     private static int enemyCount;
-
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
         super(x, y, width, height, health);
         this.sightRadius = sightRadius;
@@ -73,9 +72,7 @@ public class Enemy extends Entity {
         }
     }
 
-    public void followPlayer() {
-
-    }
+    public abstract void followPlayer();
 
     public void updateValues() {
         super.updateValues();
@@ -84,8 +81,7 @@ public class Enemy extends Entity {
         }
     }
 
-    public void generatePath(NodeMap graph) {
-    }
+    public abstract void generatePath(NodeMap graph);
 
     public void updateEnemyHealth(int change) {
         changeHealth(change);
@@ -118,9 +114,7 @@ public class Enemy extends Entity {
         super.updateData();
     }
 
-    public void attack(ActionManager am) {
-
-    }
+    public abstract void attack(ActionManager am);
 
     public Vector2F getPlayerPos() {
         return playerPos;
@@ -164,8 +158,16 @@ public class Enemy extends Entity {
         setIntendedVX(xChange);
     }
 
+    public void moveY(int yChange) {
+        setIntendedVY(yChange);
+    }
+
     public void stopXMovement() {
         setIntendedVX(0);
+    }
+
+    public void stopYMovement() {
+        setIntendedVY(0);
     }
 
     public void jump() {

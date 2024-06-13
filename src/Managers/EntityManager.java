@@ -1,5 +1,6 @@
 package Managers;
 
+import Entities.FlyingEnemy;
 import Entities.Player;
 import Entities.ShortMeleeEnemy;
 import Structure.Room;
@@ -41,13 +42,14 @@ public class EntityManager {
                 if (!r.getEnemies().get(i).getHitbox().quickIntersect(r.getHitbox().getBoundingBox())) {
                     for (Room room : roomManager.getLoadedRooms()) {
                         if (r.getEnemies().get(i).getHitbox().quickIntersect(room.getHitbox().getBoundingBox())) {
-                            room.getEnemies().add(new ShortMeleeEnemy(r.getEnemies().get(i).getX(), r.getEnemies().get(i).getY(), r.getEnemies().get(i).getHealth())); // need to change for more types of enemies
+                            room.getEnemies().add(new FlyingEnemy(r.getEnemies().get(i).getX(), r.getEnemies().get(i).getY(), r.getEnemies().get(i).getHealth())); // need to change for more types of enemies
                             toRemove.addFirst(i);
                         }
                     }
                 }
             }
             for (int num : toRemove) {
+                if (num >= r.getEnemies().size()) continue;
                 r.getEnemies().remove(num);
             }
         }
