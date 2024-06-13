@@ -15,6 +15,9 @@ import java.util.*;
 
 public class ShortMeleeEnemy extends Enemy {
 
+    private final static int defaultHeight = 5000; // asl
+    private final static int defaultWidth = 2000;
+
     private boolean isDashing, isAttacking, isPlayerFound;
     private MeleeWeapon sword;
     private static int playerWidth, playerHeight;
@@ -141,6 +144,14 @@ public class ShortMeleeEnemy extends Enemy {
             }
         }
         sword.update();
+    }
+
+    public static int getDefaultHeight() {
+        return defaultHeight;
+    }
+
+    public static int getDefaultWidth() {
+        return defaultWidth;
     }
 
     @Override
