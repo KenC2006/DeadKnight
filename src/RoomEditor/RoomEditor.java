@@ -39,6 +39,7 @@ public class RoomEditor extends JFrame {
 
                 if (e.getKeyCode() == KeyEvent.VK_H) grid.addHazard();
 
+                if (e.getKeyCode() == KeyEvent.VK_G) grid.toggleGraphicMode();
 
                 if (e.getKeyCode() == KeyEvent.VK_R) grid.reset();
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && grid.getSelected()!=null) grid.delete();

@@ -59,22 +59,46 @@ public class Entrance {
         this.connectionPoint.translateInPlace(delta);
     }
 
-    public void draw(Graphics g, double scaling) {
-        if (type == EntranceType.DOWN || type == EntranceType.UP) {
-            g.fillRect((int) ((relativeLocation.getX() - HORIZONTAL_ENTRANCE_LENGTH / 2) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (HORIZONTAL_ENTRANCE_LENGTH * scaling / 1000 + scaling), (int) (scaling));
+    public void draw(Graphics g, double scaling,boolean graphicMode) {
+        if (graphicMode) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setStroke(new BasicStroke(5));
+            if (type == EntranceType.DOWN || type == EntranceType.UP) {
+                g.drawRect((int) ((relativeLocation.getX() - HORIZONTAL_ENTRANCE_LENGTH / 2) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (HORIZONTAL_ENTRANCE_LENGTH * scaling / 1000 + scaling), (int) (scaling));
 
-            if (type == EntranceType.UP) {
-                g.fillRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() + 1000) * scaling / 1000), (int) (scaling), (int) (scaling));
+                if (type == EntranceType.UP) {
+                    g2d.drawRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() + 1000) * scaling / 1000), (int) (scaling), (int) (scaling));
+                } else {
+                    g2d.drawRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() - 1000) * scaling / 1000), (int) (scaling), (int) (scaling));
+                }
             } else {
-                g.fillRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() - 1000) * scaling / 1000), (int) (scaling), (int) (scaling));
+                g2d.drawRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() - VERTICAL_ENTRANCE_LENGTH / 2) * scaling / 1000), (int) (scaling), (int) (VERTICAL_ENTRANCE_LENGTH * scaling / 1000 + scaling));
+
+                if (type == EntranceType.LEFT) {
+                    g2d.drawRect((int) ((relativeLocation.getX() - 1000) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (scaling), (int) (scaling));
+                } else {
+                    g2d.drawRect((int) ((relativeLocation.getX() + 1000) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (scaling), (int) (scaling));
+                }
             }
-        } else {
-            g.fillRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() - VERTICAL_ENTRANCE_LENGTH / 2) * scaling / 1000), (int) (scaling), (int) (VERTICAL_ENTRANCE_LENGTH * scaling / 1000 + scaling));
+            g2d.setStroke(new BasicStroke(1));
+        }
+        else {
+            if (type == EntranceType.DOWN || type == EntranceType.UP) {
+                g.fillRect((int) ((relativeLocation.getX() - HORIZONTAL_ENTRANCE_LENGTH / 2) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (HORIZONTAL_ENTRANCE_LENGTH * scaling / 1000 + scaling), (int) (scaling));
 
-            if (type == EntranceType.LEFT) {
-                g.fillRect((int) ((relativeLocation.getX() - 1000) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (scaling), (int) (scaling));
+                if (type == EntranceType.UP) {
+                    g.fillRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() + 1000) * scaling / 1000), (int) (scaling), (int) (scaling));
+                } else {
+                    g.fillRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() - 1000) * scaling / 1000), (int) (scaling), (int) (scaling));
+                }
             } else {
-                g.fillRect((int) ((relativeLocation.getX() + 1000) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (scaling), (int) (scaling));
+                g.fillRect((int) (relativeLocation.getX() * scaling / 1000), (int) ((relativeLocation.getY() - VERTICAL_ENTRANCE_LENGTH / 2) * scaling / 1000), (int) (scaling), (int) (VERTICAL_ENTRANCE_LENGTH * scaling / 1000 + scaling));
+
+                if (type == EntranceType.LEFT) {
+                    g.fillRect((int) ((relativeLocation.getX() - 1000) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (scaling), (int) (scaling));
+                } else {
+                    g.fillRect((int) ((relativeLocation.getX() + 1000) * scaling / 1000), (int) (relativeLocation.getY() * scaling / 1000), (int) (scaling), (int) (scaling));
+                }
             }
         }
     }
