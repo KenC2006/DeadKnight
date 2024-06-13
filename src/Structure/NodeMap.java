@@ -356,6 +356,14 @@ public class NodeMap {
         return kdTree.findNearest(point);
     }
 
+    public char[][] getGrid() {
+        return grid;
+    }
+
+    public int getGridOffset() {
+        return gridOffset;
+    }
+
     public void drawNodes(Camera c) {
         for (Vector2F n : nodes) {
 //            System.out.println(n);
