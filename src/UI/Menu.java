@@ -1,6 +1,7 @@
 package UI;
 
 import Entities.Player;
+import Main.GamePanel;
 import Managers.ActionManager;
 import javax.swing.*;
 import java.awt.*;
@@ -21,12 +22,11 @@ public class Menu extends UI implements ActionListener {
 
     private JButton currentButton;
     private final Player player;
-    private boolean gameOn = false;
     private boolean controlsOn = false;
 
-    private final JPanel panel;
+    private final GamePanel panel;
 
-    public Menu(JPanel panel, Player player) {
+    public Menu(GamePanel panel, Player player) {
         this.panel = panel;
         this.player = player;
         addButton(start, uiButtons);
@@ -83,7 +83,7 @@ public class Menu extends UI implements ActionListener {
 
     public void draw() {
         Graphics2D g = getGraphics();
-        if (!gameOn) {
+        if (panel.getGameState() == GameState.OFF) {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
         }
@@ -91,9 +91,8 @@ public class Menu extends UI implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if (e.getSource() == start) {
-            gameOn = true;
+            panel.setGameState(GameState.ON);
             for (JButton uiButton : uiButtons) {
                 uiButton.setVisible(false);
             }
