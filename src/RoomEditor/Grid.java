@@ -53,8 +53,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         this.add(graphicPick);
         graphicPick.setVisible(true);
         graphicPick.setLayout(null);
-
-
         loadFiles();
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
@@ -63,9 +61,18 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                 repaint();
             }
         });
+        graphicPick.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                graphicFile=(File)graphicPick.getSelectedItem();
+
+            }
+        });
     }
 
     public void toggleGraphicMode() {
+        p1=null;
+        p2=null;
         graphicMode = !graphicMode;
         if (graphicMode) graphicPick.setBackground(Color.YELLOW);
         else graphicPick.setBackground(null);
