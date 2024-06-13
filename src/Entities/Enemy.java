@@ -11,8 +11,6 @@ import java.awt.Color;
 
 public abstract class Enemy extends Entity {
 
-    private final static int defaultHeight = 2000; // asl
-    private final static int defaultWidth = 2000;
     private final static int defaultWalkSpeed = 50;
     private Vector2F playerPos = new Vector2F();
 
@@ -183,11 +181,11 @@ public abstract class Enemy extends Entity {
     }
 
     public static int getDefaultHeight() {
-        return defaultHeight;
+        return 5000;
     }
 
     public static int getDefaultWidth() {
-        return defaultWidth;
+        return 2000;
     }
 
     public static int getDefaultWalkSpeed() {

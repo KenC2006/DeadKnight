@@ -14,6 +14,9 @@ import java.util.Queue;
 
 public class FlyingEnemy extends Enemy{
 
+    private final static int defaultHeight = 2000; // asl
+    private final static int defaultWidth = 2000;
+
     private int runRadius = 10000;
     private GameTimer gt = new GameTimer(20);
 
@@ -63,6 +66,14 @@ public class FlyingEnemy extends Enemy{
     public void updateValues() {
         super.updateValues();
         followPlayer();
+    }
+
+    public static int getDefaultHeight() {
+        return defaultHeight;
+    }
+
+    public static int getDefaultWidth() {
+        return defaultWidth;
     }
 
     public void paint(Camera c) {

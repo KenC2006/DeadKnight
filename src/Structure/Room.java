@@ -4,6 +4,7 @@ import Entities.*;
 import Items.IntelligencePickup;
 import Items.ItemPickup;
 import Managers.ActionManager;
+import Managers.EnemyManager;
 import RoomEditor.EnemySpawn;
 import RoomEditor.Entrance;
 import RoomEditor.ItemSpawn;
@@ -30,6 +31,8 @@ public class Room {
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private int roomID;
 
+    private EnemyManager enemyManager = new EnemyManager();
+
     public Room(Room copy) {
         center = new Vector2F(copy.center);
         drawLocation = new Vector2F(copy.drawLocation);
@@ -49,7 +52,7 @@ public class Room {
             itemSpawns.add(new ItemSpawn(itemSpawn));
         }
         for (Enemy e : copy.enemies) {
-            enemies.add(new FlyingEnemy(e.getX(), e.getY(), e.getHealth())); // change when more types of enemies added
+            enemies.add(enemyManager.copy(e)); // change when more types of enemies added
         }
 
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
@@ -108,7 +111,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
-            enemies.add(new FlyingEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 50)); // change when more types of enemies added
+            enemies.add(enemyManager.createEnemy(x, y)); // change when more types of enemies added
         }
         nodeMap = new NodeMap(this);
 
