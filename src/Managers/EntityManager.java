@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class EntityManager {
     private final Player player;
-//    private ArrayList<Entity> entityList = new ArrayList<>();
     private RoomManager roomManager;
 
     public EntityManager() {
@@ -41,7 +40,7 @@ public class EntityManager {
                 if (!r.getEnemies().get(i).getHitbox().quickIntersect(r.getHitbox().getBoundingBox())) {
                     for (Room room : roomManager.getLoadedRooms()) {
                         if (r.getEnemies().get(i).getHitbox().quickIntersect(room.getHitbox().getBoundingBox())) {
-                            room.getEnemies().add(new ShortMeleeEnemy(r.getEnemies().get(i).getX(), r.getEnemies().get(i).getY(), r.getEnemies().get(i).getHealth())); // need to change for more types of enemies
+                            room.getEnemies().add(new ShortMeleeEnemy(r.getEnemies().get(i).getX(), r.getEnemies().get(i).getY(), r.getEnemies().get(i).getStats().getHealth())); // need to change for more types of enemies
                             toRemove.addFirst(i);
                         }
                     }

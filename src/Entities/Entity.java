@@ -8,23 +8,20 @@ import java.util.ArrayList;
 
 public class Entity {
     private Vector2F position, velocity, lastVelocity, constantVelocity;
+    private Stats entityStats;
     private Hitbox hitbox;
     private HitboxGroup lastMovement = new HitboxGroup();
     private Hitbox testHitbox = new Hitbox(0, 0, 1, 1);
     private Color defaultColour = Color.GREEN;
-    private int health;
     private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, onLeft, onRight, destroyedOnWallImpact;
     private boolean toDelete;
-    private int maxHealth;
 
-
-    public Entity(int x, int y, int width, int height, int health) {
+    public Entity(int x, int y, int width, int height) {
         position = new Vector2F(x, y);
         velocity = new Vector2F();
         constantVelocity = new Vector2F();
         hitbox = new Hitbox(x, y, x + width, y + height);
-        this.health = health;
-        maxHealth=health;
+        entityStats = new Stats(0, 0);
     }
 
     public Entity(Vector2F position, Vector2F size, Vector2F constantVelocity) {
@@ -59,17 +56,8 @@ public class Entity {
         colliding = false;
     }
 
-    public int getMaxHealth() {
-        return maxHealth;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void changeHealth(int change) {
-        if (health+change < 0) health = 0;
-        else health += change;
+    public Stats getStats() {
+        return entityStats;
     }
 
     public void updateData() {

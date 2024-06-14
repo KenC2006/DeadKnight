@@ -115,7 +115,7 @@ public class Vector2F implements Comparable<Vector2F> {
         if (d == 0) {
             d = 1;
         }
-        return new Vector2F(getX() / d, getY() / d);
+        return new Vector2F(getX() * 1000 / d, getY() * 1000 / d);
     }
 
     public Vector2F getNegative() {

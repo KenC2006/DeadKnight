@@ -123,9 +123,7 @@ public class Menu extends UI implements ActionListener {
                 currentButton = (JButton) e.getSource();
                 currentButton.setBackground(Color.YELLOW);
             }
-        }
-
-        else if (e.getSource() == controls) {
+        } else if (e.getSource() == controls) {
             controlsOn = true;
             for (JButton uiButton : uiButtons) {
                 uiButton.setVisible(false);
@@ -140,7 +138,7 @@ public class Menu extends UI implements ActionListener {
         if (manager.isPressed() && currentButton != null) {
             currentButton.setBackground(Color.YELLOW);
             currentButton.setText(currentButton.getText().substring(0,currentButton.getText().length()-KeyEvent.getKeyText(player.getControls().get(controlButtons.indexOf(currentButton))).length())+KeyEvent.getKeyText(manager.getKeyCode()));
-            player.getControls().set(controlButtons.indexOf(currentButton),manager.getKeyCode());
+            player.getControls().set(controlButtons.indexOf(currentButton), manager.getKeyCode());
             currentButton.setBackground(null);
             currentButton = null;
         }

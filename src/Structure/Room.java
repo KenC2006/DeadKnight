@@ -3,7 +3,6 @@ package Structure;
 import Entities.Entity;
 import Entities.Player;
 import Entities.ShortMeleeEnemy;
-import Items.IntelligencePickup;
 import Items.ItemPickup;
 import Managers.ActionManager;
 import RoomEditor.EnemySpawn;
@@ -52,7 +51,7 @@ public class Room {
             itemSpawns.add(new ItemSpawn(itemSpawn));
         }
         for (Enemy e : copy.enemies) {
-            enemies.add(new ShortMeleeEnemy(e.getX(), e.getY(), e.getHealth())); // change when more types of enemies added
+            enemies.add(new ShortMeleeEnemy(e.getX(), e.getY(), e.getStats().getHealth())); // change when more types of enemies added
         }
 
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
@@ -116,6 +115,7 @@ public class Room {
         nodeMap = new NodeMap(this);
 
         roomID = numberOfUniqueRooms;
+        setVisited(true);
     }
 
     public Vector2F getCenterRelativeToRoom() {
@@ -160,7 +160,7 @@ public class Room {
 
     public void setupRoom() {
         for (ItemSpawn i: itemSpawns) {
-            addItemPickup(new IntelligencePickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
+            addItemPickup(new ItemPickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
         }
     }
 
@@ -186,11 +186,10 @@ public class Room {
     public void updateValues(Player player) {
         for (ItemPickup item: groundedItems) {
             item.updateValues();
-            item.updateValues();
 
         }
 
-        for (Enemy e : enemies) {
+        for (Enemy e : enemies) { // TODO move to enemy class
             if (walls.getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
                 if (player.isGrounded() && e.isGrounded()) {
                     e.updatePlayerInfo(player);
@@ -237,6 +236,15 @@ public class Room {
     }
 
     public void updateEnemies(ActionManager am) {
+        for (Enemy e : enemies) {
+            if (e.getToDelete()) {
+                ItemPickup newItem = new ItemPickup(e.getCenterVector());
+                newItem.setActualVX((int) (Math.random() * 4000 - 2000));
+                newItem.setActualVY((int) (-2000));
+                addItemPickup(newItem);
+            }
+
+        }
         enemies.removeIf(Entity::getToDelete);
         for (Enemy e : enemies) {
             e.attack(am);

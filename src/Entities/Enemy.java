@@ -9,7 +9,11 @@ import Universal.GameTimer;
 import java.util.*;
 import java.awt.Color;
 
-public class Enemy extends Entity {
+public abstract class Enemy extends Entity {
+    public abstract void followPlayer();
+    public abstract void generatePath(NodeMap graph);
+    public abstract void updateEnemyPos(NodeMap graph);
+    public abstract void attack(ActionManager am);
 
     private final static int defaultHeight = 5000;
     private final static int defaultWidth = 2000;
@@ -26,7 +30,9 @@ public class Enemy extends Entity {
     private static int enemyCount;
 
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
-        super(x, y, width, height, health);
+        super(x, y, width, height);
+        getStats().changeBaseHealth(health);
+
         this.sightRadius = sightRadius;
         id = enemyCount;
         enemyCount++;
@@ -35,7 +41,7 @@ public class Enemy extends Entity {
     }
 
     public Enemy(Enemy copy) {
-        super(copy.getX(), copy.getY(), copy.getWidth(), copy.getHeight(), 100);
+        super(copy.getX(), copy.getY(), copy.getWidth(), copy.getHeight());
         enemyPos = new Vector2F(copy.enemyPos);
         sightRadius = copy.sightRadius;
         setDefaultColour(Color.ORANGE);
@@ -73,33 +79,19 @@ public class Enemy extends Entity {
         }
     }
 
-    public void followPlayer() {
-
-    }
 
     public void updateValues() {
         super.updateValues();
-        if (getHealth() <= 0) {
+        if (getStats().getHealth() <= 0) {
             markToDelete(true);
         }
     }
-
-    public void generatePath(NodeMap graph) {
-    }
-
-    public void updateEnemyHealth(int change) {
-        changeHealth(change);
-    }
-
 
     public void updatePlayerInfo(Player player) {
         playerPos = player.getBottomPos();
 //        System.out.println(playerPos);
     }
 
-    public void updateEnemyPos(NodeMap graph) {
-
-    }
 
     public void translateEnemy(Vector2F offset) {
         setX(getX() + offset.getX());
@@ -118,9 +110,6 @@ public class Enemy extends Entity {
         super.updateData();
     }
 
-    public void attack(ActionManager am) {
-
-    }
 
     public Vector2F getPlayerPos() {
         return playerPos;
