@@ -73,7 +73,7 @@ public class FlyingEnemy extends Enemy{
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
-//            player.getStats().doDamage(-1); // ERROR
+            player.getStats().doDamage(1);
         }
     }
 

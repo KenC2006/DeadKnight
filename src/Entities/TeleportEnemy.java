@@ -39,6 +39,11 @@ public class TeleportEnemy extends Enemy {
     }
 
     @Override
+    public void updateEnemyPos(NodeMap graph) {
+
+    }
+
+    @Override
     public void attack(ActionManager am) {
 
     }
@@ -46,7 +51,7 @@ public class TeleportEnemy extends Enemy {
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
-            player.changeHealth(-1);
+            player.getStats().doDamage(1);
         }
     }
 
