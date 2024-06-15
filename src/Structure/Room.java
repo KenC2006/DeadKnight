@@ -15,11 +15,13 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Room {
     private static int numberOfUniqueRooms = 0;
     private boolean visited = false;
+    private boolean isPlayerInRoom = false;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
@@ -184,6 +186,8 @@ public class Room {
     }
 
     public void updateValues(Player player) {
+//        System.out.println(player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()));
+        isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 60__0_000_000_0L;
         for (ItemPickup item: groundedItems) {
             item.updateValues();
             item.updateValues();
@@ -191,15 +195,14 @@ public class Room {
         }
 
         for (Enemy e : enemies) {
-            if (walls.getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
+            if (isPlayerInRoom) {
 //                if (player.isGrounded() && e.isGrounded()) {
                     e.updatePlayerInfo(player);
                     e.updateEnemyPos(nodeMap);
                     e.generatePath(nodeMap);
+                    e.updateValues();
 //                }
             }
-//            else {e.stopXMovement();}
-            e.updateValues();
         }
     }
 
@@ -207,7 +210,7 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.resolveRoomCollisions(loadedRooms);
         }
-
+        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             e.resolveRoomCollisions(loadedRooms);
         }
@@ -218,7 +221,7 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             player.resolveEntityCollision(item);
         }
-
+        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             player.resolveEntityCollision(e);
         }
@@ -230,7 +233,7 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.updateData();
         }
-
+        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             e.updateData();
         }
@@ -238,6 +241,7 @@ public class Room {
 
     public void updateEnemies(ActionManager am) {
         enemies.removeIf(Entity::getToDelete);
+        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             e.attack(am);
         }

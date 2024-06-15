@@ -1,5 +1,7 @@
 package Entities;
 
+import Items.Ranged.BasicTurret;
+import Items.Ranged.MachineGun;
 import Managers.ActionManager;
 import Structure.Edge;
 import Structure.NodeMap;
@@ -18,7 +20,7 @@ public class FlyingEnemy extends Enemy{
     private final static int defaultWidth = 2000;
 
     private int runRadius = 10000;
-    private GameTimer gt = new GameTimer(20);
+    private GameTimer gt = new GameTimer(5);
 
     public FlyingEnemy(int x, int y, int health) {
         super(x, y, 2000, 2000, health, 25000000);
@@ -39,10 +41,17 @@ public class FlyingEnemy extends Enemy{
         velocity = new Vector2F((int)((velocity.getX()/Math.sqrt(vectorLength)) * 5), (int)((velocity.getY()/Math.sqrt(vectorLength)) * 5));
         stopXMovement();
         stopYMovement();
-//        System.out.println(getPlayerPos() + " " + velocity);
-        if (Math.random() > 0.6) velocity.setY(-velocity.getY());
-        setIntendedVX(velocity.getX());
-        setIntendedVY(velocity.getY());
+        if (getPlayerPos().getEuclideanDistance(getCenterVector()) > 300000000) {
+            //        System.out.println(getPlayerPos() + " " + velocity);
+            if (Math.random() > 0.6) velocity.setY(-velocity.getY());
+            setIntendedVX(velocity.getX());
+            setIntendedVY(velocity.getY());
+        } else {
+            //        System.out.println(getPlayerPos() + " " + velocity);
+            if (Math.random() > 0.6) velocity.setY(-velocity.getY());
+            setIntendedVX(-velocity.getX());
+            setIntendedVY(-velocity.getY());
+        }
     }
 
     @Override
@@ -58,7 +67,7 @@ public class FlyingEnemy extends Enemy{
     @Override
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
-        if (getColliding()) {
+        if (player.getHitbox().quickIntersect(getHitbox())) {
             player.changeHealth(-1);
         }
     }

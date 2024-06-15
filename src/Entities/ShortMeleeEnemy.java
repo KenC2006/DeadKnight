@@ -11,6 +11,7 @@ import Structure.NodeMap;
 import Structure.Vector2F;
 import Universal.Camera;
 
+import java.awt.*;
 import java.util.*;
 
 public class ShortMeleeEnemy extends Enemy {
@@ -45,7 +46,7 @@ public class ShortMeleeEnemy extends Enemy {
         super.updatePlayerInfo(player);
         sword.doCollisionCheck(player);
     }
-
+    int n = 0;
     public void followPlayer() {
         if (getPath().isEmpty()) {
             return;
@@ -158,5 +159,10 @@ public class ShortMeleeEnemy extends Enemy {
     public void paint(Camera c) {
         super.paint(c);
         sword.draw(c);
+//        for (int i = 0; i < getPath().size() - 1; i++) {
+//            if (i + 1 >= getPath().size()) break;
+//            if (getPath().get(i) == null || getPath().get(i+1) == null) continue;
+//            c.drawLine(getPath().get(i), getPath().get(i + 1), Color.RED);
+//        }
     }
 }
