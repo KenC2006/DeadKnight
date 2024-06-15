@@ -1,18 +1,16 @@
 package UI;
 import Entities.Player;
-import Main.GamePanel;
 import Managers.ActionManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 public class GameUIManager {
     private PlayerUI playerUI;
     private Menu menu;
 
-    public GameUIManager(Player player, GamePanel panel) throws IOException {
+    public GameUIManager(Player player, JPanel panel) throws IOException {
         playerUI = new PlayerUI(player);
         menu = new Menu(panel, player);
     }
@@ -39,5 +37,9 @@ public class GameUIManager {
         playerUI.draw();
         menu.setGraphics(g);
         menu.draw();
+    }
+
+    public boolean getMenuEnabled() {
+        return menu.isMenuOn();
     }
 }
