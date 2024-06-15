@@ -10,15 +10,20 @@ import RoomEditor.ItemSpawn;
 import RoomEditor.PlayerSpawn;
 import Universal.Camera;
 
+import javax.imageio.ImageIO;
+import javax.rmi.ssl.SslRMIClientSocketFactory;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Room {
     private static int numberOfUniqueRooms = 0;
-    private boolean visited = false;
+    private boolean visited = false, cleared = true;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
@@ -28,6 +33,7 @@ public class Room {
     private ArrayList<PlayerSpawn> playerSpawns = new ArrayList<>();
     private ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
+    private BufferedImage background;
     private int roomID;
 
     private EnemyManager enemyManager = new EnemyManager();
@@ -57,12 +63,17 @@ public class Room {
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
         roomID = copy.roomID;
         visited = copy.visited;
+        background = copy.background;
 
     }
 
-    public Room(File file) throws FileNotFoundException {
+    public Room(File file, int number) throws IOException {
         numberOfUniqueRooms++;
         Scanner in = new Scanner(file);
+        System.out.println(number);
+        if (number == 12) {
+            background = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/background" + number + ".png")));
+        }
 
         int nHiboxes = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nHiboxes; i++) {
@@ -71,7 +82,7 @@ public class Room {
             int y1 = Integer.parseInt(temp[1]);
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
-            walls.addHitbox(new Hitbox(x1, y1, x2, y2));
+            walls.addHitbox(new Hitbox(x1, y1, x2, y2, Color.ORANGE));
         }
 
         int nEntrances = Integer.parseInt(in.nextLine());
@@ -111,6 +122,7 @@ public class Room {
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
             enemies.add(enemyManager.createEnemy(x, y)); // change when more types of enemies added
+            cleared = false;
         }
         nodeMap = new NodeMap(this);
 
@@ -171,7 +183,10 @@ public class Room {
     }
 
     public void drawRoom(Camera c) {
-        walls.draw(c);
+        if (c.isMapCamera()) walls.draw(c);
+        if (background != null) {
+            c.drawImage(background, walls.getBoundingBox().getTopLeft(), walls.getBoundingBox().getBottomRight());
+        }
 //        entranceHitboxes.draw(c);
 //        for (Entrance e: entrances) {
 //            e.draw(c);
@@ -228,6 +243,11 @@ public class Room {
 
         for (ItemPickup item: groundedItems) {
             item.updateData();
+        }
+
+        if (enemies.isEmpty() != cleared) {
+            walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.ORANGE);
+            cleared = enemies.isEmpty();
         }
 
         for (Enemy e : enemies) {
@@ -324,6 +344,10 @@ public class Room {
 
     public boolean intersects(Room other) {
         return walls.intersects(other.walls) || walls.intersects(other.entranceHitboxes) || entranceHitboxes.intersects(other.walls) || entranceHitboxes.intersects(other.entranceHitboxes);
+    }
+
+    public boolean intersects(Room other, boolean equality) {
+        return walls.intersects(other.walls, equality) || walls.intersects(other.entranceHitboxes, equality) || entranceHitboxes.intersects(other.walls, equality) || entranceHitboxes.intersects(other.entranceHitboxes, equality);
     }
 
     @Override

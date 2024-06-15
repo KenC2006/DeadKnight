@@ -13,4 +13,8 @@ public class Projection {
 //        return !(projection.max <= this.min || projection.min >= this.max);
 
     }
+
+    public boolean equalityOverlap(Projection projection) {
+        return !(projection.max <= this.min || projection.min >= this.max);
+    }
 }

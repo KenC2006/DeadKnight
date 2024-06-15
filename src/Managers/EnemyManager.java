@@ -54,7 +54,7 @@ public class EnemyManager {
     }
 
     public void drawEnemies(ArrayList<Enemy> enemies, Camera c) {
-        for (Enemy e : enemies) {
+        for (Enemy e : new ArrayList<> (enemies)) {
             drawEnemy(e, c);
         }
     }

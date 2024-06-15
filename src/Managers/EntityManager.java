@@ -61,8 +61,8 @@ public class EntityManager {
     }
 
     public void draw(Camera c) {
-        player.paint(c);
         roomManager.drawRooms(c);
+        player.paint(c);
     }
 
     public Player getPlayer() {

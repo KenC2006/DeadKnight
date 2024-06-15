@@ -21,4 +21,8 @@ public class GameTimer {
         targetTime = globalTime + lengthTime;
     }
 
+    public int getLength() {
+        return lengthTime;
+    }
+
 }

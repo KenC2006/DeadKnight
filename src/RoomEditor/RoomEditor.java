@@ -68,7 +68,7 @@ public class RoomEditor extends JFrame {
 
                         fw.write(grid.getEntrances().size() + "\n");
                         for (Entrance entrance: grid.getEntrances()) {
-                            fw.write(( entrance.getLocation().getX() - ox) + " " + ( entrance.getLocation().getY() - oy) + " " + ( entrance.getConnection().getX() - ox) + " " + ( entrance.getConnection().getY() - oy) + "\n");
+                            fw.write((entrance.getLocation().getX() - ox) + " " + ( entrance.getLocation().getY() - oy) + " " + ( entrance.getConnection().getX() - ox) + " " + ( entrance.getConnection().getY() - oy) + "\n");
                         }
 
                         fw.write(grid.getPlayerSpawns().size() + "\n");

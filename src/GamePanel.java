@@ -33,6 +33,7 @@ public class GamePanel extends JPanel{
         cameraManager = new CameraManager(entityManager.getPlayer());
         gameUIManager=new GameUIManager(entityManager.getPlayer(),this);
         actionManager.addPanel(this);
+//        setBackground(new Color(78, 42, 10));
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
                 gameUIManager.setPanelWidth(getWidth());

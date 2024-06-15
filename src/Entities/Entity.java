@@ -64,6 +64,9 @@ public class Entity {
 //        if (getIntendedVX() != 0) System.out.println(getIntendedVX());
         if (colliding) {
             hitbox.setColour(Color.RED);
+        } else if (!getHitbox().getEnabled()) {
+            hitbox.setColour(Color.MAGENTA);
+
         } else {
             hitbox.setColour(defaultColour);
         }
