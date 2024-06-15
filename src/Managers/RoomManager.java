@@ -13,6 +13,7 @@ import java.util.*;
 
 public class RoomManager {
     private ArrayList<Room> allRooms, loadedRooms, possibleBiomeRooms;
+    private EnemyManager enemyManager;
     private Deque<Room> toGenerateNeighbours;
     private int renderDistance = 200000;
 
@@ -22,6 +23,7 @@ public class RoomManager {
         loadedRooms = new ArrayList<>();
         possibleBiomeRooms = new ArrayList<>();
         toGenerateNeighbours = new ArrayDeque<>();
+        enemyManager = new EnemyManager();
 
         loadRoomsFromFile(setNumber);
         generateRooms();
@@ -33,9 +35,7 @@ public class RoomManager {
             for (Room room : allRooms) {
                 if (!room.isVisited()) continue;
                 room.drawRoom(c);
-                for (Enemy e : new ArrayList<>(room.getEnemies())) {
-                    e.paint(c);
-                }
+                enemyManager.drawEnemies(room.getEnemies(), c);
             }
 
         } else {
@@ -44,9 +44,7 @@ public class RoomManager {
             for (Room room : roomsToDraw) {
                 if (room == null) System.out.println(roomsToDraw);
                 room.drawRoom(c);
-                for (Enemy e : new ArrayList<>(room.getEnemies())) {
-                    e.paint(c);
-                }
+                enemyManager.drawEnemies(room.getEnemies(), c);
             }
         }
     }
@@ -161,4 +159,7 @@ public class RoomManager {
         loadedRooms.addAll(nextLoaded);
     }
 
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
+    }
 }

@@ -15,8 +15,6 @@ public abstract class Enemy extends Entity {
     public abstract void updateEnemyPos(NodeMap graph);
     public abstract void attack(ActionManager am);
 
-    private final static int defaultHeight = 5000;
-    private final static int defaultWidth = 2000;
     private final static int defaultWalkSpeed = 50;
     private Vector2F playerPos = new Vector2F();
 
@@ -28,7 +26,6 @@ public abstract class Enemy extends Entity {
     private GameTimer generatePathTimer = new GameTimer(30);
 
     private static int enemyCount;
-
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
         super(x, y, width, height);
         getStats().changeBaseHealth(health);
@@ -79,13 +76,17 @@ public abstract class Enemy extends Entity {
         }
     }
 
-
     public void updateValues() {
         super.updateValues();
         if (getStats().getHealth() <= 0) {
             markToDelete(true);
         }
     }
+
+    public void updateEnemyHealth(int change) {
+        changeHealth(change);
+    }
+
 
     public void updatePlayerInfo(Player player) {
         playerPos = player.getBottomPos();
@@ -109,7 +110,6 @@ public abstract class Enemy extends Entity {
     public void updateData() {
         super.updateData();
     }
-
 
     public Vector2F getPlayerPos() {
         return playerPos;
@@ -153,8 +153,16 @@ public abstract class Enemy extends Entity {
         setIntendedVX(xChange);
     }
 
+    public void moveY(int yChange) {
+        setIntendedVY(yChange);
+    }
+
     public void stopXMovement() {
         setIntendedVX(0);
+    }
+
+    public void stopYMovement() {
+        setIntendedVY(0);
     }
 
     public void jump() {
@@ -170,11 +178,11 @@ public abstract class Enemy extends Entity {
     }
 
     public static int getDefaultHeight() {
-        return defaultHeight;
+        return 5000;
     }
 
     public static int getDefaultWidth() {
-        return defaultWidth;
+        return 2000;
     }
 
     public static int getDefaultWalkSpeed() {

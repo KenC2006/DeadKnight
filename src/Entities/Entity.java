@@ -327,6 +327,10 @@ public class Entity {
         this.colliding = colliding;
     }
 
+    public boolean getColliding() {
+        return colliding;
+    }
+
     public boolean isGrounded() {
         return grounded;
     }

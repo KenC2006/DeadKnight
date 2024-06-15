@@ -1,16 +1,14 @@
 package Structure;
 
-import Entities.Entity;
-import Entities.Player;
-import Entities.ShortMeleeEnemy;
+import Entities.*;
 import Items.ItemPickup;
 import Managers.ActionManager;
+import Managers.EnemyManager;
 import RoomEditor.EnemySpawn;
 import RoomEditor.Entrance;
 import RoomEditor.ItemSpawn;
 import RoomEditor.PlayerSpawn;
 import Universal.Camera;
-import Entities.Enemy;
 
 import java.awt.*;
 import java.io.File;
@@ -32,6 +30,8 @@ public class Room {
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private int roomID;
 
+    private EnemyManager enemyManager = new EnemyManager();
+
     public Room(Room copy) {
         center = new Vector2F(copy.center);
         drawLocation = new Vector2F(copy.drawLocation);
@@ -51,7 +51,7 @@ public class Room {
             itemSpawns.add(new ItemSpawn(itemSpawn));
         }
         for (Enemy e : copy.enemies) {
-            enemies.add(new ShortMeleeEnemy(e.getX(), e.getY(), e.getStats().getHealth())); // change when more types of enemies added
+            enemies.add(enemyManager.copy(e)); // change when more types of enemies added
         }
 
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
@@ -110,7 +110,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
-            enemies.add(new ShortMeleeEnemy(x - Enemy.getDefaultWidth()/2, y - Enemy.getDefaultHeight() + 500, 50)); // change when more types of enemies added
+            enemies.add(enemyManager.createEnemy(x, y)); // change when more types of enemies added
         }
         nodeMap = new NodeMap(this);
 
@@ -191,11 +191,11 @@ public class Room {
 
         for (Enemy e : enemies) { // TODO move to enemy class
             if (walls.getBoundingBox().quickIntersect(new Hitbox(player.getBottomPos(), player.getBottomPos()))) {
-                if (player.isGrounded() && e.isGrounded()) {
+//                if (player.isGrounded() && e.isGrounded()) {
                     e.updatePlayerInfo(player);
                     e.updateEnemyPos(nodeMap);
                     e.generatePath(nodeMap);
-                }
+//                }
             }
 //            else {e.stopXMovement();}
             e.updateValues();

@@ -29,11 +29,26 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private Vector2F topLeftPoint = null;
     private final RoomObject selected = new RoomObject();
     private JComboBox<File> dropDown;
+    private JComboBox<File> graphicPick;
     private File fileToSave;
 
     public Grid() {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+
+        dropDown = new JComboBox<>(Objects.requireNonNull(new File("src/Rooms/Set1").listFiles()));
+        dropDown.setFocusable(false);
+        this.add(dropDown);
+        dropDown.setVisible(true);
+        dropDown.setLayout(null);
+
+        graphicPick = new JComboBox<>(Objects.requireNonNull(new File("graphics").listFiles()));
+        graphicPick.setFocusable(false);
+        this.add(graphicPick);
+        graphicPick.setVisible(true);
+        graphicPick.setLayout(null);
+
+
         loadFiles();
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
@@ -324,12 +339,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void loadFiles() {
-        File storage = new File("src/Rooms/Set1");
-        dropDown = new JComboBox<>(Objects.requireNonNull(storage.listFiles()));
-        dropDown.setFocusable(false);
-        this.add(dropDown);
-        dropDown.setVisible(true);
-        dropDown.setLayout(null);
         dropDown.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -345,7 +354,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                         topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
 
                         walls.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
-                        stack.add(2);
                     }
                     int entranceNum = in.nextInt();
                     for (int i = 0; i < entranceNum; i++) {
@@ -373,6 +381,14 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                         int x=in.nextInt();
                         int y=in.nextInt();
                         enemySpawns.add(new EnemySpawn(x,y));
+                    }
+                    int hazardNum=in.nextInt();
+                    System.out.println(hazardNum);
+                    for (int i = 0; i < hazardNum; i++) {
+                        int x=in.nextInt();
+                        int y=in.nextInt();
+                        topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
+                        hazards.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
                     }
                 } catch (FileNotFoundException ex) {
                     throw new RuntimeException(ex);
