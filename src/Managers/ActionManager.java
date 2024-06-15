@@ -1,18 +1,26 @@
 package Managers;
 
+import Structure.Vector2F;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 public class
 ActionManager implements KeyListener, MouseListener, MouseMotionListener {
     private final Map<Integer, Boolean> pressed = new HashMap<>();
+    private Vector2F mouseLocation = new Vector2F();
 
     public void addPanel(JPanel panel) {
         panel.addKeyListener(this);
         panel.addMouseListener(this);
         panel.addMouseMotionListener(this);
+    }
+
+    public Vector2F getMouseLocation() {
+        return mouseLocation;
     }
 
     public boolean getPressed(int code) {
@@ -73,6 +81,7 @@ ActionManager implements KeyListener, MouseListener, MouseMotionListener {
      */
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        mouseLocation.setX(e.getX());
+        mouseLocation.setY(e.getY());
     }
 }
