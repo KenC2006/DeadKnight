@@ -207,14 +207,9 @@ public class Room {
 
         }
 
-        for (Enemy e : enemies) { // TODO move to enemy class
+        for (Enemy e : enemies) {
             if (isPlayerInRoom) {
-//                if (player.isGrounded() && e.isGrounded()) {
-                    e.updatePlayerInfo(player);
-                    e.updateEnemyPos(nodeMap);
-                    e.generatePath(nodeMap);
-                    e.updateValues();
-//                }
+                e.updateValues(nodeMap, player);
             }
         }
     }
@@ -259,19 +254,16 @@ public class Room {
     }
 
     public void updateEnemies(ActionManager am) {
+        enemies.removeIf(Entity::getToDelete);
+        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             if (e.getToDelete()) {
                 ItemPickup newItem = new ItemPickup(e.getCenterVector());
                 newItem.setActualVX((int) (Math.random() * 4000 - 2000));
                 newItem.setActualVY((int) (-2000));
                 addItemPickup(newItem);
+                e.attack(am);
             }
-
-        }
-        enemies.removeIf(Entity::getToDelete);
-        if (!isPlayerInRoom) return;
-        for (Enemy e : enemies) { // TODO fix dupe loop of enemies
-            e.attack(am);
         }
     }
 

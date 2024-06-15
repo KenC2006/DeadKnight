@@ -76,6 +76,13 @@ public abstract class Enemy extends Entity {
         }
     }
 
+    public void updateValues(NodeMap nodeMap, Player player) {
+        updatePlayerInfo(player);
+        updateEnemyPos(nodeMap);
+        generatePath(nodeMap);
+        updateValues();
+    }
+
     public void updateValues() {
         super.updateValues();
         if (getStats().getHealth() <= 0) {
