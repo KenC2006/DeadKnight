@@ -2,7 +2,7 @@ package Universal;
 
 import Entities.Entity;
 import Entities.Player;
-import Items.IntelligencePickup;
+import Items.ItemPickup;
 import Items.WeaponType;
 import Structure.Hitbox;
 import Structure.Line;
@@ -81,8 +81,8 @@ public class Camera {
         if (isMapCamera) {
             if (e instanceof Player) {
                 drawCoordinate(e.getLocation(), Color.BLUE, 3);
-            } else if (e instanceof IntelligencePickup) {
-                drawCoordinate(e.getLocation(), Color.YELLOW, 3);
+            } else if (e instanceof ItemPickup) {
+                drawCoordinate(e.getLocation(), e.getDefaultColour(), 3);
             } else {
                 drawCoordinate(e.getLocation(), Color.RED, 3);
             }
@@ -162,10 +162,10 @@ public class Camera {
 
         if (isMapCamera) {
             if (manager.getPressed(KeyEvent.VK_PERIOD)) {
-                changeScaling(scaling * 0.1);
+                changeScaling(initialScaling * 0.1);
             }
             if (manager.getPressed(KeyEvent.VK_COMMA)) {
-                changeScaling(-scaling * 0.1);
+                changeScaling(-initialScaling * 0.1);
             }
 
         }
@@ -221,8 +221,8 @@ public class Camera {
     }
 
     public void changeScaling(double change) {
-        if (scaling + change < 0.0002 || scaling + change > 0.005) return;
-        scaling += change;
+        if (initialScaling + change < 0.0002 || initialScaling + change > 0.005) return;
+        initialScaling += change;
     }
 
     public boolean isEnabled() {

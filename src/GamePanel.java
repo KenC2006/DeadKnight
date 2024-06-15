@@ -1,5 +1,3 @@
-package Main;
-
 import Managers.CameraManager;
 import Managers.EntityManager;
 import Managers.ActionManager;
@@ -20,8 +18,8 @@ public class GamePanel extends JPanel{
     private final EntityManager entityManager;
     private final CameraManager cameraManager;
     private final GameUIManager gameUIManager;
-    private GameState gameState=GameState.OFF;
     private boolean isRunning = true;
+    private boolean gamePaused = false;
 
     public GamePanel(Dimension size) throws IOException {
         this.setLayout(null);
@@ -44,14 +42,6 @@ public class GamePanel extends JPanel{
         });
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
@@ -65,11 +55,20 @@ public class GamePanel extends JPanel{
 
     public void update() {
         GameTimer.update();
-        if (gameState == GameState.ON) {
-            cameraManager.update(actionManager, entityManager);
+
+        if (gameUIManager.getMenuEnabled()) {
+            gamePaused = true;
+        } else if (cameraManager.isMapOpen()) {
+            gamePaused = true;
+        } else {
+            gamePaused = false;
+        }
+
+        cameraManager.update(actionManager, entityManager);
+        gameUIManager.update(actionManager);
+        if (!gamePaused) {
             entityManager.updateKeyPresses(actionManager);
             entityManager.update(actionManager);
-            gameUIManager.update(actionManager);
         }
     }
 

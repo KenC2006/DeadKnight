@@ -1,5 +1,6 @@
 package Items;
 
+import Entities.Entity;
 import Universal.Camera;
 import Structure.Hitbox;
 import Structure.Vector2F;
@@ -21,6 +22,8 @@ public abstract class Weapon extends GameItem {
         this.type = type;
     }
 
+    public abstract int processDamageEntity(Entity attacker, Entity defender);
+
     public int getDamagePerHit() {
         return damagePerHit;
     }
@@ -32,7 +35,6 @@ public abstract class Weapon extends GameItem {
     public String getResourcePath() {
         return dataPath;
     }
-
 
     public WeaponType getType() {
         return type;

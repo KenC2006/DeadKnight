@@ -1,18 +1,29 @@
 package Items;
 
 import Entities.Entity;
-import Managers.ActionManager;
+import Entities.Player;
 import Structure.Vector2F;
-import Universal.Camera;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ItemPickup extends Entity {
+    public enum Type{INTELLIGENCE, MAX_HEALTH, HEALTH, MAX_MANA, MANA}
+    private ArrayList<Type> allTypes = new ArrayList<>(Arrays.asList(Type.values()));
+    public Type itemType;
     private boolean collidingWithPlayer = false;
 
+    public ItemPickup(Vector2F location, Type itemType) {
+        super(location.getX(), location.getY(), 1000, 1000);
+        this.itemType = itemType;
+        initialize();
+    }
+
     public ItemPickup(Vector2F location) {
-        super(location.getX(), location.getY(), 1000, 1000, -1);
-        setDefaultColour(Color.YELLOW);
+        super(location.getX(), location.getY(), 1000, 1000);
+        this.itemType = getRandomType();
+        initialize();
     }
 
     @Override
@@ -23,4 +34,49 @@ public class ItemPickup extends Entity {
     public void setCollidingWithPlayer(boolean val) {
         collidingWithPlayer = val;
     }
+
+    public void pickupItem(Player p) {
+        switch (itemType) {
+            case INTELLIGENCE:
+                p.getPlayerInventory().setIntelligence(p.getPlayerInventory().getIntelligence() + 1);
+                break;
+            case MAX_HEALTH:
+                p.getStats().changeBaseHealth(5);
+                break;
+            case HEALTH:
+                p.getStats().heal(10);
+                break;
+            case MAX_MANA:
+                p.getStats().changeBaseMana(5);
+                break;
+            case MANA:
+                p.getStats().gainMana(10);
+                break;
+
+        }
+        markToDelete(true);
+    }
+
+    private Type getRandomType() {
+        int size = allTypes.size();
+        return allTypes.get((int) (Math.random() * size));
+    }
+
+    private void initialize() {
+        switch (itemType) {
+            case INTELLIGENCE:
+                setDefaultColour(Color.YELLOW); break;
+            case MAX_HEALTH:
+                setDefaultColour(Color.GREEN.darker()); break;
+            case HEALTH:
+                setDefaultColour(Color.GREEN.brighter()); break;
+            case MAX_MANA:
+                setDefaultColour(Color.BLUE.darker()); break;
+            case MANA:
+                setDefaultColour(Color.BLUE.brighter()); break;
+
+
+        }
+    }
+
 }

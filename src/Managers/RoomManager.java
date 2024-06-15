@@ -31,7 +31,6 @@ public class RoomManager {
     }
 
     public void drawRooms(Camera c) {
-        if (loadedRooms.isEmpty()) return;
         if (c.isMapCamera()) {
             for (Room room : allRooms) {
                 if (!room.isVisited()) continue;
@@ -40,7 +39,10 @@ public class RoomManager {
             }
 
         } else {
-            for (Room room : new ArrayList<>(loadedRooms)) {
+            ArrayList<Room> roomsToDraw = new ArrayList<>(loadedRooms);
+//            if (loadedRooms.isEmpty()) return;
+            for (Room room : roomsToDraw) {
+                if (room == null) System.out.println(roomsToDraw);
                 room.drawRoom(c);
                 enemyManager.drawEnemies(room.getEnemies(), c);
             }

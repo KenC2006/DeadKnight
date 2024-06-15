@@ -56,5 +56,9 @@ public class CameraManager {
             mapCamera.setOffset(player.getCenterVector());
         }
     }
+
+    public boolean isMapOpen() {
+        return mapCamera.isEnabled();
+    }
 }
 

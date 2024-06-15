@@ -1,6 +1,8 @@
 package Items.Ranged;
 
+import Entities.Entity;
 import Entities.Projectile;
+import Entities.Stats;
 import Items.ActivationType;
 import Items.Weapon;
 import Items.WeaponType;
@@ -23,19 +25,20 @@ public class RangedWeapon extends Weapon {
     }
 
     @Override
-    public void activate(ActivationType dir, ActionManager ac) {
+    public boolean activate(ActivationType dir, ActionManager ac, Stats owner) {
         if (fireCooldownTimer.isReady() && (ac.getPressed(KeyEvent.VK_RIGHT) || ac.getPressed(KeyEvent.VK_LEFT) || ac.getPressed(KeyEvent.VK_UP) || ac.getPressed(KeyEvent.VK_DOWN))) {
             int vx = 0, vy = 0;
-
             fireCooldownTimer.reset();
             if (ac.getPressed(KeyEvent.VK_RIGHT)) vx = 2000;
             else if (ac.getPressed(KeyEvent.VK_LEFT)) vx = -2000;
             else if (ac.getPressed(KeyEvent.VK_DOWN)) vy = 2000;
             else if (ac.getPressed(KeyEvent.VK_UP)) vy = -2000;
 
-            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy));
+            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy), getDamagePerHit());
             playerProjectileList.add(bullet);
+            return true;
         }
+        return false;
     }
 
 //    @Override
@@ -69,5 +72,10 @@ public class RangedWeapon extends Weapon {
     @Override
     public void draw(Camera c) { // TODO add visual element to weapon
         return;
+    }
+
+    @Override
+    public int processDamageEntity(Entity attacker, Entity defender) {
+        return 0;
     }
 }

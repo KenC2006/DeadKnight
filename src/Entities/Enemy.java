@@ -10,6 +10,10 @@ import java.util.*;
 import java.awt.Color;
 
 public abstract class Enemy extends Entity {
+    public abstract void followPlayer();
+    public abstract void generatePath(NodeMap graph);
+    public abstract void updateEnemyPos(NodeMap graph);
+    public abstract void attack(ActionManager am);
 
     private final static int defaultWalkSpeed = 50;
     private Vector2F playerPos = new Vector2F();
@@ -23,7 +27,9 @@ public abstract class Enemy extends Entity {
 
     private static int enemyCount;
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
-        super(x, y, width, height, health);
+        super(x, y, width, height);
+        getStats().changeBaseHealth(health);
+
         this.sightRadius = sightRadius;
         id = enemyCount;
         enemyCount++;
@@ -32,7 +38,7 @@ public abstract class Enemy extends Entity {
     }
 
     public Enemy(Enemy copy) {
-        super(copy.getX(), copy.getY(), copy.getWidth(), copy.getHeight(), 100);
+        super(copy.getX(), copy.getY(), copy.getWidth(), copy.getHeight());
         enemyPos = new Vector2F(copy.enemyPos);
         sightRadius = copy.sightRadius;
         setDefaultColour(Color.ORANGE);
@@ -70,30 +76,18 @@ public abstract class Enemy extends Entity {
         }
     }
 
-    public abstract void followPlayer();
-
     public void updateValues() {
         super.updateValues();
-        if (getHealth() <= 0) {
+        if (getStats().getHealth() <= 0) {
             markToDelete(true);
         }
     }
-
-    public abstract void generatePath(NodeMap graph);
-
-    public void updateEnemyHealth(int change) {
-        changeHealth(change);
-    }
-
 
     public void updatePlayerInfo(Player player) {
         playerPos = player.getBottomPos();
 //        System.out.println(playerPos);
     }
 
-    public void updateEnemyPos(NodeMap graph) {
-
-    }
 
     public void translateEnemy(Vector2F offset) {
         setX(getX() + offset.getX());
@@ -111,8 +105,6 @@ public abstract class Enemy extends Entity {
     public void updateData() {
         super.updateData();
     }
-
-    public abstract void attack(ActionManager am);
 
     public Vector2F getPlayerPos() {
         return playerPos;

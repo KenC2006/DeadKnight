@@ -1,7 +1,6 @@
 package Structure;
 
 import Entities.*;
-import Items.IntelligencePickup;
 import Items.ItemPickup;
 import Managers.ActionManager;
 import Managers.EnemyManager;
@@ -118,6 +117,7 @@ public class Room {
         nodeMap = new NodeMap(this);
 
         roomID = numberOfUniqueRooms;
+        setVisited(true);
     }
 
     public Vector2F getCenterRelativeToRoom() {
@@ -162,7 +162,7 @@ public class Room {
 
     public void setupRoom() {
         for (ItemSpawn i: itemSpawns) {
-            addItemPickup(new IntelligencePickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
+            addItemPickup(new ItemPickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
         }
     }
 
@@ -190,11 +190,10 @@ public class Room {
         isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 60__0_000_000_0L;
         for (ItemPickup item: groundedItems) {
             item.updateValues();
-            item.updateValues();
 
         }
 
-        for (Enemy e : enemies) {
+        for (Enemy e : enemies) { // TODO move to enemy class
             if (isPlayerInRoom) {
 //                if (player.isGrounded() && e.isGrounded()) {
                     e.updatePlayerInfo(player);
@@ -240,9 +239,18 @@ public class Room {
     }
 
     public void updateEnemies(ActionManager am) {
+        for (Enemy e : enemies) {
+            if (e.getToDelete()) {
+                ItemPickup newItem = new ItemPickup(e.getCenterVector());
+                newItem.setActualVX((int) (Math.random() * 4000 - 2000));
+                newItem.setActualVY((int) (-2000));
+                addItemPickup(newItem);
+            }
+
+        }
         enemies.removeIf(Entity::getToDelete);
         if (!isPlayerInRoom) return;
-        for (Enemy e : enemies) {
+        for (Enemy e : enemies) { // TODO fix dupe loop of enemies
             e.attack(am);
         }
     }

@@ -1,7 +1,6 @@
 package Entities;
 
 import Items.ActivationType;
-import Items.IntelligencePickup;
 import Items.ItemPickup;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
@@ -22,26 +21,26 @@ import java.util.ArrayList;
  */
 public class Player extends Entity {
     private final ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
-    private boolean immune;
-    private boolean upPressed, leftRightPressed, jumping;
+    private boolean immune, upPressed, leftRightPressed, jumping;
     private Direction direction;
     private int framesSinceTouchedGround = 0, framesSinceStartedJumping, framesSinceDash;
-    private int framesSinceFiredProjectile = 0;
     private int framesPassed, lastUpPressed;
     private Inventory playerInventory;
-    private int mana=100;
-    private int maxMana=mana;
     private int killStreak=0;
     private final ArrayList<Integer> controls = new ArrayList<>();
 
     public Player(int x, int y){
-        super(x, y, 2000, 5000,100);
+        super(x, y, 2000, 5000);
         playerInventory = new Inventory();
         playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
         playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
         setDefaultControls();
+        getStats().changeBaseHealth(100);
+        getStats().changeBaseMana(100);
+        getStats().setMaxJumps(10);
+        getStats().setManaRegen(10);
     }
 
     public Inventory getPlayerInventory() {
@@ -67,29 +66,29 @@ public class Player extends Entity {
     public void updateKeyPresses(ActionManager manager) {
         int dx = 0;
         framesPassed++;
-        framesSinceFiredProjectile++;
         if (framesSinceDash > 0) framesSinceDash--;
-        if (isGrounded()) framesSinceTouchedGround = framesPassed;
+        if (isGrounded()) getStats().resetJumps();
         if (isHittingCeiling()) framesSinceStartedJumping -= 10;
 
         if (manager.getPressed(controls.get(0))) {
-            direction = Direction.UP;
             if (!upPressed) {
                 upPressed = true;
-                if (framesPassed - framesSinceTouchedGround < 8) {
+                if (getStats().canJump()) {
                     jumping = true;
-                    framesSinceTouchedGround -= 10;
+//                    framesSinceTouchedGround -= 10;
                     framesSinceStartedJumping = framesPassed;
+                    getStats().jump();
 
                 } else {
                     lastUpPressed = framesPassed;
                 }
             } else {
-                if (framesPassed - framesSinceTouchedGround < 8 && framesPassed - lastUpPressed < 20) {
+                if (getStats().canJump() && framesPassed - lastUpPressed < 20) {
                     jumping = true;
                     framesSinceStartedJumping = framesPassed;
-                    framesSinceTouchedGround -= 10;
+//                    framesSinceTouchedGround -= 10;
                     lastUpPressed -= 10;
+                    getStats().jump();
                 }
             }
         } else {
@@ -126,11 +125,11 @@ public class Player extends Entity {
         }
 
         if (manager.getPressed(controls.get(5))) {
-            playerInventory.usePrimary(ActivationType.RIGHT, manager);
+            playerInventory.usePrimary(ActivationType.RIGHT, manager, getStats());
         }
 
         if (manager.getPressed(controls.get(6))) {
-            playerInventory.usePrimary(ActivationType.LEFT, manager);
+            playerInventory.usePrimary(ActivationType.LEFT, manager, getStats());
         }
 
 
@@ -140,10 +139,14 @@ public class Player extends Entity {
 
         if (framesSinceDash > 20) {
             if (direction == Direction.LEFT) dx = -1500;
-            else dx = 1500;
+            else if (direction == Direction.RIGHT) dx = 1500;
+            jumping = false;
+            setIntendedVY(0);
             getHitbox().setEnabled(false);
+            immune = true;
             setAffectedByGravity(false);
         } else {
+            immune = false;
             setAffectedByGravity(true);
             getHitbox().setEnabled(true);
         }
@@ -164,15 +167,12 @@ public class Player extends Entity {
         }
         for (Projectile p: projectiles) {
             if (e.collidesWith(p)) {
-                e.setColliding(true);
-                p.setColliding(true);
-                p.markToDelete(true);
-                p.doKB(e);
+                p.processEntityHit(this, e);
             }
         }
 
         if (playerInventory.getCurrentPrimaryItem() instanceof MeleeWeapon) {
-            ((MeleeWeapon) playerInventory.getCurrentPrimaryItem()).doCollisionCheck(e);
+            ((MeleeWeapon) playerInventory.getCurrentPrimaryItem()).doCollisionCheck(this, e);
 
         }
     }
@@ -180,10 +180,9 @@ public class Player extends Entity {
     public void resolveEntityCollision(ItemPickup item) {
         if (!item.collidesWith(this)) return;
 //        resolveEntityCollision((Entity) item);
-        if (item instanceof IntelligencePickup) {
-            item.markToDelete(true);
-            playerInventory.setIntelligence(playerInventory.getIntelligence()+1);
-        }
+            item.pickupItem(this);
+//            item.markToDelete(true);
+//            playerInventory.setIntelligence(playerInventory.getIntelligence()+1);
 
     }
 
@@ -199,6 +198,7 @@ public class Player extends Entity {
             p.resolveRoomCollisions(roomList);
         }
     }
+
 
     @Override
     public void paint(Camera c) {
@@ -228,16 +228,11 @@ public class Player extends Entity {
         }
     }
 
+    public boolean isImmune() {
+        return immune;
+    }
 
     public int getKillStreak() {
         return killStreak;
-    }
-
-    public int getMaxMana() {
-        return maxMana;
-    }
-
-    public int getMana() {
-        return mana;
     }
 }

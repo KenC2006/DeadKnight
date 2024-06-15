@@ -44,7 +44,7 @@ public class ShortMeleeEnemy extends Enemy {
     @Override
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
-        sword.doCollisionCheck(player);
+        sword.doCollisionCheck(this, player);
     }
     int n = 0;
     public void followPlayer() {
@@ -138,10 +138,10 @@ public class ShortMeleeEnemy extends Enemy {
 //            stopXMovement();
 //            System.out.println(getPlayerPos() + " " + getPos() + " " + getPlayerPos().getYDistance(getPos()));
             if (getPlayerPos().getXDistance(getCenterVector()) > 0) {
-                sword.activate(ActivationType.LEFT, am);
+                sword.activate(ActivationType.LEFT, am, getStats());
             }
             else {
-                sword.activate(ActivationType.RIGHT, am);
+                sword.activate(ActivationType.RIGHT, am, getStats());
             }
         }
         sword.update();

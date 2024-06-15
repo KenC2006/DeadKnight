@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 public class EntityManager {
     private final Player player;
-//    private ArrayList<Entity> entityList = new ArrayList<>();
     private RoomManager roomManager;
 
     public EntityManager() {

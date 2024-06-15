@@ -29,9 +29,9 @@ public class EnemyManager {
     }
 
     public Enemy copy(Enemy e) {
-        if (e instanceof ShortMeleeEnemy) return new ShortMeleeEnemy(e.getX(), e.getY(), e.getHealth());
-        if (e instanceof FlyingEnemy) return new FlyingEnemy(e.getX(), e.getY(), e.getHealth());
-        if (e instanceof TeleportEnemy) return new TeleportEnemy(e.getX(), e.getY(), e.getHealth());
+        if (e instanceof ShortMeleeEnemy) return new ShortMeleeEnemy(e.getX(), e.getY(), e.getStats().getHealth());
+        if (e instanceof FlyingEnemy) return new FlyingEnemy(e.getX(), e.getY(), e.getStats().getHealth());
+        if (e instanceof TeleportEnemy) return new TeleportEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         System.out.println("smh tyring to copy an enemy not added to copy function");
         return null;
     }

@@ -1,14 +1,14 @@
 package UI;
 
 import Entities.Player;
-import Main.GamePanel;
 import Managers.ActionManager;
+import Universal.GameTimer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class Menu extends UI implements ActionListener {
@@ -24,11 +24,12 @@ public class Menu extends UI implements ActionListener {
     private final Player player;
     private boolean controlsOn = false;
 
-    private final GamePanel panel;
+    private boolean menuOn = true;
+    private JPanel panel;
 
-    public Menu(GamePanel panel, Player player) {
-        this.panel = panel;
+    public Menu(JPanel panel, Player player) {
         this.player = player;
+        this.panel = panel;
         addButton(start, uiButtons);
         addButton(controls, uiButtons);
 
@@ -83,7 +84,7 @@ public class Menu extends UI implements ActionListener {
 
     public void draw() {
         Graphics2D g = getGraphics();
-        if (panel.getGameState() == GameState.OFF) {
+        if (menuOn) {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
         }
@@ -92,7 +93,7 @@ public class Menu extends UI implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == start) {
-            panel.setGameState(GameState.ON);
+            menuOn = false;
             for (JButton uiButton : uiButtons) {
                 uiButton.setVisible(false);
             }
@@ -122,9 +123,7 @@ public class Menu extends UI implements ActionListener {
                 currentButton = (JButton) e.getSource();
                 currentButton.setBackground(Color.YELLOW);
             }
-        }
-
-        else if (e.getSource() == controls) {
+        } else if (e.getSource() == controls) {
             controlsOn = true;
             for (JButton uiButton : uiButtons) {
                 uiButton.setVisible(false);
@@ -139,10 +138,18 @@ public class Menu extends UI implements ActionListener {
         if (manager.isPressed() && currentButton != null) {
             currentButton.setBackground(Color.YELLOW);
             currentButton.setText(currentButton.getText().substring(0,currentButton.getText().length()-KeyEvent.getKeyText(player.getControls().get(controlButtons.indexOf(currentButton))).length())+KeyEvent.getKeyText(manager.getKeyCode()));
-            player.getControls().set(controlButtons.indexOf(currentButton),manager.getKeyCode());
+            player.getControls().set(controlButtons.indexOf(currentButton), manager.getKeyCode());
             currentButton.setBackground(null);
             currentButton = null;
         }
+    }
+
+    public boolean isMenuOn() {
+        return menuOn;
+    }
+
+    public void setMenuOn(boolean menuOn) {
+        this.menuOn = menuOn;
     }
 }
 
