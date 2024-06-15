@@ -24,7 +24,12 @@ public class NodeMap {
         nodes = new ArrayList<Vector2F> ();
         edges = new HashMap<Vector2F, ArrayList<Vector2F>> (); //add edge connecting
         enemySpawns = room.getEnemySpawns();
-        playerSpawn = room.getPlayerSpawns().getFirst();
+        if (room.getPlayerSpawns().isEmpty()) {
+            playerSpawn = new PlayerSpawn(room.getEnemySpawns().getFirst().getX(), room.getEnemySpawns().getFirst().getY());
+        } else {
+            playerSpawn = room.getPlayerSpawns().getFirst();
+
+        }
 
         grid = new char[1000][1000];
 

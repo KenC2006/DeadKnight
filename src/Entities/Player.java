@@ -32,7 +32,7 @@ public class Player extends Entity {
     private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
 
     public Player(int x, int y){
-        super(x, y, 2000, 5000);
+        super(x, y, 1000, 2000);
         playerInventory = new Inventory();
         playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));

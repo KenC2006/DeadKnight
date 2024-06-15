@@ -15,7 +15,7 @@ public class RoomEditor extends JFrame {
     private static final File roomStorage = new File("src/Rooms/Set1");
     public RoomEditor() {
 
-        grid = new Grid();
+        grid = new Grid(roomStorage);
         add(grid);
         setLayout(new BorderLayout());
         add(grid,BorderLayout.CENTER);
