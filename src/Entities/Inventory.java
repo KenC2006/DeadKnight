@@ -30,6 +30,7 @@ public class Inventory {
         }
     }
 
+
     public void update() {
         for (Weapon w: primarySlot) {
             w.update();
@@ -97,4 +98,13 @@ public class Inventory {
             selectedSecondary--;
         }
     }
+
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public void setIntelligence(int intelligence) {
+        this.intelligence = intelligence;
+    }
+
 }

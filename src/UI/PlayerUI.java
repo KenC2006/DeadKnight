@@ -20,6 +20,8 @@ public class PlayerUI extends UI{
     private int textY;
     private int textX;
     private int boxHeight=brushStroke;
+    private int hpFill=0;
+    private int manaFill=0;
 
 
 
@@ -37,14 +39,16 @@ public class PlayerUI extends UI{
         brushStroke=getPanelWidth()/400;
     }
 
-    private void drawBar(double value, double maxValue, Color fillColor, Graphics2D g) {
+    private void drawBar(double value, double maxValue, Color fillColor, Graphics2D g, int fill) {
         g.setColor(Color.DARK_GRAY);
         g.fillRect(brushStroke, boxHeight, barWidth, barHeight);
         g.setColor(fillColor);
         g.fillRect(brushStroke, boxHeight, (int) (value / maxValue * barWidth), barHeight);
+        g.setColor(Color.RED);
+        g.fillRect(brushStroke+(int) (value / maxValue * barWidth), boxHeight, fill,barHeight);
         g.setColor(Color.BLACK);
         String text = (int) value + "/" + (int) maxValue;
-        Font font = new Font("Times New Roman", Font.BOLD, getPanelHeight() / 50);
+        Font font = new Font("Times New Roman", Font.BOLD, getPanelHeight() / 32);
         g.setFont(font);
         FontMetrics metrics = g.getFontMetrics(font);
         textX = brushStroke + (barWidth - metrics.stringWidth(text)) / 2;
@@ -56,17 +60,27 @@ public class PlayerUI extends UI{
     }
 
     private void drawPlayerHP(Graphics2D g) {
-        drawBar(player.getHealth(), player.getMaxHealth(), Color.GREEN, g);
+        if (player.getDamageTaken()>0 && barWidth>0){
+            player.setDamageTaken(0);
+            hpFill=barWidth-(int)((double)player.getHealth()/ player.getMaxHealth() * barWidth);
+        }
+        if (hpFill>0) hpFill-=2;
+        drawBar(player.getHealth(), player.getMaxHealth(), Color.GREEN, g,hpFill);
     }
 
     private void drawPlayerMana(Graphics2D g) {
-        drawBar(player.getMana(), player.getMaxMana(), Color.CYAN, g);
+        if (player.getManaUsed()>0 && barWidth>0){
+            player.setManaUsed(0);
+            manaFill=barWidth-(int)((double)player.getMana()/ player.getMaxMana() * barWidth);
+        }
+        if (manaFill>0) manaFill-=2;
+        drawBar(player.getMana(), player.getMaxMana(), Color.CYAN, g,manaFill);
     }
 
     private void drawIntelligenceCount(Graphics2D g) {
         g.drawImage(intelligenceIcon, barWidth + brushStroke * 3, boxHeight, null);
         g.setColor(Color.CYAN);
-        g.drawString(String.valueOf(player.getIntelligence()), barWidth + barHeight + brushStroke * 5, textY);
+        g.drawString(String.valueOf(player.getPlayerInventory().getIntelligence()), barWidth + barHeight + brushStroke * 5, textY);
         boxHeight += barHeight + brushStroke * 2;
     }
     private void drawKillStreakCount(Graphics2D g) {
