@@ -23,7 +23,7 @@ public abstract class Enemy extends Entity {
     private int sightRadius;
     private Vector2F enemyPos = new Vector2F();
     private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
-    private GameTimer generatePathTimer = new GameTimer(30);
+    private GameTimer generatePathTimer = new GameTimer(60);
 
     private static int enemyCount;
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
@@ -74,6 +74,13 @@ public abstract class Enemy extends Entity {
                 moveX(defaultWalkSpeed * 5);
             }
         }
+    }
+
+    public void updateValues(NodeMap nodeMap, Player player) {
+        updatePlayerInfo(player);
+        updateEnemyPos(nodeMap);
+        generatePath(nodeMap);
+        updateValues();
     }
 
     public void updateValues() {
@@ -187,10 +194,5 @@ public abstract class Enemy extends Entity {
     @Override
     public void paint(Camera c) {
         super.paint(c);
-        for (int i = 0; i < path.size() - 1; i++) {
-            if (i + 1 >= path.size()) break;
-            if (path.get(i) == null || path.get(i+1) == null) continue;
-//            c.drawLine(path.get(i), path.get(i + 1), Color.RED);
-        }
     }
 }

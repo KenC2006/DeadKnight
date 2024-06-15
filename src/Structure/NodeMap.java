@@ -13,6 +13,7 @@ public class NodeMap {
     private Map<Vector2F, ArrayList<Vector2F>> edges;
     private ArrayList<EnemySpawn> enemySpawns;
     private PlayerSpawn playerSpawn;
+    private Room room;
     private KDTree kdTree;
 
     private final int gridOffset = 500;
@@ -32,6 +33,7 @@ public class NodeMap {
         }
 
         grid = new char[1000][1000];
+        this.room = room;
 
         loadGrid(room);
         loadNodes(new Vector2F(playerSpawn.getX()/1000 + 500, playerSpawn.getY()/1000 + 500), room);
@@ -72,6 +74,7 @@ public class NodeMap {
         grid = copy.grid;
         translateOffset = new Vector2F();
         kdTree = copy.kdTree;
+        room = copy.room;
     }
 
     private void loadGrid(Room room) {
@@ -368,6 +371,8 @@ public class NodeMap {
     public int getGridOffset() {
         return gridOffset;
     }
+
+    public Room getRoom() { return room; }
 
     public void drawNodes(Camera c) {
         for (Vector2F n : nodes) {
