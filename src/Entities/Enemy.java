@@ -83,11 +83,6 @@ public abstract class Enemy extends Entity {
         }
     }
 
-    public void updateEnemyHealth(int change) {
-        changeHealth(change);
-    }
-
-
     public void updatePlayerInfo(Player player) {
         playerPos = player.getBottomPos();
 //        System.out.println(playerPos);
