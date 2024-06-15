@@ -11,8 +11,9 @@ import java.util.Vector;
 public class
 ActionManager implements KeyListener, MouseListener, MouseMotionListener {
     private final Map<Integer, Boolean> pressed = new HashMap<>();
-    private int lastPressed=0;
+    private int lastPressed = 0;
     private Vector2F mouseLocation = new Vector2F();
+    private boolean mousePressed;
 
     public void addPanel(JPanel panel) {
         panel.addKeyListener(this);
@@ -34,6 +35,10 @@ ActionManager implements KeyListener, MouseListener, MouseMotionListener {
 
     public int getKeyCode() {
         return lastPressed;
+    }
+
+    public boolean isMousePressed() {
+        return mousePressed;
     }
 
     @Override
@@ -60,12 +65,12 @@ ActionManager implements KeyListener, MouseListener, MouseMotionListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        mousePressed = true;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        mousePressed = false;
     }
 
     @Override

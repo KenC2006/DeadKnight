@@ -358,7 +358,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                     int entranceNum = in.nextInt();
                     for (int i = 0; i < entranceNum; i++) {
                         Vector2F v1 = new Vector2F(in.nextInt(), in.nextInt()), v2 = new Vector2F(in.nextInt(), in.nextInt());
-                        topLeftPoint = v1.getMin(v2).getMin(topLeftPoint);
+                        topLeftPoint = v1.getMin(topLeftPoint);
 
                         entrances.add(new Entrance(v1, v2));
                     }

@@ -6,9 +6,11 @@ import Universal.Camera;
 import RoomEditor.Entrance;
 import Structure.Room;
 import Structure.Vector2F;
+import Universal.GameTimer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 public class RoomManager {
@@ -16,7 +18,7 @@ public class RoomManager {
     private EnemyManager enemyManager;
     private Deque<Room> toGenerateNeighbours;
     private int renderDistance = 200000;
-
+    private GameTimer teleportCooldown;
 
     public void generateLevel(Player p, int setNumber) {
         allRooms = new ArrayList<>();
@@ -24,6 +26,7 @@ public class RoomManager {
         possibleBiomeRooms = new ArrayList<>();
         toGenerateNeighbours = new ArrayDeque<>();
         enemyManager = new EnemyManager();
+        teleportCooldown = new GameTimer(20);
 
         loadRoomsFromFile(setNumber);
         generateRooms();
@@ -43,6 +46,7 @@ public class RoomManager {
 //            if (loadedRooms.isEmpty()) return;
             for (Room room : roomsToDraw) {
                 if (room == null) System.out.println(roomsToDraw);
+                assert room != null;
                 room.drawRoom(c);
                 enemyManager.drawEnemies(room.getEnemies(), c);
             }
@@ -93,11 +97,11 @@ public class RoomManager {
                 testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getConnection()));
                 for (Entrance connectingEntrance: testRoom.getEntrances()) {
                     if (!e.connects(connectingEntrance)) continue;
-                    testRoom.centerAroundPointInRoom(connectingEntrance.getConnection());
+                    testRoom.centerAroundPointInRoom(connectingEntrance.getLocation());
 
                     boolean collides = false;
                     for (Room collsionTest: allRooms) {
-                        if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest)) {
+                        if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
                             collides = true;
                             break;
                         }
@@ -130,8 +134,8 @@ public class RoomManager {
     public void loadRoomsFromFile(int setNumber) {
         for (File f: Objects.requireNonNull(new File("src/Rooms/Set" + setNumber).listFiles())) {
             try {
-                possibleBiomeRooms.add(new Room(f));
-            } catch (FileNotFoundException e) {
+                possibleBiomeRooms.add(new Room(f, Integer.parseInt(f.getName().substring(4, f.getName().length() - 4))));
+            } catch (IOException e) {
                 System.out.println("Unable to load file " + f.getName());
                 System.out.println(e);
             }

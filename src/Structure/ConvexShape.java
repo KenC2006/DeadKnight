@@ -92,6 +92,24 @@ public class ConvexShape {
         return true;
     }
 
+    public boolean intersects(ConvexShape other, boolean equality) {
+        ArrayList<Vector2F> axis = new ArrayList<>();
+        axis.addAll(getAxis());
+        axis.addAll(other.getAxis());
+
+        for (Vector2F v: axis) {
+            Projection pA = getProjection(v);
+            Projection pB = other.getProjection(v);
+            if (equality) {
+                if (!pA.equalityOverlap(pB)) return false;
+
+            } else {
+                if (!pA.overlap(pB)) return false;
+            }
+        }
+        return true;
+    }
+
     private Projection getProjection(Vector2F axis) {
         long min = axis.dotProduct(points.get(0));
         long max = min;

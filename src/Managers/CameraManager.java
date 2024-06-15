@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 public class CameraManager {
     private final Camera gameCamera, minimapCamera, mapCamera;
     private final Player player;
-    private GameTimer toggleCooldown = new GameTimer(10);
+    private GameTimer toggleCooldown, teleportCooldown;
 
     public CameraManager(Player p) {
         player = p;
@@ -22,6 +22,9 @@ public class CameraManager {
         mapCamera.setMapCamera(true);
         mapCamera.setCentered(true);
         mapCamera.setEnabled(false);
+        toggleCooldown = new GameTimer(10);
+        teleportCooldown = new GameTimer(10);
+
     }
 
     public void draw(Graphics g, EntityManager e) {
@@ -29,6 +32,7 @@ public class CameraManager {
         gameCamera.paintBackground();
         e.draw(gameCamera);
         gameCamera.paintForeground();
+//        gameCamera.drawMouse();
 
         minimapCamera.setGraphics(g);
         minimapCamera.paintBackground();
@@ -38,6 +42,7 @@ public class CameraManager {
         mapCamera.setGraphics(g);
         mapCamera.paintBackground();
         e.draw(mapCamera);
+        mapCamera.drawMouse();
 //        mapCamera.paintForeground();
     }
 
@@ -54,6 +59,11 @@ public class CameraManager {
             mapCamera.setEnabled(!mapCamera.isEnabled());
             minimapCamera.setEnabled(!minimapCamera.isEnabled());
             mapCamera.setOffset(player.getCenterVector());
+        }
+
+        if (teleportCooldown.isReady() && isMapOpen() && am.isMousePressed()) {
+            teleportCooldown.reset();
+            e.getPlayer().setLocation(mapCamera.getTranslatedMouseCoords());
         }
     }
 

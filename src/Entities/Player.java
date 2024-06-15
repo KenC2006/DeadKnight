@@ -12,6 +12,7 @@ import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
 import Structure.Vector2F;
+import Universal.GameTimer;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -23,11 +24,12 @@ public class Player extends Entity {
     private final ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
     private boolean immune, upPressed, leftRightPressed, jumping;
     private Direction direction;
-    private int framesSinceTouchedGround = 0, framesSinceStartedJumping, framesSinceDash;
+    private int framesSinceStartedJumping;
     private int framesPassed, lastUpPressed;
     private Inventory playerInventory;
     private int killStreak=0;
     private final ArrayList<Integer> controls = new ArrayList<>();
+    private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
 
     public Player(int x, int y){
         super(x, y, 2000, 5000);
@@ -41,6 +43,10 @@ public class Player extends Entity {
         getStats().changeBaseMana(100);
         getStats().setMaxJumps(10);
         getStats().setManaRegen(10);
+        dashCooldownTimer = new GameTimer(30);
+        dashLengthTimer = new GameTimer(10);
+        dashImmunityTimer = new GameTimer(15);
+
     }
 
     public Inventory getPlayerInventory() {
@@ -66,7 +72,6 @@ public class Player extends Entity {
     public void updateKeyPresses(ActionManager manager) {
         int dx = 0;
         framesPassed++;
-        if (framesSinceDash > 0) framesSinceDash--;
         if (isGrounded()) getStats().resetJumps();
         if (isHittingCeiling()) framesSinceStartedJumping -= 10;
 
@@ -132,25 +137,30 @@ public class Player extends Entity {
             playerInventory.usePrimary(ActivationType.LEFT, manager, getStats());
         }
 
-
-        if (framesSinceDash == 0 && manager.getPressed(controls.get(7))) {
-            framesSinceDash = 30;
+        if (manager.getPressed(controls.get(7)) && dashCooldownTimer.isReady()) {
+            dashCooldownTimer.reset();
+            dashLengthTimer.reset();
+            dashImmunityTimer.reset();
         }
 
-        if (framesSinceDash > 20) {
+
+        if (!dashLengthTimer.isReady()) {
             if (direction == Direction.LEFT) dx = -1500;
             else if (direction == Direction.RIGHT) dx = 1500;
             jumping = false;
             setIntendedVY(0);
-            getHitbox().setEnabled(false);
-            immune = true;
             setAffectedByGravity(false);
         } else {
-            immune = false;
             setAffectedByGravity(true);
-            getHitbox().setEnabled(true);
         }
 
+        if (!dashImmunityTimer.isReady()) {
+            getHitbox().setEnabled(false);
+            immune = true;
+        } else {
+            getHitbox().setEnabled(true);
+            immune = false;
+        }
 
         setIntendedVX(dx);
     }
