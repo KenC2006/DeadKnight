@@ -291,7 +291,7 @@ public class NodeMap {
         }
     }
 
-    private void fillPlatForm(Vector2F start, Vector2F prev, Room room) { //TODO fix this code to generate multiple nodes
+    private void fillPlatForm(Vector2F start, Vector2F prev, Room room) {
         int cur_x =  start.getX();
 
         int dist = 0;
@@ -354,6 +354,14 @@ public class NodeMap {
     public Vector2F getNearestNode(Vector2F point) {
 
         return kdTree.findNearest(point);
+    }
+
+    public char[][] getGrid() {
+        return grid;
+    }
+
+    public int getGridOffset() {
+        return gridOffset;
     }
 
     public void drawNodes(Camera c) {

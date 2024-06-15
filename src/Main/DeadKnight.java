@@ -1,3 +1,5 @@
+package Main;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -8,7 +10,7 @@ public class DeadKnight {
         JFrame frame = new JFrame();
         GamePanel game = new GamePanel(screenSize);
         frame.add(game);
-        frame.setTitle("DeadKnight");
+        frame.setTitle("Main.DeadKnight");
         frame.setSize(screenSize);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);

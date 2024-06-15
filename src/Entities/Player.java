@@ -32,8 +32,6 @@ public class Player extends Entity {
     private int mana=100;
     private int maxMana=mana;
     private int killStreak=0;
-    private int damageTaken=20;
-    private int manaUsed=20;
     private final ArrayList<Integer> controls = new ArrayList<>();
 
     public Player(int x, int y){
@@ -65,23 +63,6 @@ public class Player extends Entity {
         controls.add(KeyEvent.VK_LEFT);
         controls.add(KeyEvent.VK_SHIFT);
     }
-
-    public int getDamageTaken() {
-        return damageTaken;
-    }
-
-    public void setDamageTaken(int damageTaken) {
-        this.damageTaken = damageTaken;
-    }
-
-    public int getManaUsed() {
-        return manaUsed;
-    }
-
-    public void setManaUsed(int manaUsed) {
-        this.manaUsed = manaUsed;
-    }
-
 
     public void updateKeyPresses(ActionManager manager) {
         int dx = 0;

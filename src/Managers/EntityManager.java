@@ -1,10 +1,13 @@
 package Managers;
 
+import Entities.FlyingEnemy;
 import Entities.Player;
+import Entities.ShortMeleeEnemy;
 import Structure.Room;
 import Universal.Camera;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class EntityManager {
     private final Player player;
@@ -16,7 +19,6 @@ public class EntityManager {
 
         roomManager = new RoomManager();
         roomManager.generateLevel(player, 1);
-
     }
 
     public void updateKeyPresses(ActionManager manager) {
@@ -26,12 +28,15 @@ public class EntityManager {
         }
     }
 
-    public void update() {
+    public void update(ActionManager manager) {
         roomManager.update(player);
 
         player.updateValues();
+
         for (Room r: roomManager.getLoadedRooms()) {
             r.updateValues(player);
+            r.updateEnemies(manager);
+            roomManager.getEnemyManager().updateEnemyRoomLocations(roomManager.getLoadedRooms(), r);
         }
 
         player.resolveRoomCollisions(roomManager.getLoadedRooms());

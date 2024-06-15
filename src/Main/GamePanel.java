@@ -1,7 +1,10 @@
+package Main;
+
 import Managers.CameraManager;
 import Managers.EntityManager;
 import Managers.ActionManager;
 import RoomEditor.RoomEditor;
+import UI.GameState;
 import UI.GameUIManager;
 import Universal.GameTimer;
 
@@ -17,6 +20,7 @@ public class GamePanel extends JPanel{
     private final EntityManager entityManager;
     private final CameraManager cameraManager;
     private final GameUIManager gameUIManager;
+    private GameState gameState=GameState.OFF;
     private boolean isRunning = true;
 
     public GamePanel(Dimension size) throws IOException {
@@ -40,6 +44,14 @@ public class GamePanel extends JPanel{
         });
     }
 
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
@@ -53,11 +65,12 @@ public class GamePanel extends JPanel{
 
     public void update() {
         GameTimer.update();
-
-        cameraManager.update(actionManager, entityManager);
-        entityManager.updateKeyPresses(actionManager);
-        entityManager.update();
-        gameUIManager.update(actionManager);
+        if (gameState == GameState.ON) {
+            cameraManager.update(actionManager, entityManager);
+            entityManager.updateKeyPresses(actionManager);
+            entityManager.update(actionManager);
+            gameUIManager.update(actionManager);
+        }
     }
 
     public void start() {

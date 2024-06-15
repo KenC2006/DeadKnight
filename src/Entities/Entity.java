@@ -67,6 +67,11 @@ public class Entity {
         return health;
     }
 
+    public void changeHealth(int change) {
+        if (health+change < 0) health = 0;
+        else health += change;
+    }
+
     public void updateData() {
 //        if (getIntendedVX() != 0) System.out.println(getIntendedVX());
         if (colliding) {
@@ -332,6 +337,10 @@ public class Entity {
 
     public void setColliding(boolean colliding) {
         this.colliding = colliding;
+    }
+
+    public boolean getColliding() {
+        return colliding;
     }
 
     public boolean isGrounded() {

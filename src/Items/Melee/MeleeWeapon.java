@@ -1,5 +1,6 @@
 package Items.Melee;
 
+import Entities.Enemy;
 import Entities.Entity;
 import Items.ActivationType;
 import Items.Weapon;
@@ -86,6 +87,7 @@ public class MeleeWeapon extends Weapon {
                     kb = -3000;
                 }
                 e.setActualVX(kb);
+                e.changeHealth(-getDamagePerHit());
             }
 
         }

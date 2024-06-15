@@ -1,7 +1,6 @@
 package RoomEditor;
 
 import Structure.Hitbox;
-import Structure.RoomObject;
 import Structure.Vector2F;
 
 import javax.swing.*;
@@ -21,6 +20,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private double boxSize;
     private int scaledBoxSize;
     private final ArrayList<Rectangle> walls = new ArrayList<>();
+    private final ArrayList<Rectangle> hazards = new ArrayList<>();
     private final ArrayList<Entrance> entrances = new ArrayList<>();
     private final ArrayList<PlayerSpawn> playerSpawns = new ArrayList<>();
     private final ArrayList<EnemySpawn> enemySpawns = new ArrayList<>();
@@ -29,23 +29,44 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private Vector2F topLeftPoint = null;
     private final RoomObject selected = new RoomObject();
     private JComboBox<File> dropDown;
+    private JComboBox<File> graphicPick;
     private File fileToSave;
 
     public Grid() {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+
+        dropDown = new JComboBox<>(Objects.requireNonNull(new File("src/Rooms/Set1").listFiles()));
+        dropDown.setFocusable(false);
+        this.add(dropDown);
+        dropDown.setVisible(true);
+        dropDown.setLayout(null);
+
+        graphicPick = new JComboBox<>(Objects.requireNonNull(new File("graphics").listFiles()));
+        graphicPick.setFocusable(false);
+        this.add(graphicPick);
+        graphicPick.setVisible(true);
+        graphicPick.setLayout(null);
+
+
         loadFiles();
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {
-//                System.out.printf("min %d\n", Math.min(getHeight(), getWidth()));
                 boxSize = (double) Math.min(getHeight(), getWidth()) / (TILES_PER_HEIGHT);
                 scaledBoxSize = (int) (boxSize * 1000);
-//                System.out.printf("Grid box size = %f\n", boxSize);
                 repaint();
             }
         });
-//        System.out.printf("min %d\n", Math.min(getHeight(), getWidth()));
-//        System.out.printf("Grid box size = %f\n", boxSize);
+    }
+    
+    public void addHazard(){
+        if (selected !=null && walls.contains(selected.getObject())) {
+            hazards.add((Rectangle)selected.getObject());
+            walls.remove(selected.getObject());
+            stack.removeLast();
+            stack.add(6);
+            selected.reset();
+        }
     }
 
     public ArrayList<Rectangle> getWalls() {
@@ -67,30 +88,35 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void draw(Graphics g) {
         g.setColor(Color.LIGHT_GRAY.brighter());
-        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), 0, (int) (scaledBoxSize), getHeight());
-        g.fillRect(0, (int) (highlighted.getY() * scaledBoxSize / 1000), getWidth(), (int) (scaledBoxSize));
+        g.fillRect( (highlighted.getX() * scaledBoxSize / 1000), 0,  (scaledBoxSize), getHeight());
+        g.fillRect(0,  (highlighted.getY() * scaledBoxSize / 1000), getWidth(),  (scaledBoxSize));
 
         g.setColor(Color.LIGHT_GRAY);
-        g.fillRect((int) ((highlighted.getX() - 10000) * scaledBoxSize / 1000), (int) ((highlighted.getY() - 10000) * scaledBoxSize / 1000), (int) (scaledBoxSize * 21), (int) (scaledBoxSize * 21));
+        g.fillRect( ((highlighted.getX() - 10000) * scaledBoxSize / 1000),  ((highlighted.getY() - 10000) * scaledBoxSize / 1000),  (scaledBoxSize * 21),  (scaledBoxSize * 21));
 
         g.setColor(Color.LIGHT_GRAY.darker());
-        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 20000) * scaledBoxSize / 1000), (int) (scaledBoxSize), (int) (scaledBoxSize * 41));
-        g.fillRect((int) ((highlighted.getX() - 20000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize * 41), (int) (scaledBoxSize));
+        g.fillRect( (highlighted.getX() * scaledBoxSize / 1000),  ((highlighted.getY() - 20000) * scaledBoxSize / 1000),  (scaledBoxSize),  (scaledBoxSize * 41));
+        g.fillRect( ((highlighted.getX() - 20000) * scaledBoxSize / 1000),  (highlighted.getY() * scaledBoxSize / 1000),  (scaledBoxSize * 41),  (scaledBoxSize));
 
         g.setColor(Color.DARK_GRAY.brighter());
-        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 5000) * scaledBoxSize / 1000), (int) (scaledBoxSize), (int) (scaledBoxSize * 11));
-        g.fillRect((int) ((highlighted.getX() - 5000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize* 11), (int) (scaledBoxSize));
+        g.fillRect( (highlighted.getX() * scaledBoxSize / 1000),  ((highlighted.getY() - 5000) * scaledBoxSize / 1000),  (scaledBoxSize),  (scaledBoxSize * 11));
+        g.fillRect( ((highlighted.getX() - 5000) * scaledBoxSize / 1000),  (highlighted.getY() * scaledBoxSize / 1000),  (scaledBoxSize* 11),  (scaledBoxSize));
 
 
         g.setColor(Color.DARK_GRAY);
-        g.fillRect((int) (highlighted.getX() * scaledBoxSize / 1000), (int) ((highlighted.getY() - 3000) * scaledBoxSize / 1000), (int) (scaledBoxSize), (int) (scaledBoxSize * 7));
-        g.fillRect((int) ((highlighted.getX() - 2000) * scaledBoxSize / 1000), (int) (highlighted.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize * 5), (int) (scaledBoxSize));
+        g.fillRect( (highlighted.getX() * scaledBoxSize / 1000),  ((highlighted.getY() - 3000) * scaledBoxSize / 1000),  (scaledBoxSize),  (scaledBoxSize * 7));
+        g.fillRect( ((highlighted.getX() - 2000) * scaledBoxSize / 1000),  (highlighted.getY() * scaledBoxSize / 1000),  (scaledBoxSize * 5),  (scaledBoxSize));
 
 
         for (Rectangle wall : walls) {
             if (selected.getObject() == wall) g.setColor(Color.GREEN);
             else g.setColor(Color.RED);
-            g.fillRect((int) (wall.x * scaledBoxSize / 1000), (int) (wall.y * scaledBoxSize / 1000), (int) (wall.width * scaledBoxSize / 1000), (int) (wall.height * scaledBoxSize / 1000));
+            g.fillRect( (wall.x * scaledBoxSize / 1000),  (wall.y * scaledBoxSize / 1000),  (wall.width * scaledBoxSize / 1000),  (wall.height * scaledBoxSize / 1000));
+        }
+        for (Rectangle hazard : hazards) {
+            if (selected.getObject() == hazard) g.setColor(Color.GREEN);
+            else g.setColor(Color.ORANGE);
+            g.fillRect((hazard.x * scaledBoxSize / 1000),  (hazard.y * scaledBoxSize / 1000),  (hazard.width * scaledBoxSize / 1000),  (hazard.height * scaledBoxSize / 1000));
         }
         for (Entrance entrance : entrances) {
             if (selected.getObject() == entrance) g.setColor(Color.GREEN);
@@ -115,20 +141,18 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
         g.setColor(Color.GREEN);
         if (p2 == null && p1 != null) {
-            g.fillRect((int) (p1.getX() * scaledBoxSize / 1000), (int) (p1.getY() * scaledBoxSize / 1000), (int) (scaledBoxSize), (int) (scaledBoxSize));
+            g.fillRect( (p1.getX() * scaledBoxSize / 1000),  (p1.getY() * scaledBoxSize / 1000),  (scaledBoxSize),  (scaledBoxSize));
         }
 
         g.setColor(Color.BLACK);
-//        System.out.printf("%f %d\n", boxSize, getWidth());
         if (boxSize <= 0) return;
         int last = 0;
         for (int i = 0; i < getWidth(); i += scaledBoxSize) {
-//            System.out.println((int) i - last);
-            last = (int) i;
-            g.drawLine((int) i, 0, (int) i, getHeight());
+            last =  i;
+            g.drawLine( i, 0,  i, getHeight());
         }
         for (int i = 0; i < getHeight(); i += scaledBoxSize) {
-            g.drawLine(0, (int) i, getWidth(), (int) i);
+            g.drawLine(0,  i, getWidth(),  i);
         }
     }
 
@@ -141,6 +165,12 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             if (wall.intersects(new Rectangle(p1.getX(), p1.getY(), 1000, 1000))) {
                 p1 = null;
                 return wall;
+            }
+        }
+        for (Rectangle hazard : hazards) {
+            if (hazard.intersects(new Rectangle(p1.getX(), p1.getY(), 1000, 1000))) {
+                p1 = null;
+                return hazard;
             }
         }
         for (Entrance entrance : entrances) {
@@ -186,10 +216,16 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             getItemSpawns().removeLast();
         } else if (stack.getLast() == 5) {
             getEnemySpawns().removeLast();
+        } else if (stack.getLast() == 6) {
+            getHazards().removeLast();
         }
         stack.pop();
         p1 = null;
         repaint();
+    }
+
+    public ArrayList<Rectangle> getHazards() {
+        return hazards;
     }
 
     public void delete() {
@@ -197,6 +233,8 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         else if (selected.getObject() instanceof PlayerSpawn) playerSpawns.remove((PlayerSpawn) selected.getObject());
         else if (selected.getObject() instanceof ItemSpawn) itemSpawns.remove((ItemSpawn) selected.getObject());
         else if (selected.getObject() instanceof EnemySpawn) enemySpawns.remove((EnemySpawn) selected.getObject());
+        else if (hazards.contains(selected.getObject())) hazards.remove((Rectangle) selected.getObject());
+
         else walls.remove((Rectangle) selected.getObject());
         stack.remove(selected.getObject());
         selected.reset();
@@ -282,6 +320,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         getPlayerSpawns().clear();
         getItemSpawns().clear();
         getEnemySpawns().clear();
+        getHazards().clear();
         getStack().clear();
         fileToSave = null;
         selected.reset();
@@ -300,12 +339,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void loadFiles() {
-        File storage = new File("src/Rooms/Set1");
-        dropDown = new JComboBox<>(Objects.requireNonNull(storage.listFiles()));
-        dropDown.setFocusable(false);
-        this.add(dropDown);
-        dropDown.setVisible(true);
-        dropDown.setLayout(null);
         dropDown.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -321,7 +354,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                         topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
 
                         walls.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
-                        stack.add(2);
                     }
                     int entranceNum = in.nextInt();
                     for (int i = 0; i < entranceNum; i++) {
@@ -350,6 +382,14 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                         int y=in.nextInt();
                         enemySpawns.add(new EnemySpawn(x,y));
                     }
+                    int hazardNum=in.nextInt();
+                    System.out.println(hazardNum);
+                    for (int i = 0; i < hazardNum; i++) {
+                        int x=in.nextInt();
+                        int y=in.nextInt();
+                        topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
+                        hazards.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
+                    }
                 } catch (FileNotFoundException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -361,7 +401,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int mouseX = (int) ((e.getX() / scaledBoxSize) * 1000), mouseY = (int) ((e.getY() / scaledBoxSize) * 1000);
+        int mouseX =  ((e.getX() / scaledBoxSize) * 1000), mouseY =  ((e.getY() / scaledBoxSize) * 1000);
         if (p1 == null) {
             p1 = new Vector2F(mouseX, mouseY);
             selected.setObject(returnSelected());
@@ -398,7 +438,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (selected.getObject() != null) {
-            selected.setLocation((int) (e.getX() / scaledBoxSize) * 1000, (int) (e.getY() / scaledBoxSize) * 1000);
+            selected.setLocation( (e.getX() / scaledBoxSize) * 1000,  (e.getY() / scaledBoxSize) * 1000);
             repaint();
         }
     }
@@ -409,7 +449,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     @Override
     public void mouseMoved(MouseEvent e) {
         if (boxSize == 0) return;
-        int mouseX = (int) (e.getX() / scaledBoxSize) * 1000, mouseY = (int) (e.getY() / scaledBoxSize) * 1000;
+        int mouseX =  (e.getX() / scaledBoxSize) * 1000, mouseY =  (e.getY() / scaledBoxSize) * 1000;
         highlighted = new Vector2F(mouseX, mouseY);
         repaint();
     }
