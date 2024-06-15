@@ -41,7 +41,7 @@ public class Camera {
         graphics = (Graphics2D) g;
         graphics.setStroke(new BasicStroke(1f));
         Rectangle screenSize = graphics.getClipBounds();
-        scaling = initialScaling * screenSize.getWidth() / (1280 / 2);
+        scaling = initialScaling * screenSize.getWidth() / (1280);
         if (!enabled) {
             renderHeight = 0;
             renderWidth = 0;

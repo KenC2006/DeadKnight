@@ -258,7 +258,6 @@ public class Room {
     }
 
     public void updateEnemies(ActionManager am) {
-        enemies.removeIf(Entity::getToDelete);
         if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             if (e.getToDelete()) {
@@ -269,6 +268,7 @@ public class Room {
                 e.attack(am);
             }
         }
+        enemies.removeIf(Entity::getToDelete);
     }
 
     public void closeEntrances() {
@@ -340,6 +340,10 @@ public class Room {
 
     public boolean quickIntersect(Room other) {
         return walls.quickIntersect(other.walls);
+    }
+
+    public boolean quickIntersect(Room other, boolean equality) {
+        return walls.quickIntersect(other.walls, equality);
     }
 
     public boolean intersects(Room other) {

@@ -102,8 +102,8 @@ public class Player extends Entity {
         }
 
         if (jumping) {
-            if (framesPassed - framesSinceStartedJumping < 10) {
-                setIntendedVY(-1 - (10 - (framesPassed - framesSinceStartedJumping)) * 300);
+            if (framesPassed - framesSinceStartedJumping < 20) {
+                setIntendedVY(-1 - ((20 - (framesPassed - framesSinceStartedJumping))) * 80);
             } else {
                 jumping = false;
             }

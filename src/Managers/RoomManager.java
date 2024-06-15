@@ -19,6 +19,7 @@ public class RoomManager {
     private Deque<Room> toGenerateNeighbours;
     private int renderDistance = 200000;
     private GameTimer teleportCooldown;
+    private int setNumber, maxRooms;
 
     public void generateLevel(Player p, int setNumber) {
         allRooms = new ArrayList<>();
@@ -28,6 +29,7 @@ public class RoomManager {
         enemyManager = new EnemyManager();
         teleportCooldown = new GameTimer(20);
 
+        this.setNumber = setNumber;
         loadRoomsFromFile(setNumber);
         generateRooms();
         setupRooms(p);
@@ -77,7 +79,7 @@ public class RoomManager {
         loadRoom(startingRoom);
 
         toGenerateNeighbours.add(startingRoom);
-        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 100) {
+        while (!toGenerateNeighbours.isEmpty() && (setNumber != 1 || allRooms.size() < 30)) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
 
@@ -101,22 +103,38 @@ public class RoomManager {
                 Room testRoom = new Room(newRoom);
                 if (testRoom.getRoomID() == r.getRoomID()) continue;
                 testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getConnection()));
+                int numberOfEntrances = testRoom.getEntrances().size();
                 for (Entrance connectingEntrance: testRoom.getEntrances()) {
                     if (!e.connects(connectingEntrance)) continue;
                     testRoom.centerAroundPointInRoom(connectingEntrance.getLocation());
 
                     boolean collides = false;
                     for (Room collsionTest: allRooms) {
-                        if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
-                            collides = true;
-                            break;
+                        if (setNumber == 1) {
+                            if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest)) {
+                                collides = true;
+                                break;
+                            }
+                        } else if (setNumber == 2) {
+                            if (testRoom.quickIntersect(collsionTest, true)) {
+                                collides = true;
+                                break;
+                            }
                         }
                     }
 
                     if (collides) continue;
-                    connectingEntrance.setConnected(true);
-                    compatibleRooms.add(testRoom);
-                    break;
+                    if (allRooms.size() < 30) {
+                        connectingEntrance.setConnected(true);
+                        compatibleRooms.add(testRoom);
+                        break;
+                    } else {
+                        if (Math.random() > 0.1 * (Math.pow(numberOfEntrances, 1 + allRooms.size() / 50.0))) {
+                            connectingEntrance.setConnected(true);
+                            compatibleRooms.add(testRoom);
+                            break;
+                        }
+                    }
                 }
             }
 

@@ -174,5 +174,15 @@ public class Hitbox {
     public boolean getEnabled() {
         return enabled;
     }
+
+    public boolean quickIntersect(Hitbox hitbox, boolean equality) {
+        if (!enabled || !hitbox.enabled) return false;
+        if (equality) {
+            return !(hitbox.getLeft() >= getRight() || hitbox.getRight() <= getLeft() || hitbox.getTop() >= getBottom() || hitbox.getBottom() <= getTop());
+        } else {
+            return !(hitbox.getLeft() > getRight() || hitbox.getRight() < getLeft() || hitbox.getTop() > getBottom() || hitbox.getBottom() < getTop());
+        }
+
+    }
 }
 
