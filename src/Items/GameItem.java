@@ -1,6 +1,7 @@
 package Items;
 
 import Entities.Direction;
+import Entities.Stats;
 import Managers.ActionManager;
 import Structure.HitboxGroup;
 import Structure.Hitbox;
@@ -11,7 +12,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public abstract class GameItem {
-    public abstract void activate(ActivationType dir, ActionManager ac);
+    public abstract boolean activate(ActivationType dir, ActionManager ac, Stats owner);
     public abstract void update();
     public abstract void draw(Camera c);
     private boolean toDelete;

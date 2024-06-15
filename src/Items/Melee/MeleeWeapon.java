@@ -2,6 +2,7 @@ package Items.Melee;
 
 import Entities.Enemy;
 import Entities.Entity;
+import Entities.Stats;
 import Items.ActivationType;
 import Items.Weapon;
 import Items.WeaponType;
@@ -75,19 +76,20 @@ public class MeleeWeapon extends Weapon {
         }
     }
 
-    public void doCollisionCheck(Entity e) {
+    public void doCollisionCheck(Entity attacker, Entity defender) {
+        if (!defender.getHitbox().getEnabled()) return;
         for (ActivationType t : hitboxes.keySet()) {
             Hitbox h = hitboxes.get(t);
-            if (e.getLastMovement().quickIntersect(h) && e.getLastMovement().intersects(h)) {
-                e.setColliding(true);
+            if (defender.getLastMovement().quickIntersect(h) && defender.getLastMovement().intersects(h)) {
+                defender.setColliding(true);
                 int kb = 0;
                 if (t == ActivationType.RIGHT) {
                     kb = 3000;
                 } else if (t == ActivationType.LEFT) {
                     kb = -3000;
                 }
-                e.setActualVX(kb);
-                e.changeHealth(-getDamagePerHit());
+                defender.setActualVX(kb);
+                defender.getStats().doDamage(Stats.calculateDamage(getDamagePerHit(), attacker.getStats(), defender.getStats()));
             }
 
         }
@@ -116,15 +118,16 @@ public class MeleeWeapon extends Weapon {
 
 
     @Override
-    public void activate(ActivationType dir, ActionManager ac) {
-        if (!(dir == ActivationType.LEFT || dir == ActivationType.RIGHT)) return;
+    public boolean activate(ActivationType dir, ActionManager ac, Stats owner) {
+        if (!(dir == ActivationType.LEFT || dir == ActivationType.RIGHT)) return false;
         if (swingCooldownTimer.isReady()) {
             swingCooldownTimer.reset();
             swingLengthTimer.reset();
             toggleHitbox(dir, true);
             lastSwingDirection = dir;
-
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -132,5 +135,10 @@ public class MeleeWeapon extends Weapon {
         if (swingLengthTimer.isReady()) {
             toggleHitbox(lastSwingDirection, false);
         }
+    }
+
+    @Override
+    public int processDamageEntity(Entity attacker, Entity defender) {
+        return 0;
     }
 }
