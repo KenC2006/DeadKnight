@@ -7,6 +7,7 @@ import Structure.Vector2F;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Vector;
 
 public class ItemPickup extends Entity {
     public enum Type{INTELLIGENCE, MAX_HEALTH, HEALTH, MAX_MANA, MANA}
@@ -29,6 +30,14 @@ public class ItemPickup extends Entity {
     @Override
     public void updateValues() {
         super.updateValues();
+    }
+
+    public void updateValues(Player p) {
+        super.updateValues();
+        Vector2F dist = new Vector2F(p.getCenterX() - getCenterX(), p.getCenterY() - getCenterY());
+        dist = dist.normalize().multiply(Math.min(1000, 4000000.0 / dist.getLength()));
+        setIntendedVX(dist.getX());
+        setIntendedVY(dist.getY());
     }
 
     public void setCollidingWithPlayer(boolean val) {

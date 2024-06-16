@@ -68,7 +68,7 @@ public class Inventory {
         return primarySlot.get(selectedPrimary);
     }
 
-    public void usePrimary(ActivationType dir, ActionManager ac, Stats ownerStats) {
+    public void usePrimary(ActivationType dir, ActionManager ac, Entity ownerStats) {
         if (primarySlot.isEmpty()) return;
         primarySlot.get(selectedPrimary).activate(dir, ac, ownerStats);
         if (primarySlot.get(selectedPrimary).getToDelete()) {
@@ -90,7 +90,7 @@ public class Inventory {
     }
 
 
-    public void useSecondary(ActivationType dir, ActionManager ac, Stats ownerStats) {
+    public void useSecondary(ActivationType dir, ActionManager ac, Entity ownerStats) {
         if (secondarySlot.isEmpty()) return;
         secondarySlot.get(selectedSecondary).activate(dir, ac, ownerStats);
         if (secondarySlot.get(selectedSecondary).getToDelete()) {

@@ -32,6 +32,7 @@ public class RoomManager {
         this.setNumber = setNumber;
         loadRoomsFromFile(setNumber);
         generateRooms();
+        if (allRooms.size() < 20) generateLevel(p, setNumber);
         setupRooms(p);
     }
 
@@ -116,7 +117,7 @@ public class RoomManager {
 //                            break;
 //                        }
                         if (setNumber == 1) {
-                            if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest)) {
+                            if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
                                 collides = true;
                                 break;
                             }
@@ -140,7 +141,7 @@ public class RoomManager {
                             compatibleRooms.add(testRoom);
                             break;
                         } else {
-                            if (Math.random() > 0.1 * (Math.pow(numberOfEntrances, 1 + allRooms.size() / 50.0))) {
+                            if (Math.random() > (Math.pow(numberOfEntrances, 1 + allRooms.size() / 15.0)) * 0.01) {
                                 connectingEntrance.setConnected(true);
                                 compatibleRooms.add(testRoom);
                                 break;

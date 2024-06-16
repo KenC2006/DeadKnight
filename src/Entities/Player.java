@@ -30,6 +30,7 @@ public class Player extends Entity {
     private int killStreak=0;
     private final ArrayList<Integer> controls = new ArrayList<>();
     private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
+    private Vector2F mouseLocation = new Vector2F();
 
     public Player(int x, int y){
         super(x, y, 1000, 2000);
@@ -129,12 +130,16 @@ public class Player extends Entity {
             playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() - 1);
         }
 
+        if (manager.isMousePressed()) {
+            playerInventory.usePrimary(ActivationType.UP, manager, this);
+        }
+
         if (manager.getPressed(controls.get(5))) {
-            playerInventory.usePrimary(ActivationType.RIGHT, manager, getStats());
+            playerInventory.usePrimary(ActivationType.RIGHT, manager, this);
         }
 
         if (manager.getPressed(controls.get(6))) {
-            playerInventory.usePrimary(ActivationType.LEFT, manager, getStats());
+            playerInventory.usePrimary(ActivationType.LEFT, manager, this);
         }
 
         if (manager.getPressed(controls.get(7)) && dashCooldownTimer.isReady()) {
@@ -244,5 +249,13 @@ public class Player extends Entity {
 
     public int getKillStreak() {
         return killStreak;
+    }
+
+    public Vector2F getMouseLocation() {
+        return mouseLocation;
+    }
+
+    public void setMouseLocation(Vector2F mouseLocation) {
+        this.mouseLocation = mouseLocation;
     }
 }

@@ -138,10 +138,10 @@ public class ShortMeleeEnemy extends Enemy {
 //            stopXMovement();
 //            System.out.println(getPlayerPos() + " " + getPos() + " " + getPlayerPos().getYDistance(getPos()));
             if (getPlayerPos().getXDistance(getCenterVector()) > 0) {
-                sword.activate(ActivationType.LEFT, am, getStats());
+                sword.activate(ActivationType.LEFT, am, this);
             }
             else {
-                sword.activate(ActivationType.RIGHT, am, getStats());
+                sword.activate(ActivationType.RIGHT, am, this);
             }
         }
         sword.update();
