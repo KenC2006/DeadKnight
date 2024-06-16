@@ -35,7 +35,7 @@ public class Room {
     private ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private BufferedImage background;
-    private int roomID;
+    private int roomID, setNumber;
 
     private EnemyManager enemyManager = new EnemyManager();
 
@@ -65,15 +65,20 @@ public class Room {
         roomID = copy.roomID;
         visited = copy.visited;
         background = copy.background;
+        setNumber = copy.setNumber;
 
     }
 
-    public Room(File file, int number) throws IOException {
+    public Room(File file, int setNumber, int fileNumber) throws IOException {
         numberOfUniqueRooms++;
+        this.setNumber = setNumber;
         Scanner in = new Scanner(file);
-        System.out.println(number);
-        if (number == 12) {
-            background = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/background" + number + ".png")));
+        System.out.println(fileNumber);
+        try {
+            background = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/set" + setNumber + "/background" + fileNumber + ".png")));
+
+        } catch (IOException | NullPointerException e) {
+            System.out.println("Missing background image for room (" + setNumber + ":" + fileNumber + ")");
         }
 
         int nHiboxes = Integer.parseInt(in.nextLine());
@@ -83,7 +88,7 @@ public class Room {
             int y1 = Integer.parseInt(temp[1]);
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
-            walls.addHitbox(new Hitbox(x1, y1, x2, y2, Color.ORANGE));
+            walls.addHitbox(new Hitbox(x1, y1, x2, y2, Color.RED));
         }
 
         int nEntrances = Integer.parseInt(in.nextLine());
@@ -184,7 +189,8 @@ public class Room {
     }
 
     public void drawRoom(Camera c) {
-        if (c.isMapCamera()) walls.draw(c);
+//        if (c.isMapCamera()) walls.draw(c);
+        walls.draw(c);
         if (background != null) {
             c.drawImage(background, walls.getBoundingBox().getTopLeft(), walls.getBoundingBox().getBottomRight());
         }
@@ -244,7 +250,7 @@ public class Room {
         if (!isPlayerInRoom) return;
 
         if (enemies.isEmpty() != cleared) {
-            walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.ORANGE);
+            walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
             cleared = enemies.isEmpty();
         }
 
@@ -254,7 +260,6 @@ public class Room {
     }
 
     public void updateEnemies(ActionManager am) {
-        enemies.removeIf(Entity::getToDelete);
         if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             if (e.getToDelete()) {
@@ -265,9 +270,11 @@ public class Room {
             }
             e.attack(am);
         }
+        enemies.removeIf(Entity::getToDelete);
     }
 
     public void closeEntrances() {
+        if (setNumber == 2) return;
         for (Entrance e: entrances) {
             if (e.isConnected()) continue;
             e.getHitbox().setColour(Color.GREEN);
@@ -336,6 +343,10 @@ public class Room {
 
     public boolean quickIntersect(Room other) {
         return walls.quickIntersect(other.walls);
+    }
+
+    public boolean quickIntersect(Room other, boolean equality) {
+        return walls.quickIntersect(other.walls, equality);
     }
 
     public boolean intersects(Room other) {

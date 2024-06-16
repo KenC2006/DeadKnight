@@ -62,8 +62,16 @@ public class HitboxGroup {
         return boundingBox.quickIntersect(other);
     }
 
+    public boolean quickIntersect(Hitbox other, boolean equality) {
+        return boundingBox.quickIntersect(other, equality);
+    }
+
     public boolean quickIntersect(HitboxGroup other) {
         return boundingBox.quickIntersect(other.boundingBox);
+    }
+
+    public boolean quickIntersect(HitboxGroup other, boolean equality) {
+        return boundingBox.quickIntersect(other.boundingBox, equality);
     }
 
     public boolean intersects(HitboxGroup group) {

@@ -9,48 +9,34 @@ import java.awt.event.KeyEvent;
 public class EntityManager {
     private final Player player;
     private RoomManager roomManager;
+    private int levelNumber = 2; // CHANGE SET NUMBER
 
     public EntityManager() {
         player = new Player(-1000, -6000);
 
         roomManager = new RoomManager();
-        roomManager.generateLevel(player, 1);
+        roomManager.generateLevel(player, levelNumber);
     }
 
     public void updateKeyPresses(ActionManager manager) {
         player.updateKeyPresses(manager);
         if (manager.getPressed(KeyEvent.VK_L)) {
-            roomManager.generateLevel(player, 1);
+            roomManager.generateLevel(player, levelNumber);
         }
     }
 
-    public void update(ActionManager manager) {
-        roomManager.update(player);
+    public void update(ActionManager actionManager) {
+        roomManager.updateValues(player, actionManager);
 
         player.updateValues();
 
-        for (Room r: roomManager.getLoadedRooms()) {
-            r.updateValues(player);
-            r.updateEnemies(manager);
-            roomManager.getEnemyManager().updateEnemyRoomLocations(roomManager.getLoadedRooms(), r);
-        }
-
         player.resolveRoomCollisions(roomManager.getLoadedRooms());
 
-        for (Room r: roomManager.getLoadedRooms()) {
-            r.resolveRoomCollisions(roomManager.getLoadedRooms());
-        }
-
-        for (Room r: roomManager.getLoadedRooms()) {
-            r.resolvePlayerCollisions(player);
-        }
-
+        roomManager.resolveCollisions(player);
 
         player.updateData();
 
-        for (Room r: roomManager.getLoadedRooms()) {
-            r.updateData();
-        }
+        roomManager.updateData();
     }
 
     public void followPlayer(Camera c) {

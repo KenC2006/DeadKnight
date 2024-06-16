@@ -28,25 +28,18 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final Stack<Integer> stack = new Stack<>();
     private Vector2F topLeftPoint = null;
     private final RoomObject selected = new RoomObject();
-    private JComboBox<File> dropDown;
-    private JComboBox<File> graphicPick;
+    private final JComboBox<File> dropDown;
     private File fileToSave;
 
-    public Grid() {
+    public Grid(File roomStorage) {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
-        dropDown = new JComboBox<>(Objects.requireNonNull(new File("src/Rooms/Set1").listFiles()));
+        dropDown = new JComboBox<>(Objects.requireNonNull(roomStorage.listFiles()));
         dropDown.setFocusable(false);
         this.add(dropDown);
         dropDown.setVisible(true);
         dropDown.setLayout(null);
-
-        graphicPick = new JComboBox<>(Objects.requireNonNull(new File("graphics").listFiles()));
-        graphicPick.setFocusable(false);
-        this.add(graphicPick);
-        graphicPick.setVisible(true);
-        graphicPick.setLayout(null);
 
 
         loadFiles();
@@ -87,9 +80,13 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.LIGHT_GRAY.brighter());
+        g.setColor(Color.LIGHT_GRAY.brighter().brighter());
         g.fillRect( (highlighted.getX() * scaledBoxSize / 1000), 0,  (scaledBoxSize), getHeight());
         g.fillRect(0,  (highlighted.getY() * scaledBoxSize / 1000), getWidth(),  (scaledBoxSize));
+
+        g.setColor(Color.PINK);
+        g.fillRect( ((highlighted.getX() - 15000) * scaledBoxSize / 1000),  ((highlighted.getY() - 14000) * scaledBoxSize / 1000),  (scaledBoxSize * 31),  (scaledBoxSize * 31));
+
 
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect( ((highlighted.getX() - 10000) * scaledBoxSize / 1000),  ((highlighted.getY() - 10000) * scaledBoxSize / 1000),  (scaledBoxSize * 21),  (scaledBoxSize * 21));
@@ -146,9 +143,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
         g.setColor(Color.BLACK);
         if (boxSize <= 0) return;
-        int last = 0;
         for (int i = 0; i < getWidth(); i += scaledBoxSize) {
-            last =  i;
             g.drawLine( i, 0,  i, getHeight());
         }
         for (int i = 0; i < getHeight(); i += scaledBoxSize) {

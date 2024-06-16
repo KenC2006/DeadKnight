@@ -1,7 +1,7 @@
 package Managers;
 
 import Entities.Player;
-import Entities.Enemy;
+import Structure.HitboxGroup;
 import Universal.Camera;
 import RoomEditor.Entrance;
 import Structure.Room;
@@ -9,16 +9,17 @@ import Structure.Vector2F;
 import Universal.GameTimer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
 public class RoomManager {
+    private HitboxGroup mapBoundingbox = new HitboxGroup();
     private ArrayList<Room> allRooms, loadedRooms, possibleBiomeRooms;
     private EnemyManager enemyManager;
     private Deque<Room> toGenerateNeighbours;
     private int renderDistance = 200000;
     private GameTimer teleportCooldown;
+    private int setNumber, maxRooms;
 
     public void generateLevel(Player p, int setNumber) {
         allRooms = new ArrayList<>();
@@ -28,6 +29,7 @@ public class RoomManager {
         enemyManager = new EnemyManager();
         teleportCooldown = new GameTimer(20);
 
+        this.setNumber = setNumber;
         loadRoomsFromFile(setNumber);
         generateRooms();
         setupRooms(p);
@@ -63,7 +65,13 @@ public class RoomManager {
 
     public void generateRooms() {
         if (possibleBiomeRooms.isEmpty()) return;
-        Room startingRoom = new Room(possibleBiomeRooms.get((int) (Math.random() * possibleBiomeRooms.size())));
+        mapBoundingbox = new HitboxGroup();
+        ArrayList<Room> roomsWithPlayerSpawn =  new ArrayList<>();
+        for (Room startingRoom: possibleBiomeRooms) {
+            if (startingRoom.getPlayerSpawns().isEmpty()) continue;
+            roomsWithPlayerSpawn.add(new Room(startingRoom));
+        }
+        Room startingRoom = new Room(roomsWithPlayerSpawn.get((int) (Math.random() * roomsWithPlayerSpawn.size())));
 //        Room startingRoom = new Room(possibleBiomeRooms.get(8)); // TODO add player spawn locations to prevent spawning inside of walls
         Vector2F center = startingRoom.getCenterRelativeToRoom();
         startingRoom.centerAroundPointInRoom(center);
@@ -71,7 +79,8 @@ public class RoomManager {
         loadRoom(startingRoom);
 
         toGenerateNeighbours.add(startingRoom);
-        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 100) {
+        while (!toGenerateNeighbours.isEmpty() && (setNumber != 1 || allRooms.size() < 30)) {
+//        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 30) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
 
@@ -95,22 +104,49 @@ public class RoomManager {
                 Room testRoom = new Room(newRoom);
                 if (testRoom.getRoomID() == r.getRoomID()) continue;
                 testRoom.setDrawLocation(r.getDrawLocation().getTranslated(r.getCenterLocation().getNegative()).getTranslated(e.getConnection()));
+                int numberOfEntrances = testRoom.getEntrances().size();
                 for (Entrance connectingEntrance: testRoom.getEntrances()) {
                     if (!e.connects(connectingEntrance)) continue;
                     testRoom.centerAroundPointInRoom(connectingEntrance.getLocation());
 
                     boolean collides = false;
                     for (Room collsionTest: allRooms) {
-                        if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
-                            collides = true;
-                            break;
+//                        if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
+//                            collides = true;
+//                            break;
+//                        }
+                        if (setNumber == 1) {
+                            if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest)) {
+                                collides = true;
+                                break;
+                            }
+                        } else if (setNumber == 2) {
+                            if (testRoom.quickIntersect(collsionTest, true)) {
+                                collides = true;
+                                break;
+                            }
                         }
                     }
 
                     if (collides) continue;
-                    connectingEntrance.setConnected(true);
-                    compatibleRooms.add(testRoom);
-                    break;
+                    if (setNumber == 1) {
+                        connectingEntrance.setConnected(true);
+                        compatibleRooms.add(testRoom);
+                        break;
+
+                    } else if (setNumber == 2) {
+                        if (allRooms.size() < 30) {
+                            connectingEntrance.setConnected(true);
+                            compatibleRooms.add(testRoom);
+                            break;
+                        } else {
+                            if (Math.random() > 0.1 * (Math.pow(numberOfEntrances, 1 + allRooms.size() / 50.0))) {
+                                connectingEntrance.setConnected(true);
+                                compatibleRooms.add(testRoom);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -134,7 +170,7 @@ public class RoomManager {
     public void loadRoomsFromFile(int setNumber) {
         for (File f: Objects.requireNonNull(new File("src/Rooms/Set" + setNumber).listFiles())) {
             try {
-                possibleBiomeRooms.add(new Room(f, Integer.parseInt(f.getName().substring(4, f.getName().length() - 4))));
+                possibleBiomeRooms.add(new Room(f, setNumber, Integer.parseInt(f.getName().substring(4, f.getName().length() - 4))));
             } catch (IOException e) {
                 System.out.println("Unable to load file " + f.getName());
                 System.out.println(e);
@@ -147,10 +183,11 @@ public class RoomManager {
     }
 
     private void addRoom(Room r) {
+        mapBoundingbox.addHitbox(r.getHitbox().getBoundingBox());
         allRooms.add(r);
     }
 
-    public void update(Player player) {
+    public void updateValues(Player player, ActionManager actionManager) {
         ArrayList<Room> nextLoaded = new ArrayList<>();
         for (Room r: allRooms) {
             if (Math.abs(r.getAbsoluteCenter().getManhattanDistance(player.getCenterVector())) < renderDistance) {
@@ -161,6 +198,26 @@ public class RoomManager {
 
         loadedRooms.clear();
         loadedRooms.addAll(nextLoaded);
+
+        for (Room r: loadedRooms) {
+            r.updateValues(player);
+            r.updateEnemies(actionManager);
+            enemyManager.updateEnemyRoomLocations(loadedRooms, r);
+        }
+
+    }
+
+    public void resolveCollisions(Player p) {
+        for (Room r: loadedRooms) {
+            r.resolveRoomCollisions(loadedRooms);
+            r.resolvePlayerCollisions(p);
+        }
+    }
+
+    public void updateData() {
+        for (Room r: loadedRooms) {
+            r.updateData();
+        }
     }
 
     public EnemyManager getEnemyManager() {
