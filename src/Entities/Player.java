@@ -32,7 +32,7 @@ public class Player extends Entity {
     private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
 
     public Player(int x, int y){
-        super(x, y, 2000, 5000);
+        super(x, y, 1000, 2000);
         playerInventory = new Inventory();
         playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
@@ -102,8 +102,8 @@ public class Player extends Entity {
         }
 
         if (jumping) {
-            if (framesPassed - framesSinceStartedJumping < 10) {
-                setIntendedVY(-1 - (10 - (framesPassed - framesSinceStartedJumping)) * 300);
+            if (framesPassed - framesSinceStartedJumping < 20) {
+                setIntendedVY(-1 - ((20 - (framesPassed - framesSinceStartedJumping))) * 80);
             } else {
                 jumping = false;
             }

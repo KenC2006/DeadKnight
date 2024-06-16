@@ -167,7 +167,7 @@ public class Entity {
         velocity.translateInPlace(constantVelocity.getTranslated(velocity.getNegative()).multiply(0.3));
 
         // Gravity
-        if (affectedByGravity) constantVelocity.changeY(100);
+        if (affectedByGravity) constantVelocity.changeY(50);
     }
 
     public HitboxGroup getLastMovement() {
