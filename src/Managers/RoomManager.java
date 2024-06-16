@@ -80,6 +80,7 @@ public class RoomManager {
 
         toGenerateNeighbours.add(startingRoom);
         while (!toGenerateNeighbours.isEmpty() && (setNumber != 1 || allRooms.size() < 30)) {
+//        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 30) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
 
@@ -110,6 +111,10 @@ public class RoomManager {
 
                     boolean collides = false;
                     for (Room collsionTest: allRooms) {
+//                        if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
+//                            collides = true;
+//                            break;
+//                        }
                         if (setNumber == 1) {
                             if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest)) {
                                 collides = true;
@@ -124,15 +129,22 @@ public class RoomManager {
                     }
 
                     if (collides) continue;
-                    if (allRooms.size() < 30) {
+                    if (setNumber == 1) {
                         connectingEntrance.setConnected(true);
                         compatibleRooms.add(testRoom);
                         break;
-                    } else {
-                        if (Math.random() > 0.1 * (Math.pow(numberOfEntrances, 1 + allRooms.size() / 50.0))) {
+
+                    } else if (setNumber == 2) {
+                        if (allRooms.size() < 30) {
                             connectingEntrance.setConnected(true);
                             compatibleRooms.add(testRoom);
                             break;
+                        } else {
+                            if (Math.random() > 0.1 * (Math.pow(numberOfEntrances, 1 + allRooms.size() / 50.0))) {
+                                connectingEntrance.setConnected(true);
+                                compatibleRooms.add(testRoom);
+                                break;
+                            }
                         }
                     }
                 }

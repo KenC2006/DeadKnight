@@ -35,7 +35,7 @@ public class Room {
     private ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private BufferedImage background;
-    private int roomID;
+    private int roomID, setNumber;
 
     private EnemyManager enemyManager = new EnemyManager();
 
@@ -65,11 +65,13 @@ public class Room {
         roomID = copy.roomID;
         visited = copy.visited;
         background = copy.background;
+        setNumber = copy.setNumber;
 
     }
 
     public Room(File file, int setNumber, int fileNumber) throws IOException {
         numberOfUniqueRooms++;
+        this.setNumber = setNumber;
         Scanner in = new Scanner(file);
         System.out.println(fileNumber);
         try {
@@ -272,6 +274,7 @@ public class Room {
     }
 
     public void closeEntrances() {
+        if (setNumber == 2) return;
         for (Entrance e: entrances) {
             if (e.isConnected()) continue;
             e.getHitbox().setColour(Color.GREEN);

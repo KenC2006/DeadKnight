@@ -20,7 +20,7 @@ public class FlyingEnemy extends Enemy{
     private final static int defaultWidth = 2000;
 
     private int runRadius = 10000;
-    private GameTimer gt = new GameTimer(5);
+    private GameTimer gt = new GameTimer(20);
 
     public FlyingEnemy(int x, int y, int health) {
         super(x, y, 2000, 2000, health, 25000000);
@@ -38,7 +38,7 @@ public class FlyingEnemy extends Enemy{
 
         double vectorLength = Math.sqrt(velocity.getLength());
         if (vectorLength == 0) vectorLength = 1;
-        velocity = new Vector2F((int)((velocity.getX()/Math.sqrt(vectorLength)) * 5), (int)((velocity.getY()/Math.sqrt(vectorLength)) * 5));
+        velocity = new Vector2F((int)((velocity.getX()/Math.sqrt(vectorLength)) * 3), (int)((velocity.getY()/Math.sqrt(vectorLength)) * 3));
         stopXMovement();
         stopYMovement();
         if (getPlayerPos().getEuclideanDistance(getCenterVector()) > 300000000) {

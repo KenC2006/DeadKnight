@@ -28,8 +28,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final Stack<Integer> stack = new Stack<>();
     private Vector2F topLeftPoint = null;
     private final RoomObject selected = new RoomObject();
-    private JComboBox<File> dropDown;
-    private JComboBox<File> graphicPick;
+    private final JComboBox<File> dropDown;
     private File fileToSave;
 
     public Grid(File roomStorage) {
@@ -41,12 +40,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         this.add(dropDown);
         dropDown.setVisible(true);
         dropDown.setLayout(null);
-
-        graphicPick = new JComboBox<>(Objects.requireNonNull(new File("graphics").listFiles()));
-        graphicPick.setFocusable(false);
-        this.add(graphicPick);
-        graphicPick.setVisible(true);
-        graphicPick.setLayout(null);
 
 
         loadFiles();
@@ -150,9 +143,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
         g.setColor(Color.BLACK);
         if (boxSize <= 0) return;
-        int last = 0;
         for (int i = 0; i < getWidth(); i += scaledBoxSize) {
-            last =  i;
             g.drawLine( i, 0,  i, getHeight());
         }
         for (int i = 0; i < getHeight(); i += scaledBoxSize) {
