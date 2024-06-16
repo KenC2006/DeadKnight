@@ -1,5 +1,6 @@
 package Items.Ranged;
 
+import Entities.Entity;
 import Entities.Projectile;
 import Entities.Stats;
 import Items.ActivationType;
@@ -14,10 +15,10 @@ public class BasicTurret extends RangedWeapon {
     }
 
     @Override
-    public boolean activate(ActivationType dir, ActionManager ac, Stats owner) {
-        if (owner.getMana() < 5) return false;
+    public boolean activate(ActivationType dir, ActionManager ac, Entity owner) {
+        if (owner.getStats().getMana() < 5) return false;
         if (!super.activate(dir, ac, owner)) return false;
-        owner.useMana(5);
+        owner.getStats().useMana(5);
         return false;
     }
 }

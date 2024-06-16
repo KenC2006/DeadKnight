@@ -98,8 +98,8 @@ public class Vector2F implements Comparable<Vector2F> {
         return new Vector2F((int) (getX() * factor), (int) (getY() * factor));
     }
 
-    public int getLength() {
-        return getX() * getX() + getY() * getY();
+    public long getLength() {
+        return (long) getX() * getX() + (long) getY() * getY();
     }
 
     public long dotProduct(Vector2F p) {

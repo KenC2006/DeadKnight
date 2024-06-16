@@ -286,6 +286,10 @@ public class Entity {
         return constantVelocity.getY();
     }
 
+    public Vector2F getIntendedVelocity() {
+        return new Vector2F(constantVelocity);
+    }
+
     public void changeVX(int dx) {
         velocity.setX(getX() + dx);
     }

@@ -16,7 +16,7 @@ public abstract class Enemy extends Entity {
     public abstract void attack(ActionManager am);
 
     private final static int defaultWalkSpeed = 50;
-    private Vector2F playerPos = new Vector2F();
+    private Vector2F playerPos = new Vector2F(), spawnLocation;
 
     private int state, prevState;
     private int id;
@@ -29,6 +29,7 @@ public abstract class Enemy extends Entity {
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
         super(x, y, width, height);
         getStats().changeBaseHealth(health);
+        spawnLocation = new Vector2F(x, y);
 
         this.sightRadius = sightRadius;
         id = enemyCount;
@@ -42,7 +43,7 @@ public abstract class Enemy extends Entity {
         enemyPos = new Vector2F(copy.enemyPos);
         sightRadius = copy.sightRadius;
         setDefaultColour(Color.ORANGE);
-
+        spawnLocation = copy.spawnLocation;
 
     }
 
@@ -87,6 +88,10 @@ public abstract class Enemy extends Entity {
         super.updateValues();
         if (getStats().getHealth() <= 0) {
             markToDelete(true);
+        }
+
+        if (Math.abs(getLocation().getX()) > 1000000000 || Math.abs(getLocation().getY()) > 1000000000) {
+            setLocation(spawnLocation);
         }
     }
 

@@ -65,6 +65,8 @@ public class CameraManager {
             teleportCooldown.reset();
             e.getPlayer().setLocation(mapCamera.getTranslatedMouseCoords());
         }
+
+        player.setMouseLocation(gameCamera.getTranslatedMouseCoords());
     }
 
     public boolean isMapOpen() {

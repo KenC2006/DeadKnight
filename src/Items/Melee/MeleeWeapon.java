@@ -118,7 +118,7 @@ public class MeleeWeapon extends Weapon {
 
 
     @Override
-    public boolean activate(ActivationType dir, ActionManager ac, Stats owner) {
+    public boolean activate(ActivationType dir, ActionManager ac, Entity owner) {
         if (!(dir == ActivationType.LEFT || dir == ActivationType.RIGHT)) return false;
         if (swingCooldownTimer.isReady()) {
             swingCooldownTimer.reset();

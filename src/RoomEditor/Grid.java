@@ -62,6 +62,31 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
     }
 
+    public void shift(Vector2F change) {
+        for (Rectangle wall : walls) {
+            wall.setLocation((int) (wall.getX() + change.getX()), (int) (wall.getY() + change.getY()));
+        }
+        for (Rectangle hazard : hazards) {
+            hazard.setLocation((int) (hazard.getX() + change.getX()), (int) (hazard.getY() + change.getY()));
+        }
+        for (Entrance entrance : entrances) {
+            entrance.setRelativeLocation(entrance.getLocation().getTranslated(change));
+        }
+        for (PlayerSpawn playerSpawn : playerSpawns) {
+            playerSpawn.translateInPlace(change);
+        }
+        for (ItemSpawn itemSpawn : itemSpawns) {
+            itemSpawn.translateInPlace(change);
+
+        }
+        for (EnemySpawn enemySpawn : enemySpawns) {
+            enemySpawn.translateInPlace(change);
+
+        }
+        updateTopLeft();
+        repaint();
+    }
+
     public ArrayList<Rectangle> getWalls() {
         return walls;
     }
@@ -216,6 +241,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
         stack.pop();
         p1 = null;
+        updateTopLeft();
         repaint();
     }
 
@@ -233,6 +259,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         else walls.remove((Rectangle) selected.getObject());
         stack.remove(selected.getObject());
         selected.reset();
+        updateTopLeft();
     }
 
     public RoomObject getSelected() {
@@ -331,6 +358,19 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public JComboBox<File> getDropDown() {
         return dropDown;
+    }
+
+    private void updateTopLeft() {
+        topLeftPoint = null;
+        for (Rectangle wall: walls) {
+            topLeftPoint = new Vector2F((int) wall.getX(), (int) wall.getY()).getMin(topLeftPoint);
+        }
+        for (Entrance e: entrances) {
+            topLeftPoint = e.getLocation().getMin(topLeftPoint);
+        }
+        for (Rectangle h: hazards) {
+            topLeftPoint = new Vector2F((int) h.getX(), (int) h.getY()).getMin(topLeftPoint);
+        }
     }
 
     public void loadFiles() {
