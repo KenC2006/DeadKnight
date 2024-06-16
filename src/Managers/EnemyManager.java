@@ -1,5 +1,6 @@
 package Managers;
 
+import Entities.Enemies.FlyingBossEnemy;
 import Entities.Enemy;
 import Entities.Enemies.FlyingEnemy;
 import Entities.Enemies.ShortMeleeEnemy;
@@ -32,6 +33,7 @@ public class EnemyManager {
         if (e instanceof ShortMeleeEnemy) return new ShortMeleeEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         if (e instanceof FlyingEnemy) return new FlyingEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         if (e instanceof TeleportEnemy) return new TeleportEnemy(e.getX(), e.getY(), e.getStats().getHealth());
+        if (e instanceof FlyingBossEnemy) return new FlyingBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         System.out.println("smh tyring to copy an enemy not added to copy function");
         return null;
     }

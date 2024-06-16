@@ -35,9 +35,8 @@ public class FlyingEnemy extends Enemy {
         moveTimer.reset();
         velocity = getPlayerPos().getTranslated(new Vector2F(getX(), getY()).getNegative());
 
-        double vectorLength = Math.sqrt(velocity.getLength());
-        if (vectorLength == 0) vectorLength = 1;
-        velocity = new Vector2F((int)((velocity.getX()/Math.sqrt(vectorLength)) * 5), (int)((velocity.getY()/Math.sqrt(vectorLength)) * 5));
+        velocity.normalize();
+        velocity = new Vector2F(velocity.getX()/20, velocity.getY()/20);
         stopXMovement();
         stopYMovement();
         if (getPlayerPos().getEuclideanDistance(getCenterVector()) > 300000000) {
