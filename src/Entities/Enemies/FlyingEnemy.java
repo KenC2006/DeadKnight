@@ -19,7 +19,7 @@ public class FlyingEnemy extends Enemy {
     private Vector2F velocity = new Vector2F();
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
     private GameTimer moveTimer = new GameTimer(5);
-    private GameTimer shootTimer = new GameTimer(30);
+    private GameTimer shootTimer = new GameTimer(5);
 
     public FlyingEnemy(int x, int y, int health) {
         super(x, y, 2000, 2000, health, 25000000);
@@ -83,6 +83,7 @@ public class FlyingEnemy extends Enemy {
         for (Projectile p: projectiles) {
             if (player.collidesWith(p)) {
                 p.processEntityHit(this, player);
+                player.getStats().doDamage(5);
             }
         }
     }
