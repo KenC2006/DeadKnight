@@ -28,6 +28,8 @@ public class PlayerUI extends UI {
 
     public PlayerUI(Player player) throws IOException {
         this.player = player;
+        currentPlayerHealth=player.getStats().getHealth();
+        currentPlayerMana = player.getStats().getMana();
         intelligenceIcon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/intelligence.png")));
         killStreakIcon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/skull.png")));
         intelligenceIcon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/intelligence.png")));
@@ -63,14 +65,14 @@ public class PlayerUI extends UI {
     }
 
     private void drawPlayerHP(Graphics2D g) {
+
         if (player.getStats().getHealth()<currentPlayerHealth && barWidth>0){
             double fill1=((double)currentPlayerHealth/player.getStats().getMaxHealth());
             double fill2=((double)player.getStats().getHealth()/player.getStats().getMaxHealth());
             hpFill=(int)((fill1-fill2)*barWidth)+hpFill;
             currentPlayerHealth=player.getStats().getHealth();
-
         }
-        if (hpFill>0) hpFill--;
+        if (hpFill>0) hpFill-=0.5;
         drawBar(player.getStats().getHealth(), player.getStats().getMaxHealth(), Color.GREEN, g,hpFill);
     }
 
@@ -81,7 +83,7 @@ public class PlayerUI extends UI {
             manaFill=(int)((fill1-fill2)*barWidth)+hpFill;
             currentPlayerMana=player.getStats().getMana();
         }
-        if (manaFill > 0) manaFill -= 2;
+        if (manaFill > 0) manaFill -= 0.5;
         drawBar(player.getStats().getMana(), player.getStats().getMaxMana(), Color.CYAN, g, manaFill);
     }
 
