@@ -1,13 +1,10 @@
 package Managers;
 
-import Entities.FlyingEnemy;
 import Entities.Player;
-import Entities.ShortMeleeEnemy;
 import Structure.Room;
 import Universal.Camera;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 public class EntityManager {
     private final Player player;

@@ -262,8 +262,8 @@ public class Room {
                 newItem.setActualVX((int) (Math.random() * 4000 - 2000));
                 newItem.setActualVY((int) (-2000));
                 addItemPickup(newItem);
-                e.attack(am);
             }
+            e.attack(am);
         }
     }
 

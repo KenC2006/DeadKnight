@@ -17,8 +17,9 @@ public class MachineGun extends RangedWeapon {
     @Override
     public boolean activate(ActivationType dir, ActionManager ac, Stats owner) {
         if (owner.getMana() < 1) return false;
+        if (owner.getMana() < 50) System.out.println("hi2");
         if (!super.activate(dir, ac, owner)) return false;
         owner.useMana(1);
-        return false;
+        return true;
     }
 }

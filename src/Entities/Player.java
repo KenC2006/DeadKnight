@@ -245,4 +245,8 @@ public class Player extends Entity {
     public int getKillStreak() {
         return killStreak;
     }
+
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
+    }
 }

@@ -1,13 +1,13 @@
-package Entities;
+package Entities.Enemies;
 
+import Entities.Enemy;
+import Entities.Player;
 import Managers.ActionManager;
-import Structure.Hitbox;
 import Structure.NodeMap;
 import Structure.Vector2F;
 import Universal.Camera;
 import Universal.GameTimer;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class TeleportEnemy extends Enemy {

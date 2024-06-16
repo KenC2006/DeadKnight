@@ -1,8 +1,8 @@
-package Entities;
+package Entities.Enemies;
 
+import Entities.Enemy;
+import Entities.Player;
 import Items.ActivationType;
-import Items.Melee.BasicSpear;
-import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
 import Items.Melee.ShortSword;
 import Managers.ActionManager;
@@ -11,7 +11,6 @@ import Structure.NodeMap;
 import Structure.Vector2F;
 import Universal.Camera;
 
-import java.awt.*;
 import java.util.*;
 
 public class ShortMeleeEnemy extends Enemy {
@@ -138,9 +137,11 @@ public class ShortMeleeEnemy extends Enemy {
 //            stopXMovement();
 //            System.out.println(getPlayerPos() + " " + getPos() + " " + getPlayerPos().getYDistance(getPos()));
             if (getPlayerPos().getXDistance(getCenterVector()) > 0) {
+//                System.out.println("left attack");
                 sword.activate(ActivationType.LEFT, am, getStats());
             }
             else {
+//                System.out.println("right attack");
                 sword.activate(ActivationType.RIGHT, am, getStats());
             }
         }

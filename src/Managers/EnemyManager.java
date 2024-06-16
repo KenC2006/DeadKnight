@@ -1,9 +1,9 @@
 package Managers;
 
 import Entities.Enemy;
-import Entities.FlyingEnemy;
-import Entities.ShortMeleeEnemy;
-import Entities.TeleportEnemy;
+import Entities.Enemies.FlyingEnemy;
+import Entities.Enemies.ShortMeleeEnemy;
+import Entities.Enemies.TeleportEnemy;
 import Structure.Room;
 import Universal.Camera;
 
