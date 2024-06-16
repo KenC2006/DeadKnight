@@ -251,6 +251,10 @@ public class Player extends Entity {
         return killStreak;
     }
 
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
+    }
+
     public Vector2F getMouseLocation() {
         return mouseLocation;
     }

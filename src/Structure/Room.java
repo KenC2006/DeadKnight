@@ -277,8 +277,8 @@ public class Room {
                     newItem.setActualVY((int) (Math.random() * 4000 - 2000));
                 }
                 addItemPickup(newItem);
-                e.attack(am);
             }
+            e.attack(am);
         }
         enemies.removeIf(Entity::getToDelete);
     }

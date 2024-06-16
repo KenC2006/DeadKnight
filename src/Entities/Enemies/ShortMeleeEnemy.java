@@ -1,8 +1,8 @@
-package Entities;
+package Entities.Enemies;
 
+import Entities.Enemy;
+import Entities.Player;
 import Items.ActivationType;
-import Items.Melee.BasicSpear;
-import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
 import Items.Melee.ShortSword;
 import Managers.ActionManager;
@@ -11,7 +11,6 @@ import Structure.NodeMap;
 import Structure.Vector2F;
 import Universal.Camera;
 
-import java.awt.*;
 import java.util.*;
 
 public class ShortMeleeEnemy extends Enemy {
