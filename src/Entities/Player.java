@@ -33,7 +33,7 @@ public class Player extends Entity {
     public Player(int x, int y){
         super(x, y, 1000, 2000);
         playerInventory = new PlayerInventory(this);
-        playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
+        playerInventory.addPrimaryItem(new BasicSword());
 //        playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
 //        playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
 //        playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));

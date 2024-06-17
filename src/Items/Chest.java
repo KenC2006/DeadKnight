@@ -5,7 +5,9 @@ import Entities.Player;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
 import Items.Melee.ShortSword;
+import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
+import Items.Ranged.RangedWeapon;
 import Structure.Vector2F;
 import UI.ShopOption;
 import UI.ShopUIContainer;
@@ -13,6 +15,7 @@ import Universal.Camera;
 import Universal.GameTimer;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Chest extends Entity {
     private boolean collidingWithPlayer;
@@ -28,8 +31,8 @@ public class Chest extends Entity {
     }
 
     private void initialize() {
-        container.addShopItem(10, new BasicSword(new Vector2F(0, 0)));
-        container.addShopItem(10, new BasicSpear(new Vector2F(0, 0)));
+        container.addShopItem(10, getRandomWeapon());
+        container.addShopItem(10, getRandomWeapon());
         container.addShopItem(10, new InstantItem(new Vector2F(0, 0)));
     }
 
@@ -74,5 +77,15 @@ public class Chest extends Entity {
 
     public ShopUIContainer getUI() {
         return container;
+    }
+
+    private Weapon getRandomWeapon() {
+        ArrayList<Weapon> allWeapons = new ArrayList<>();
+        allWeapons.add(new MachineGun());
+        allWeapons.add(new BasicTurret());
+        allWeapons.add(new ShortSword());
+        allWeapons.add(new BasicSpear());
+        allWeapons.add(new BasicSword());
+        return allWeapons.get((int) (Math.random() * allWeapons.size()));
     }
 }

@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
 public class EntityManager {
     private final Player player;
     private RoomManager roomManager;
-    private int levelNumber = 2; // CHANGE SET NUMBER
+    private int levelNumber = 3; // CHANGE SET NUMBER
     private Chest openChest;
 
     public EntityManager() {

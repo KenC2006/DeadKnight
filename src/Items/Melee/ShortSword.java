@@ -3,7 +3,9 @@ package Items.Melee;
 import Structure.Vector2F;
 
 public class ShortSword extends MeleeWeapon {
-    public ShortSword(Vector2F startingLocation) {
-        super(2, startingLocation, 20, 5, "BasicEnemySword");
+    public ShortSword() {
+        super(2, 20, 5, "BasicEnemySword");
+        setItemName("Cracked Shortsword");
+        setItemDescription("A well-worn blade, marred with deep fissures and signs of neglect. Despite its damaged state, it retains a certain charm and historical value. Though it doesn't deal much damage, it serves as a reliable companion for those who appreciate its rugged past. Base Damage: " + getBaseDamage());
     }
 }

@@ -3,7 +3,6 @@ package Items.Melee;
 import Entities.Entity;
 import Entities.Stats;
 import Items.ActivationType;
-import Items.GameItem;
 import Items.Weapon;
 import Managers.ActionManager;
 import Structure.Hitbox;
@@ -22,8 +21,8 @@ public class MeleeWeapon extends Weapon {
     private ActivationType lastSwingDirection;
     private HashMap<ActivationType, Hitbox> hitboxes;
 
-    public MeleeWeapon(int damage, Vector2F startingLocation, int swingCooldown, int swingLength, String weaponName) {
-        super(damage, startingLocation, ItemType.MELEE);
+    public MeleeWeapon(int damage, int swingCooldown, int swingLength, String weaponName) {
+        super(damage, ItemType.MELEE);
         swingCooldownTimer = new GameTimer(swingCooldown);
         swingLengthTimer = new GameTimer(swingLength);
         loadHitboxes(weaponName);
@@ -91,7 +90,7 @@ public class MeleeWeapon extends Weapon {
                     kb = -3000;
                 }
                 defender.setActualVX(kb);
-                defender.getStats().doDamage(Stats.calculateDamage(getDamagePerHit(), attacker.getStats(), defender.getStats()));
+                defender.getStats().doDamage(Stats.calculateDamage(getBaseDamage(), attacker.getStats(), defender.getStats()));
             }
 
         }

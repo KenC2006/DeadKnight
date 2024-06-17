@@ -3,6 +3,8 @@ package Entities;
 import Items.ActivationType;
 import Items.GameItem;
 import Items.Item;
+import Items.Melee.MeleeWeapon;
+import Items.Ranged.RangedWeapon;
 import Items.Weapon;
 import Managers.ActionManager;
 import Structure.Vector2F;
@@ -45,9 +47,10 @@ public class PlayerInventory {
         switch (item.getType()) {
             case RANGED:
             case MELEE:
-                item.setLocation(player.getLocation());
                 primarySlot.add((Weapon) item);
                 System.out.println("Added item " + item.getItemName());
+                if (item instanceof RangedWeapon) ((RangedWeapon) item).setPlayerProjectileList(player.getProjectiles());
+                if (item instanceof MeleeWeapon) item.setLocation(player.getLocation());
                 return true;
             case CONSUMABLE:
                 secondarySlot.add((Item) item);

@@ -4,22 +4,22 @@ import Entities.Entity;
 import Structure.Vector2F;
 
 public abstract class Weapon extends GameItem {
-    private int damagePerHit, attackCooldown;
+    private int baseDamage, attackCooldown;
     private String dataPath = "src/Items/WeaponData";
 
-    public Weapon(int damage, Vector2F startingLocation, ItemType type) {
-        super(startingLocation, type);
-        this.damagePerHit = damage;
+    public Weapon(int damage, ItemType type) {
+        super(new Vector2F(), type);
+        this.baseDamage = damage;
     }
 
     public abstract int processDamageEntity(Entity attacker, Entity defender);
 
-    public int getDamagePerHit() {
-        return damagePerHit;
+    public int getBaseDamage() {
+        return baseDamage;
     }
 
-    public void setDamagePerHit(int damagePerHit) {
-        this.damagePerHit = damagePerHit;
+    public void setBaseDamage(int baseDamage) {
+        this.baseDamage = baseDamage;
     }
 
     public String getResourcePath() {
