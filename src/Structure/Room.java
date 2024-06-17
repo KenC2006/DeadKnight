@@ -1,6 +1,9 @@
 package Structure;
 
 import Entities.*;
+import Entities.Enemies.FlyingEnemy;
+import Entities.Enemies.SummonerBossEnemy;
+import Entities.Enemies.TeleportEnemy;
 import Items.Chest;
 import Items.ItemPickup;
 import Managers.ActionManager;
@@ -19,7 +22,6 @@ import java.util.Scanner;
 
 public class Room {
     private static int numberOfUniqueRooms = 0;
-    private boolean isPlayerInRoom = false;
     private boolean visited = false, revealed = false, cleared = true;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
@@ -259,7 +261,6 @@ public class Room {
 
     public void updateValues(Player player) {
 //        System.out.println(player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()));
-        isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 60__0_000_000_0L;
         for (ItemPickup item: groundedItems) {
             item.updateValues();
 
@@ -270,11 +271,15 @@ public class Room {
 
         }
 
+        ArrayList<Enemy> toAdd = new ArrayList<> ();
         for (Enemy e : enemies) {
-            if (isPlayerInRoom) {
+            e.updatePlayerInfo(player);
+            if (e.isPlayerNear()) {
+                if (e instanceof SummonerBossEnemy && e.shouldAddEnemy()) toAdd.add(new FlyingEnemy(e.getX(), e.getY(), 50));
                 e.updateValues(nodeMap, player);
             }
         }
+        enemies.addAll(toAdd);
     }
 
     public void resolveRoomCollisions(ArrayList<Room> loadedRooms) {
@@ -284,8 +289,8 @@ public class Room {
         for (Chest chest: chests) {
             chest.resolveRoomCollisions(loadedRooms);
         }
-        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
+            if (!e.isPlayerNear()) continue;
             e.resolveRoomCollisions(loadedRooms);
         }
 
@@ -299,8 +304,8 @@ public class Room {
             player.resolveEntityCollision(chest);
         }
 
-        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
+            if (!e.isPlayerNear()) continue;
             player.resolveEntityCollision(e);
         }
     }
@@ -319,7 +324,6 @@ public class Room {
         for (Chest chest: chests) {
             chest.updateData();
         }
-        if (!isPlayerInRoom) return;
 
         if (enemies.isEmpty() != cleared) {
             walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
@@ -327,13 +331,14 @@ public class Room {
         }
 
         for (Enemy e : enemies) {
+            if (!e.isPlayerNear()) continue;
             e.updateData();
         }
     }
 
     public void updateEnemies(ActionManager am) {
-        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
+            if (!e.isPlayerNear()) continue;
             if (e.getToDelete()) {
                 ItemPickup newItem = new ItemPickup(e.getCenterVector());
                 newItem.setActualVX((int) (Math.random() * 4000 - 2000));

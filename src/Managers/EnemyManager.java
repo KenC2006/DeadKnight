@@ -1,10 +1,7 @@
 package Managers;
 
-import Entities.Enemies.FlyingBossEnemy;
+import Entities.Enemies.*;
 import Entities.Enemy;
-import Entities.Enemies.FlyingEnemy;
-import Entities.Enemies.ShortMeleeEnemy;
-import Entities.Enemies.TeleportEnemy;
 import Structure.Room;
 import Universal.Camera;
 
@@ -27,6 +24,9 @@ public class EnemyManager {
         else if (rn > 20) {
             return new ShortMeleeEnemy(x - ShortMeleeEnemy.getDefaultWidth()/2, y - ShortMeleeEnemy.getDefaultHeight() + 500, 50);
         }
+        else if (rn > 1) {
+            return new SummonerBossEnemy(x - SummonerBossEnemy.getDefaultWidth()/2, y - SummonerBossEnemy.getDefaultHeight() + 500, 500);
+        }
         else {
             return new TeleportEnemy(x - TeleportEnemy.getDefaultWidth()/2, y - TeleportEnemy.getDefaultHeight() + 3000, 50);
         }
@@ -37,7 +37,8 @@ public class EnemyManager {
         if (e instanceof FlyingEnemy) return new FlyingEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         if (e instanceof TeleportEnemy) return new TeleportEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         if (e instanceof FlyingBossEnemy) return new FlyingBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
-        System.out.println("smh tyring to copy an enemy not added to copy function");
+        if (e instanceof SummonerBossEnemy) return new SummonerBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
+        System.out.println("poop!");
         return null;
     }
 

@@ -18,8 +18,8 @@ public class FlyingEnemy extends Enemy {
     private int runRadius = 10000;
     private Vector2F velocity = new Vector2F();
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
-    private GameTimer moveTimer = new GameTimer(5);
-    private GameTimer shootTimer = new GameTimer(30);
+    private GameTimer moveTimer = new GameTimer(15);
+    private GameTimer shootTimer = new GameTimer(120);
 
     public FlyingEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 25000000);
@@ -36,9 +36,9 @@ public class FlyingEnemy extends Enemy {
         velocity = getPlayerPos().getTranslated(new Vector2F(getX(), getY()).getNegative());
 
         velocity.normalize();
-        velocity = new Vector2F(velocity.getX()/20, velocity.getY()/20);
-        stopXMovement();
-        stopYMovement();
+        velocity = new Vector2F(velocity.getX()/50, velocity.getY()/50);
+//        stopXMovement();
+//        stopYMovement();
         if (getPlayerPos().getEuclideanDistance(getCenterVector()) > 300000000) {
             //        System.out.println(getPlayerPos() + " " + velocity);
             if (Math.random() > 0.6) velocity.setY(-velocity.getY());
@@ -50,6 +50,7 @@ public class FlyingEnemy extends Enemy {
             setIntendedVX(-velocity.getX());
             setIntendedVY(-velocity.getY());
         }
+//        if (isPlayerNear()) System.out.println(getIntendedVelocity());
     }
 
     @Override
@@ -74,6 +75,7 @@ public class FlyingEnemy extends Enemy {
         }
         if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
             shootTimer.reset();
+            velocity = new Vector2F(velocity.getX() * 10, velocity.getY() * 10);
             projectiles.add(new Projectile(new Vector2F(getX(), getY()), new Vector2F(1000, 1000), velocity, 1));
         }
         resolveEntityCollision(player);
@@ -83,7 +85,7 @@ public class FlyingEnemy extends Enemy {
         for (Projectile p: projectiles) {
             if (player.collidesWith(p)) {
                 p.processEntityHit(this, player);
-                player.getStats().doDamage(5);
+                player.getStats().doDamage(1);
             }
         }
     }

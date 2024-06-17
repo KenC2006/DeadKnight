@@ -1,6 +1,7 @@
 package Entities;
 
 import Managers.ActionManager;
+import Structure.Room;
 import Universal.Camera;
 import Structure.NodeMap;
 import Structure.Vector2F;
@@ -24,6 +25,7 @@ public abstract class Enemy extends Entity {
     private Vector2F enemyPos = new Vector2F();
     private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
     private GameTimer generatePathTimer = new GameTimer(60);
+    private boolean isPlayerNear, shouldAddEnemy;
 
     private static int enemyCount;
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
@@ -78,7 +80,6 @@ public abstract class Enemy extends Entity {
     }
 
     public void updateValues(NodeMap nodeMap, Player player) {
-        updatePlayerInfo(player);
         updateEnemyPos(nodeMap);
         generatePath(nodeMap);
         updateValues();
@@ -96,10 +97,11 @@ public abstract class Enemy extends Entity {
     }
 
     public void updatePlayerInfo(Player player) {
-        playerPos = player.getBottomPos();
-//        System.out.println(playerPos);
+        playerPos = player.getCenterVector();
+//        System.out.println("updatePlayerInfo" + playerPos);
+        isPlayerNear = player.getCenterVector().getEuclideanDistance(getCenterVector()) < 10000000000L;
+//        System.out.println(isPlayerNear);
     }
-
 
     public void translateEnemy(Vector2F offset) {
         setX(getX() + offset.getX());
@@ -116,6 +118,10 @@ public abstract class Enemy extends Entity {
 
     public void updateData() {
         super.updateData();
+    }
+
+    public void resolveRoomCollisions(ArrayList<Room> loadedRooms) {
+        super.resolveRoomCollisions(loadedRooms);
     }
 
     public Vector2F getPlayerPos() {
@@ -194,6 +200,18 @@ public abstract class Enemy extends Entity {
 
     public static int getDefaultWalkSpeed() {
         return defaultWalkSpeed;
+    }
+
+    public boolean isPlayerNear() {
+        return isPlayerNear;
+    }
+
+    public boolean shouldAddEnemy() {
+        return shouldAddEnemy;
+    }
+
+    public void changeShouldAddEnemy(boolean change) {
+        shouldAddEnemy = change;
     }
 
     @Override
