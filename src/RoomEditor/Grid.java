@@ -442,7 +442,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         int mouseX =  ((e.getX() / scaledBoxSize) * 1000), mouseY =  ((e.getY() / scaledBoxSize) * 1000);
         if (p1 == null) {
             p1 = new Vector2F(mouseX, mouseY);
-         //   selected.setObject(returnSelected());
+      //      selected.setObject(returnSelected());
         } else if (p2 == null) {
             p2 = new Vector2F(mouseX, mouseY);
             addRect();
