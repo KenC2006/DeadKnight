@@ -1,13 +1,14 @@
 package Entities;
 
 import Items.ActivationType;
+import Items.GameItem;
+import Items.InstantItem;
 import Items.ItemPickup;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
 import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
-import Items.WeaponType;
 import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
@@ -170,7 +171,14 @@ public class Player extends Entity {
         setIntendedVX(dx);
     }
 
-    public WeaponType getPrimaryType() {
+    public void addItem(GameItem item) {
+        if (playerInventory.addItem(item)) return;
+        if (item.getType() == GameItem.ItemType.STAT) {
+            if (item instanceof InstantItem) ((InstantItem) item).use(this);
+        }
+    }
+
+    public GameItem.ItemType getPrimaryType() {
         if (playerInventory.getCurrentPrimaryItem() == null) return null;
         return playerInventory.getCurrentPrimaryItem().getType();
     }
@@ -206,7 +214,7 @@ public class Player extends Entity {
         super.resolveRoomCollisions(roomList);
         for (Room r: roomList) {
             if (getHitbox().quickIntersect(r.getHitbox())) {
-                r.setVisited(true);
+                r.setVisited();
             }
         }
         for (Projectile p: projectiles) {

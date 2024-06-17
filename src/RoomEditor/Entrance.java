@@ -21,7 +21,6 @@ public class Entrance {
     private EntranceType type;
 
     public Entrance(Vector2F location, Vector2F connection) {
-        this.parent = parent;
         connectionPoint = new Vector2F(connection);
         relativeLocation = new Vector2F(location);
         absoluteLocation = new Vector2F(location);
@@ -54,6 +53,8 @@ public class Entrance {
         connectionPoint = new Vector2F(e.connectionPoint);
         type = e.type;
         hitbox = new Hitbox(e.hitbox);
+        parent = e.parent;
+        connectedEntrance = e.connectedEntrance;
     }
 
     public void setParent(Room parent) {

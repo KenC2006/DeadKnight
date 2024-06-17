@@ -7,23 +7,20 @@ import Structure.Vector2F;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Vector;
 
 public class ItemPickup extends Entity {
-    public enum Type{INTELLIGENCE, MAX_HEALTH, HEALTH, MAX_MANA, MANA}
-    private ArrayList<Type> allTypes = new ArrayList<>(Arrays.asList(Type.values()));
-    public Type itemType;
+    public InstantItem item;
     private boolean collidingWithPlayer = false;
 
-    public ItemPickup(Vector2F location, Type itemType) {
+    public ItemPickup(Vector2F location, InstantItem.InstantType itemType) {
         super(location.getX(), location.getY(), 1000, 1000);
-        this.itemType = itemType;
+        item = new InstantItem(location, itemType);
         initialize();
     }
 
     public ItemPickup(Vector2F location) {
         super(location.getX(), location.getY(), 1000, 1000);
-        this.itemType = getRandomType();
+        this.item = new InstantItem(location);
         initialize();
     }
 
@@ -35,7 +32,7 @@ public class ItemPickup extends Entity {
     public void updateValues(Player p) {
         super.updateValues();
         Vector2F dist = new Vector2F(p.getCenterX() - getCenterX(), p.getCenterY() - getCenterY());
-        dist = dist.normalize().multiply(Math.min(1000, 4000000.0 / dist.getLength()));
+        dist = dist.normalize().multiply(Math.min(1000, 10000000.0 / dist.getLength()));
         setIntendedVX(dist.getX());
         setIntendedVY(dist.getY());
     }
@@ -45,34 +42,12 @@ public class ItemPickup extends Entity {
     }
 
     public void pickupItem(Player p) {
-        switch (itemType) {
-            case INTELLIGENCE:
-                p.getPlayerInventory().setIntelligence(p.getPlayerInventory().getIntelligence() + 1);
-                break;
-            case MAX_HEALTH:
-                p.getStats().changeBaseHealth(5);
-                break;
-            case HEALTH:
-                p.getStats().heal(10);
-                break;
-            case MAX_MANA:
-                p.getStats().changeBaseMana(5);
-                break;
-            case MANA:
-                p.getStats().gainMana(10);
-                break;
-
-        }
+        p.addItem(item);
         markToDelete(true);
     }
 
-    private Type getRandomType() {
-        int size = allTypes.size();
-        return allTypes.get((int) (Math.random() * size));
-    }
-
     private void initialize() {
-        switch (itemType) {
+        switch (item.getInstantType()) {
             case INTELLIGENCE:
                 setDefaultColour(Color.YELLOW); break;
             case MAX_HEALTH:

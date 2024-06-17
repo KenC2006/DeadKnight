@@ -40,7 +40,7 @@ public class RoomManager {
     public void drawRooms(Camera c) {
         if (c.isMapCamera()) {
             for (Room room : allRooms) {
-                if (!room.isVisited()) continue;
+                if (!room.isRevealed()) continue;
                 room.drawRoom(c);
                 enemyManager.drawEnemies(room.getEnemies(), c);
             }

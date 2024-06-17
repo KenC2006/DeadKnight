@@ -1,6 +1,7 @@
 package Entities;
 
 import Items.ActivationType;
+import Items.GameItem;
 import Items.Item;
 import Items.Weapon;
 import Managers.ActionManager;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 public class Inventory {
     private ArrayList<Weapon> primarySlot = new ArrayList<>();
     private ArrayList<Item> secondarySlot = new ArrayList<>();
-    private ArrayList<Item> heldItems = new ArrayList<>();
     private GameTimer itemSwapCooldown;
     private int intelligence, selectedPrimary, selectedSecondary;
 
@@ -30,7 +30,6 @@ public class Inventory {
         }
     }
 
-
     public void update() {
         for (Weapon w: primarySlot) {
             w.update();
@@ -40,10 +39,23 @@ public class Inventory {
         }
     }
 
+    public boolean addItem(GameItem item) {
+        switch (item.getType()) {
+            case RANGED:
+            case MELEE:
+                primarySlot.add((Weapon) item);
+                return true;
+            case CONSUMABLE:
+                secondarySlot.add((Item) item);
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public void updatePosition(Vector2F newPosition) {
         primarySlot.get(selectedPrimary).setLocation(newPosition);
     }
-
 
     public void addSecondaryItem(Item item) {
         secondarySlot.add(item);

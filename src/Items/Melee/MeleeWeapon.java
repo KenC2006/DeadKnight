@@ -1,11 +1,10 @@
 package Items.Melee;
 
-import Entities.Enemy;
 import Entities.Entity;
 import Entities.Stats;
 import Items.ActivationType;
+import Items.GameItem;
 import Items.Weapon;
-import Items.WeaponType;
 import Managers.ActionManager;
 import Structure.Hitbox;
 import Structure.Vector2F;
@@ -25,7 +24,7 @@ public class MeleeWeapon extends Weapon {
     private HashMap<ActivationType, Hitbox> hitboxes;
 
     public MeleeWeapon(int damage, Vector2F startingLocation, int swingCooldown, int swingLength, String weaponName) {
-        super(damage, startingLocation, WeaponType.MELEE);
+        super(damage, startingLocation, ItemType.MELEE);
         swingCooldownTimer = new GameTimer(swingCooldown);
         swingLengthTimer = new GameTimer(swingLength);
         loadHitboxes("/" + weaponName + ".txt");

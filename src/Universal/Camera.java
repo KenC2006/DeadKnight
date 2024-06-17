@@ -2,8 +2,8 @@ package Universal;
 
 import Entities.Entity;
 import Entities.Player;
+import Items.GameItem;
 import Items.ItemPickup;
-import Items.WeaponType;
 import Structure.Hitbox;
 import Structure.Line;
 import Managers.ActionManager;
@@ -168,9 +168,9 @@ public class Camera {
         drawLine(l.getStart(), l.getEnd(), c);
     }
 
-    public void updateKeyPresses(ActionManager manager, WeaponType weaponType) {
+    public void updateKeyPresses(ActionManager manager, GameItem.ItemType itemType) {
         translatedMouseCoords = reverseScaleAndShift(manager.getAbsoluteMouseLocation());
-        if (weaponType == WeaponType.RANGED && !isMapCamera) {
+        if (itemType == GameItem.ItemType.RANGED && !isMapCamera) {
             if (manager.getPressed(KeyEvent.VK_UP)) {
                 offset.changeY(-1500);
             }

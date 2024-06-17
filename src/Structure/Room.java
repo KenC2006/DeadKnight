@@ -24,7 +24,7 @@ import java.util.Scanner;
 public class Room {
     private static int numberOfUniqueRooms = 0;
     private boolean isPlayerInRoom = false;
-    private boolean visited = false, cleared = true;
+    private boolean visited = false, revealed = false, cleared = true;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
@@ -45,7 +45,9 @@ public class Room {
         walls = new HitboxGroup(copy.walls);
         entranceHitboxes = new HitboxGroup(copy.entranceHitboxes);
         for (Entrance e: copy.entrances) {
-            entrances.add(new Entrance(e));
+            Entrance copyEntrance = new Entrance(e);
+            copyEntrance.setParent(this);
+            entrances.add(copyEntrance);
         }
 
         for (PlayerSpawn playerSpawn : copy.playerSpawns) {
@@ -68,7 +70,8 @@ public class Room {
         setNumber = copy.setNumber;
 
         cleared = enemies.isEmpty();
-        walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
+        walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
+
 
     }
 
@@ -140,7 +143,7 @@ public class Room {
 //        setVisited(true);
 
         cleared = enemies.isEmpty();
-        walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
+        walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
     }
 
     public Vector2F getCenterRelativeToRoom() {
@@ -257,7 +260,7 @@ public class Room {
         if (!isPlayerInRoom) return;
 
         if (enemies.isEmpty() != cleared) {
-            walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
+            walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
             cleared = enemies.isEmpty();
         }
 
@@ -300,8 +303,21 @@ public class Room {
         return visited;
     }
 
-    public void setVisited(boolean visited) {
-        this.visited = visited;
+    public boolean isRevealed() {
+        return revealed;
+    }
+
+    public void setVisited() {
+        this.visited = true;
+        this.revealed = true;
+        walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
+        for (Entrance e: entrances) {
+            e.getConnectedEntrance().getParentRoom().setRevealed(true);
+        }
+    }
+
+    public void setRevealed(boolean revealed) {
+        this.revealed = revealed;
     }
 
     public int getRoomID() {

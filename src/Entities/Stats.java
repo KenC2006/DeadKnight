@@ -1,5 +1,8 @@
 package Entities;
 
+import Items.GameItem;
+import Items.InstantItem;
+import Items.Item;
 import Universal.GameTimer;
 
 public class Stats {

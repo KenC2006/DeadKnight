@@ -3,10 +3,8 @@ package Items.Ranged;
 import Entities.Entity;
 import Entities.Player;
 import Entities.Projectile;
-import Entities.Stats;
 import Items.ActivationType;
 import Items.Weapon;
-import Items.WeaponType;
 import Managers.ActionManager;
 import Structure.Vector2F;
 import Universal.Camera;
@@ -14,14 +12,13 @@ import Universal.GameTimer;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class RangedWeapon extends Weapon {
     private GameTimer fireCooldownTimer;
     private final ArrayList<Projectile> playerProjectileList;
 
     public RangedWeapon(int damage, Vector2F startingLocation, int fireCooldown, ArrayList<Projectile> playerProjectileList) {
-        super(damage, startingLocation, WeaponType.RANGED);
+        super(damage, startingLocation, ItemType.RANGED);
         fireCooldownTimer = new GameTimer(fireCooldown);
         this.playerProjectileList = playerProjectileList;
     }
