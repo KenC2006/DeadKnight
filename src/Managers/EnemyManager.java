@@ -18,10 +18,13 @@ public class EnemyManager {
 
     public Enemy createEnemy(int x, int y) {
         int rn = (int)(Math.random() * 100);
-        if (rn > 60) {
+        if (rn > 80) {
+            return new FlyingBossEnemy(x - FlyingBossEnemy.getDefaultWidth()/2, y - FlyingBossEnemy.getDefaultHeight() + 500, 500);
+        }
+        else if (rn > 50) {
             return new FlyingEnemy(x - FlyingEnemy.getDefaultWidth()/2, y - FlyingEnemy.getDefaultHeight() + 500, 50);
         }
-        else if (rn > 40) {
+        else if (rn > 20) {
             return new ShortMeleeEnemy(x - ShortMeleeEnemy.getDefaultWidth()/2, y - ShortMeleeEnemy.getDefaultHeight() + 500, 50);
         }
         else {
@@ -45,7 +48,7 @@ public class EnemyManager {
                 for (Room room : loadedRooms) {
                     if (isEnemyInRoom(room, cur_room.getEnemies().get(i))) {
                         room.getEnemies().add(cur_room.getEnemies().get(i)); // need to change for more types of enemies
-                        toRemove.addFirst(i);
+                        toRemove.add(i);
                     }
                 }
             }

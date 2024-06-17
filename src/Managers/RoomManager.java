@@ -90,7 +90,7 @@ public class RoomManager {
         loadRoom(startingRoom);
 
         toGenerateNeighbours.add(startingRoom);
-        while (!toGenerateNeighbours.isEmpty() && (setNumber != 1 || allRooms.size() < 30)) {
+        while (!toGenerateNeighbours.isEmpty() && (!(setNumber == 1 || setNumber == 3) || allRooms.size() < 30)) {
 //        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 30) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
@@ -127,7 +127,7 @@ public class RoomManager {
 //                            collides = true;
 //                            break;
 //                        }
-                        if (setNumber == 1) {
+                        if (setNumber == 1 || setNumber == 3) {
                             if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
                                 collides = true;
                                 break;
@@ -141,8 +141,8 @@ public class RoomManager {
                     }
 
                     if (collides) continue;
-                    if (setNumber == 1) {
-                        connectingEntrance.setConnected(true, e);
+                    if (setNumber == 1 || setNumber == 3) {
+                        connectingEntrance.setConnected(true);
                         compatibleRooms.add(testRoom);
                         connectedEntrance.add(connectingEntrance);
 
@@ -200,11 +200,16 @@ public class RoomManager {
     }
 
     public void loadRoomsFromFile(int setNumber) {
-        for (File f: Objects.requireNonNull(new File("src/Rooms/Set" + setNumber).listFiles())) {
+    	int numOfRooms = 0;
+    	if (setNumber == 1) numOfRooms = 23;
+    	if (setNumber == 2) numOfRooms = 17;
+    	if (setNumber == 3) numOfRooms = 19;
+    	for (int i = 1; i <= numOfRooms; i++) {
+//        for (File f: Objects.requireNonNull(new File("res/Rooms/Set" + setNumber).listFiles())) {
             try {
-                possibleBiomeRooms.add(new Room(f, setNumber, Integer.parseInt(f.getName().substring(4, f.getName().length() - 4))));
+                possibleBiomeRooms.add(new Room("/Rooms/Set" + setNumber, setNumber, i));
             } catch (IOException e) {
-                System.out.println("Unable to load file " + f.getName());
+                System.out.println("Unable to load file " + setNumber + ":" + i);
                 System.out.println(e);
             }
         }

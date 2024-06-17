@@ -78,8 +78,8 @@ public class Line {
         }
         // if the two points on one of the line are on opposite sites of the convex shape seperated
         // by the points of the other line, then lines intersect
-        return start.compareTo(lines.getPoints().getFirst()) == 0 && end.compareTo(lines.getPoints().get(2)) == 0 ||
-            start.compareTo(lines.getPoints().get(2)) == 0 && end.compareTo(lines.getPoints().getFirst()) == 0 ||
+        return start.compareTo(lines.getPoints().get(0)) == 0 && end.compareTo(lines.getPoints().get(2)) == 0 ||
+            start.compareTo(lines.getPoints().get(2)) == 0 && end.compareTo(lines.getPoints().get(0)) == 0 ||
             start.compareTo(lines.getPoints().get(1)) == 0 && end.compareTo(lines.getPoints().get(3)) == 0 ||
             start.compareTo(lines.getPoints().get(3)) == 0 && end.compareTo(lines.getPoints().get(1)) == 0;
     }

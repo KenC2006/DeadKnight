@@ -5,18 +5,13 @@ import Items.Chest;
 import Items.ItemPickup;
 import Managers.ActionManager;
 import Managers.EnemyManager;
-import RoomEditor.EnemySpawn;
 import RoomEditor.Entrance;
-import RoomEditor.ItemSpawn;
-import RoomEditor.PlayerSpawn;
+import RoomEditor.Spawn;
 import Universal.Camera;
 
 import javax.imageio.ImageIO;
-import javax.rmi.ssl.SslRMIClientSocketFactory;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,10 +27,13 @@ public class Room {
     private ArrayList<ItemPickup> groundedItems = new ArrayList<>();
     private ArrayList<Chest> chests = new ArrayList<>();
     private NodeMap nodeMap;
-    private ArrayList<EnemySpawn> enemySpawns = new ArrayList<>();
-    private ArrayList<PlayerSpawn> playerSpawns = new ArrayList<>();
-    private ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
+    private ArrayList<Spawn> enemySpawns = new ArrayList<>();
+    private ArrayList<Spawn> playerSpawns = new ArrayList<>();
+    private ArrayList<Spawn> itemSpawns = new ArrayList<>();
+    private ArrayList<Spawn> chestSpawns = new ArrayList<>();
+    private ArrayList<Spawn> bossSpawns = new ArrayList<>();
     private ArrayList<Enemy> enemies = new ArrayList<>();
+
     private BufferedImage background;
     private int roomID, setNumber;
 
@@ -52,15 +50,18 @@ public class Room {
             entrances.add(copyEntrance);
         }
 
-        for (PlayerSpawn playerSpawn : copy.playerSpawns) {
-            playerSpawns.add(new PlayerSpawn(playerSpawn));
+        for (Spawn spawn: copy.playerSpawns) {
+            playerSpawns.add(new Spawn(spawn));
         }
-        for (EnemySpawn es : copy.enemySpawns) {
-            enemySpawns.add(new EnemySpawn(es));
+
+        for (Spawn spawn: copy.enemySpawns) {
+            enemySpawns.add(new Spawn(spawn));
         }
-        for (ItemSpawn itemSpawn: copy.itemSpawns) {
-            itemSpawns.add(new ItemSpawn(itemSpawn));
+
+        for (Spawn spawn: copy.itemSpawns) {
+            itemSpawns.add(new Spawn(spawn));
         }
+
         for (Enemy e : copy.enemies) {
             enemies.add(enemyManager.copy(e)); // change when more types of enemies added
         }
@@ -75,15 +76,17 @@ public class Room {
         walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
     }
 
-    public Room(File file, int setNumber, int fileNumber) throws IOException {
+    public Room(String filePath, int setNumber, int fileNumber) throws IOException {
         numberOfUniqueRooms++;
         this.setNumber = setNumber;
-        Scanner in = new Scanner(file);
+        System.out.println(filePath + "/room" + fileNumber + ".txt");
+        Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream(filePath + "/room" + fileNumber + ".txt")));
+      //  System.out.println(fileNumber);
         try {
             background = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/set" + setNumber + "/background" + fileNumber + ".png")));
 
         } catch (IOException | NullPointerException e) {
-            System.out.println("Missing background image for room (" + setNumber + ":" + fileNumber + ")");
+            //System.out.println("Missing background image for room (" + setNumber + ":" + fileNumber + ")");
         }
 
         int nHiboxes = Integer.parseInt(in.nextLine());
@@ -93,7 +96,7 @@ public class Room {
             int y1 = Integer.parseInt(temp[1]);
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
-            walls.addHitbox(new Hitbox(x1, y1, x2, y2, Color.GREEN));
+            walls.addHitbox(new Hitbox(x1, y1, x2, y2, Color.RED));
         }
 
         int nEntrances = Integer.parseInt(in.nextLine());
@@ -117,8 +120,7 @@ public class Room {
             String[] temp = in.nextLine().trim().split(" ");
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
-            playerSpawns.add(new PlayerSpawn(x, y));
-
+            playerSpawns.add(new Spawn(x, y, Spawn.SpawnType.PLAYER));
         }
 
         int nItemSpawns = Integer.parseInt(in.nextLine());
@@ -126,7 +128,7 @@ public class Room {
             String[] temp = in.nextLine().trim().split(" ");
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
-            itemSpawns.add(new ItemSpawn(x, y));
+            itemSpawns.add(new Spawn(x, y, Spawn.SpawnType.ITEM));
         }
 
         int nEnemySpawns = Integer.parseInt(in.nextLine());
@@ -134,9 +136,27 @@ public class Room {
             String[] temp = in.nextLine().trim().split(" ");
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
-            enemySpawns.add(new EnemySpawn(x, y));
+            enemySpawns.add(new Spawn(x, y, Spawn.SpawnType.ENEMY));
             enemies.add(enemyManager.createEnemy(x, y)); // change when more types of enemies added
+            cleared = false;
         }
+
+        int nChestSpawns = Integer.parseInt(in.nextLine());
+        for (int i = 0; i < nChestSpawns; i++) {
+            String[] temp = in.nextLine().trim().split(" ");
+            int x = Integer.parseInt(temp[0]);
+            int y = Integer.parseInt(temp[1]);
+            chestSpawns.add(new Spawn(x, y, Spawn.SpawnType.CHEST));
+        }
+
+        int nBossSpawns = Integer.parseInt(in.nextLine());
+        for (int i = 0; i < nBossSpawns; i++) {
+            String[] temp = in.nextLine().trim().split(" ");
+            int x = Integer.parseInt(temp[0]);
+            int y = Integer.parseInt(temp[1]);
+            bossSpawns.add(new Spawn(x, y, Spawn.SpawnType.BOSS));
+        }
+
         nodeMap = new NodeMap(this);
 
         roomID = numberOfUniqueRooms;
@@ -187,7 +207,7 @@ public class Room {
     }
 
     public void setupRoom() {
-        for (ItemSpawn i: itemSpawns) {
+        for (Spawn i: itemSpawns) {
             addItemPickup(new ItemPickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
         }
 
@@ -195,7 +215,7 @@ public class Room {
     }
 
     public void spawnPlayer(Player p) {
-        PlayerSpawn spawn = playerSpawns.get((int) (Math.random() * playerSpawns.size()));
+        Spawn spawn = playerSpawns.get((int) (Math.random() * playerSpawns.size()));
         System.out.println("Spawning player at " + spawn.getLocation());
         p.setLocation(getTopLeft().getTranslated(spawn.getLocation()).getTranslated(new Vector2F(-p.getWidth() / 2, -p.getHeight() * 9 / 10)));
     }
@@ -225,7 +245,7 @@ public class Room {
 //        System.out.println(player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()));
         isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 60__0_000_000_0L;
         for (ItemPickup item: groundedItems) {
-            item.updateValues(player);
+            item.updateValues();
 
         }
 
@@ -300,14 +320,8 @@ public class Room {
         for (Enemy e : enemies) {
             if (e.getToDelete()) {
                 ItemPickup newItem = new ItemPickup(e.getCenterVector());
-                if (setNumber == 1) {
-                    newItem.setActualVX((int) (Math.random() * 4000 - 2000));
-                    newItem.setActualVY((int) (-2000));
-                } else if (setNumber == 2) {
-                    newItem.setAffectedByGravity(false);
-                    newItem.setActualVX((int) (Math.random() * 4000 - 2000));
-                    newItem.setActualVY((int) (Math.random() * 4000 - 2000));
-                }
+                newItem.setActualVX((int) (Math.random() * 4000 - 2000));
+                newItem.setActualVY((int) (-2000));
                 addItemPickup(newItem);
             }
             e.attack(am);
@@ -399,11 +413,11 @@ public class Room {
 
     public NodeMap getNodeMap() {return nodeMap; }
 
-    public ArrayList<EnemySpawn> getEnemySpawns() {
+    public ArrayList<Spawn> getEnemySpawns() {
         return enemySpawns;
     }
 
-    public ArrayList<PlayerSpawn> getPlayerSpawns() {
+    public ArrayList<Spawn> getPlayerSpawns() {
         return playerSpawns;
     }
 
@@ -411,7 +425,7 @@ public class Room {
         return enemies;
     }
 
-    public ArrayList<ItemSpawn> getItemSpawns() {
+    public ArrayList<Spawn> getItemSpawns() {
         return itemSpawns;
     }
 

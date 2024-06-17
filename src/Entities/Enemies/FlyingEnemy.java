@@ -12,17 +12,17 @@ import java.util.ArrayList;
 
 public class FlyingEnemy extends Enemy {
 
-    private final static int defaultHeight = 2000; // asl
-    private final static int defaultWidth = 2000;
+    private final static int defaultHeight = 1500; // asl
+    private final static int defaultWidth = 1500;
 
     private int runRadius = 10000;
     private Vector2F velocity = new Vector2F();
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
     private GameTimer moveTimer = new GameTimer(5);
-    private GameTimer shootTimer = new GameTimer(5);
+    private GameTimer shootTimer = new GameTimer(30);
 
     public FlyingEnemy(int x, int y, int health) {
-        super(x, y, 2000, 2000, health, 25000000);
+        super(x, y, defaultWidth, defaultHeight, health, 25000000);
         setAffectedByGravity(false);
     }
 
