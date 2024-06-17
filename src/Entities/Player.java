@@ -12,6 +12,7 @@ import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
 import Structure.Vector2F;
+import Universal.GameTimer;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -23,14 +24,16 @@ public class Player extends Entity {
     private final ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
     private boolean immune, upPressed, leftRightPressed, jumping;
     private Direction direction;
-    private int framesSinceTouchedGround = 0, framesSinceStartedJumping, framesSinceDash;
+    private int framesSinceStartedJumping;
     private int framesPassed, lastUpPressed;
     private Inventory playerInventory;
     private int killStreak=0;
     private final ArrayList<Integer> controls = new ArrayList<>();
+    private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
+    private Vector2F mouseLocation = new Vector2F();
 
     public Player(int x, int y){
-        super(x, y, 2000, 5000);
+        super(x, y, 1000, 2000);
         playerInventory = new Inventory();
         playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
@@ -41,6 +44,10 @@ public class Player extends Entity {
         getStats().changeBaseMana(100);
         getStats().setMaxJumps(10);
         getStats().setManaRegen(10);
+        dashCooldownTimer = new GameTimer(30);
+        dashLengthTimer = new GameTimer(10);
+        dashImmunityTimer = new GameTimer(15);
+
     }
 
     public Inventory getPlayerInventory() {
@@ -66,7 +73,6 @@ public class Player extends Entity {
     public void updateKeyPresses(ActionManager manager) {
         int dx = 0;
         framesPassed++;
-        if (framesSinceDash > 0) framesSinceDash--;
         if (isGrounded()) getStats().resetJumps();
         if (isHittingCeiling()) framesSinceStartedJumping -= 10;
 
@@ -97,8 +103,8 @@ public class Player extends Entity {
         }
 
         if (jumping) {
-            if (framesPassed - framesSinceStartedJumping < 10) {
-                setIntendedVY(-1 - (10 - (framesPassed - framesSinceStartedJumping)) * 300);
+            if (framesPassed - framesSinceStartedJumping < 20) {
+                setIntendedVY(-1 - ((20 - (framesPassed - framesSinceStartedJumping))) * 80);
             } else {
                 jumping = false;
             }
@@ -124,33 +130,42 @@ public class Player extends Entity {
             playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() - 1);
         }
 
+        if (manager.isMousePressed()) {
+            playerInventory.usePrimary(ActivationType.UP, manager, this);
+        }
+
         if (manager.getPressed(controls.get(5))) {
-            playerInventory.usePrimary(ActivationType.RIGHT, manager, getStats());
+            playerInventory.usePrimary(ActivationType.RIGHT, manager, this);
         }
 
         if (manager.getPressed(controls.get(6))) {
-            playerInventory.usePrimary(ActivationType.LEFT, manager, getStats());
+            playerInventory.usePrimary(ActivationType.LEFT, manager, this);
+        }
+
+        if (manager.getPressed(controls.get(7)) && dashCooldownTimer.isReady()) {
+            dashCooldownTimer.reset();
+            dashLengthTimer.reset();
+            dashImmunityTimer.reset();
         }
 
 
-        if (framesSinceDash == 0 && manager.getPressed(controls.get(7))) {
-            framesSinceDash = 30;
-        }
-
-        if (framesSinceDash > 20) {
+        if (!dashLengthTimer.isReady()) {
             if (direction == Direction.LEFT) dx = -1500;
             else if (direction == Direction.RIGHT) dx = 1500;
             jumping = false;
             setIntendedVY(0);
-            getHitbox().setEnabled(false);
-            immune = true;
             setAffectedByGravity(false);
         } else {
-            immune = false;
             setAffectedByGravity(true);
-            getHitbox().setEnabled(true);
         }
 
+        if (!dashImmunityTimer.isReady()) {
+            getHitbox().setEnabled(false);
+            immune = true;
+        } else {
+            getHitbox().setEnabled(true);
+            immune = false;
+        }
 
         setIntendedVX(dx);
     }
@@ -234,5 +249,17 @@ public class Player extends Entity {
 
     public int getKillStreak() {
         return killStreak;
+    }
+
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
+    }
+
+    public Vector2F getMouseLocation() {
+        return mouseLocation;
+    }
+
+    public void setMouseLocation(Vector2F mouseLocation) {
+        this.mouseLocation = mouseLocation;
     }
 }

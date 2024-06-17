@@ -64,6 +64,9 @@ public class Entity {
 //        if (getIntendedVX() != 0) System.out.println(getIntendedVX());
         if (colliding) {
             hitbox.setColour(Color.RED);
+        } else if (!getHitbox().getEnabled()) {
+            hitbox.setColour(Color.MAGENTA);
+
         } else {
             hitbox.setColour(defaultColour);
         }
@@ -164,7 +167,7 @@ public class Entity {
         velocity.translateInPlace(constantVelocity.getTranslated(velocity.getNegative()).multiply(0.3));
 
         // Gravity
-        if (affectedByGravity) constantVelocity.changeY(100);
+        if (affectedByGravity) constantVelocity.changeY(50);
     }
 
     public HitboxGroup getLastMovement() {
@@ -281,6 +284,10 @@ public class Entity {
 
     public int getIntendedVY() {
         return constantVelocity.getY();
+    }
+
+    public Vector2F getIntendedVelocity() {
+        return new Vector2F(constantVelocity);
     }
 
     public void changeVX(int dx) {

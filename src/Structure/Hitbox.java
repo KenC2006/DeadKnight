@@ -22,8 +22,18 @@ public class Hitbox {
 
     }
 
+    public Hitbox(Vector2F topLeft, Vector2F bottomRight, Color c) {
+        this(topLeft, bottomRight);
+        colour = c;
+
+    }
+
     public Hitbox(int x1, int y1, int x2, int y2) {
         this(new Vector2F(x1, y1), new Vector2F(x2, y2));
+    }
+
+    public Hitbox(int x1, int y1, int x2, int y2, Color c) {
+        this(new Vector2F(x1, y1), new Vector2F(x2, y2), c);
     }
 
     public Hitbox(Hitbox copy) {
@@ -128,9 +138,19 @@ public class Hitbox {
         return shape.intersects(hitbox.shape);
     }
 
+    public boolean intersects(Hitbox hitbox, boolean equality) {
+        if (!enabled || !hitbox.enabled) return false;
+        return shape.intersects(hitbox.shape, equality);
+    }
+
     public boolean intersects(HitboxGroup hitbox) {
         if (!enabled) return false;
         return hitbox.intersects(this);
+    }
+
+    public boolean intersects(HitboxGroup hitbox, boolean equality) {
+        if (!enabled) return false;
+        return hitbox.intersects(this, equality);
     }
 
     public boolean quickIntersect(Hitbox hitbox) {
@@ -153,6 +173,16 @@ public class Hitbox {
 
     public boolean getEnabled() {
         return enabled;
+    }
+
+    public boolean quickIntersect(Hitbox hitbox, boolean equality) {
+        if (!enabled || !hitbox.enabled) return false;
+        if (equality) {
+            return !(hitbox.getLeft() >= getRight() || hitbox.getRight() <= getLeft() || hitbox.getTop() >= getBottom() || hitbox.getBottom() <= getTop());
+        } else {
+            return !(hitbox.getLeft() > getRight() || hitbox.getRight() < getLeft() || hitbox.getTop() > getBottom() || hitbox.getBottom() < getTop());
+        }
+
     }
 }
 

@@ -2,6 +2,7 @@ package Structure;
 
 import Universal.Camera;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class HitboxGroup {
@@ -61,14 +62,31 @@ public class HitboxGroup {
         return boundingBox.quickIntersect(other);
     }
 
+    public boolean quickIntersect(Hitbox other, boolean equality) {
+        return boundingBox.quickIntersect(other, equality);
+    }
+
     public boolean quickIntersect(HitboxGroup other) {
         return boundingBox.quickIntersect(other.boundingBox);
+    }
+
+    public boolean quickIntersect(HitboxGroup other, boolean equality) {
+        return boundingBox.quickIntersect(other.boundingBox, equality);
     }
 
     public boolean intersects(HitboxGroup group) {
         for (Hitbox h1 : hitboxes) {
             for (Hitbox h2: group.hitboxes) {
                 if (h1.intersects(h2)) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean intersects(HitboxGroup group, boolean equality) {
+        for (Hitbox h1 : hitboxes) {
+            for (Hitbox h2: group.hitboxes) {
+                if (h1.intersects(h2, equality)) return true;
             }
         }
         return false;
@@ -82,7 +100,21 @@ public class HitboxGroup {
         return false;
     }
 
+    public boolean intersects(Hitbox hitbox, boolean equality) {
+        for (Hitbox h1 : hitboxes) {
+            if (h1.intersects(hitbox, equality)) return true;
+        }
+
+        return false;
+    }
+
     public Hitbox getBoundingBox() {
         return boundingBox;
+    }
+
+    public void setColour(Color colour) {
+        for (Hitbox h: hitboxes) {
+            h.setColour(colour);
+        }
     }
 }

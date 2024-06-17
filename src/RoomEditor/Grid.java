@@ -28,25 +28,18 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final Stack<Integer> stack = new Stack<>();
     private Vector2F topLeftPoint = null;
     private final RoomObject selected = new RoomObject();
-    private JComboBox<File> dropDown;
-    private JComboBox<File> graphicPick;
+    private final JComboBox<File> dropDown;
     private File fileToSave;
 
-    public Grid() {
+    public Grid(File roomStorage) {
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
-        dropDown = new JComboBox<>(Objects.requireNonNull(new File("src/Rooms/Set1").listFiles()));
+        dropDown = new JComboBox<>(Objects.requireNonNull(roomStorage.listFiles()));
         dropDown.setFocusable(false);
         this.add(dropDown);
         dropDown.setVisible(true);
         dropDown.setLayout(null);
-
-        graphicPick = new JComboBox<>(Objects.requireNonNull(new File("graphics").listFiles()));
-        graphicPick.setFocusable(false);
-        this.add(graphicPick);
-        graphicPick.setVisible(true);
-        graphicPick.setLayout(null);
 
 
         loadFiles();
@@ -69,6 +62,31 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
     }
 
+    public void shift(Vector2F change) {
+        for (Rectangle wall : walls) {
+            wall.setLocation((int) (wall.getX() + change.getX()), (int) (wall.getY() + change.getY()));
+        }
+        for (Rectangle hazard : hazards) {
+            hazard.setLocation((int) (hazard.getX() + change.getX()), (int) (hazard.getY() + change.getY()));
+        }
+        for (Entrance entrance : entrances) {
+            entrance.setRelativeLocation(entrance.getLocation().getTranslated(change));
+        }
+        for (PlayerSpawn playerSpawn : playerSpawns) {
+            playerSpawn.translateInPlace(change);
+        }
+        for (ItemSpawn itemSpawn : itemSpawns) {
+            itemSpawn.translateInPlace(change);
+
+        }
+        for (EnemySpawn enemySpawn : enemySpawns) {
+            enemySpawn.translateInPlace(change);
+
+        }
+        updateTopLeft();
+        repaint();
+    }
+
     public ArrayList<Rectangle> getWalls() {
         return walls;
     }
@@ -87,9 +105,13 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.LIGHT_GRAY.brighter());
+        g.setColor(Color.LIGHT_GRAY.brighter().brighter());
         g.fillRect( (highlighted.getX() * scaledBoxSize / 1000), 0,  (scaledBoxSize), getHeight());
         g.fillRect(0,  (highlighted.getY() * scaledBoxSize / 1000), getWidth(),  (scaledBoxSize));
+
+        g.setColor(Color.PINK);
+        g.fillRect( ((highlighted.getX() - 15000) * scaledBoxSize / 1000),  ((highlighted.getY() - 14000) * scaledBoxSize / 1000),  (scaledBoxSize * 31),  (scaledBoxSize * 31));
+
 
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect( ((highlighted.getX() - 10000) * scaledBoxSize / 1000),  ((highlighted.getY() - 10000) * scaledBoxSize / 1000),  (scaledBoxSize * 21),  (scaledBoxSize * 21));
@@ -146,9 +168,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
         g.setColor(Color.BLACK);
         if (boxSize <= 0) return;
-        int last = 0;
         for (int i = 0; i < getWidth(); i += scaledBoxSize) {
-            last =  i;
             g.drawLine( i, 0,  i, getHeight());
         }
         for (int i = 0; i < getHeight(); i += scaledBoxSize) {
@@ -221,6 +241,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
         stack.pop();
         p1 = null;
+        updateTopLeft();
         repaint();
     }
 
@@ -238,6 +259,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         else walls.remove((Rectangle) selected.getObject());
         stack.remove(selected.getObject());
         selected.reset();
+        updateTopLeft();
     }
 
     public RoomObject getSelected() {
@@ -338,6 +360,19 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         return dropDown;
     }
 
+    private void updateTopLeft() {
+        topLeftPoint = null;
+        for (Rectangle wall: walls) {
+            topLeftPoint = new Vector2F((int) wall.getX(), (int) wall.getY()).getMin(topLeftPoint);
+        }
+        for (Entrance e: entrances) {
+            topLeftPoint = e.getLocation().getMin(topLeftPoint);
+        }
+        for (Rectangle h: hazards) {
+            topLeftPoint = new Vector2F((int) h.getX(), (int) h.getY()).getMin(topLeftPoint);
+        }
+    }
+
     public void loadFiles() {
         dropDown.addActionListener(new ActionListener() {
             @Override
@@ -358,7 +393,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                     int entranceNum = in.nextInt();
                     for (int i = 0; i < entranceNum; i++) {
                         Vector2F v1 = new Vector2F(in.nextInt(), in.nextInt()), v2 = new Vector2F(in.nextInt(), in.nextInt());
-                        topLeftPoint = v1.getMin(v2).getMin(topLeftPoint);
+                        topLeftPoint = v1.getMin(topLeftPoint);
 
                         entrances.add(new Entrance(v1, v2));
                     }

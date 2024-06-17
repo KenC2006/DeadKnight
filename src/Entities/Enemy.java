@@ -16,19 +16,20 @@ public abstract class Enemy extends Entity {
     public abstract void attack(ActionManager am);
 
     private final static int defaultWalkSpeed = 50;
-    private Vector2F playerPos = new Vector2F();
+    private Vector2F playerPos = new Vector2F(), spawnLocation;
 
     private int state, prevState;
     private int id;
     private int sightRadius;
     private Vector2F enemyPos = new Vector2F();
     private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
-    private GameTimer generatePathTimer = new GameTimer(30);
+    private GameTimer generatePathTimer = new GameTimer(60);
 
     private static int enemyCount;
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
         super(x, y, width, height);
         getStats().changeBaseHealth(health);
+        spawnLocation = new Vector2F(x, y);
 
         this.sightRadius = sightRadius;
         id = enemyCount;
@@ -42,7 +43,7 @@ public abstract class Enemy extends Entity {
         enemyPos = new Vector2F(copy.enemyPos);
         sightRadius = copy.sightRadius;
         setDefaultColour(Color.ORANGE);
-
+        spawnLocation = copy.spawnLocation;
 
     }
 
@@ -76,10 +77,21 @@ public abstract class Enemy extends Entity {
         }
     }
 
+    public void updateValues(NodeMap nodeMap, Player player) {
+        updatePlayerInfo(player);
+        updateEnemyPos(nodeMap);
+        generatePath(nodeMap);
+        updateValues();
+    }
+
     public void updateValues() {
         super.updateValues();
         if (getStats().getHealth() <= 0) {
             markToDelete(true);
+        }
+
+        if (Math.abs(getLocation().getX()) > 1000000000 || Math.abs(getLocation().getY()) > 1000000000) {
+            setLocation(spawnLocation);
         }
     }
 
@@ -187,10 +199,5 @@ public abstract class Enemy extends Entity {
     @Override
     public void paint(Camera c) {
         super.paint(c);
-        for (int i = 0; i < path.size() - 1; i++) {
-            if (i + 1 >= path.size()) break;
-            if (path.get(i) == null || path.get(i+1) == null) continue;
-//            c.drawLine(path.get(i), path.get(i + 1), Color.RED);
-        }
     }
 }

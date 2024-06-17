@@ -9,8 +9,12 @@ import Structure.Line;
 import Managers.ActionManager;
 import Structure.Vector2F;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * ARROW KEYS TO MOVE CAMERA
@@ -23,12 +27,19 @@ public class Camera {
     private double renderScaling;
     private int renderWidth, renderHeight;
     private boolean isMapCamera, centered, enabled;
+    private Vector2F translatedMouseCoords = new Vector2F();
+    private BufferedImage backgroundImage;
 
     public Camera(double scalingFactor, Vector2F offset, double size) {
         initialScaling = scalingFactor;
         renderScaling = size;
         this.topLeftLocation.copy(offset);
         enabled = true;
+        try {
+            backgroundImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/cloud_bg.png")));
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     public Camera(double scalingFactor) {
@@ -39,7 +50,7 @@ public class Camera {
         graphics = (Graphics2D) g;
         graphics.setStroke(new BasicStroke(1f));
         Rectangle screenSize = graphics.getClipBounds();
-        scaling = initialScaling * screenSize.getWidth() / 1280;
+        scaling = initialScaling * screenSize.getWidth() / (1280);
         if (!enabled) {
             renderHeight = 0;
             renderWidth = 0;
@@ -66,9 +77,7 @@ public class Camera {
     }
 
     public void drawHitbox(Hitbox h) {
-        for (int i = 0; i < h.pointCount(); i++) {
-            drawLine(new Line(h.getPoints().get(i), h.getPoints().get((i + 1) % h.pointCount())), h.getColour());
-        }
+        drawHitbox(h, h.getColour());
     }
 
     public void drawHitbox(Hitbox h, Color c) {
@@ -77,14 +86,30 @@ public class Camera {
         }
     }
 
+    public void drawImage(BufferedImage bufferedImage, Vector2F topLeftLocation, Vector2F bottomRightLocation) {
+        if (isMapCamera) return;
+        topLeftLocation = scaleAndShift(topLeftLocation);
+        bottomRightLocation = scaleAndShift(bottomRightLocation);
+//        int w = bottomRightLocation.getX() - topLeftLocation.getX(), h = bottomRightLocation.getY() - topLeftLocation.getY();
+
+        graphics.drawImage(
+                bufferedImage,
+                topLeftLocation.getX(), topLeftLocation.getY(), bottomRightLocation.getX(), bottomRightLocation.getY(),
+                0, 0, bufferedImage.getWidth(), bufferedImage.getHeight(),
+                null
+        );
+//        drawCoordinate(reverseScaleAndShift(topLeftLocation), Color.BLACK);
+//        drawCoordinate(reverseScaleAndShift(bottomRightLocation), Color.BLACK);
+    }
+
     public void drawGameCharacter(Entity e) {
         if (isMapCamera) {
             if (e instanceof Player) {
-                drawCoordinate(e.getLocation(), Color.BLUE, 3);
+                drawCoordinate(e.getCenterVector(), Color.BLUE, 3);
             } else if (e instanceof ItemPickup) {
-                drawCoordinate(e.getLocation(), e.getDefaultColour(), 3);
+                drawCoordinate(e.getCenterVector(), e.getDefaultColour(), 3);
             } else {
-                drawCoordinate(e.getLocation(), Color.RED, 3);
+                drawCoordinate(e.getCenterVector(), Color.RED, 3);
             }
 
             return;
@@ -101,13 +126,12 @@ public class Camera {
         if (x1 - absoluteOffset.getX() < -renderWidth || y1 - absoluteOffset.getY() < -renderHeight) return;
 
         if (isMapCamera) {
-            if (color != Color.RED && color != Color.BLUE) return;
-            graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000 * size), (int) (scaling * 1000 * size));
+//            if (color != Color.RED && color != Color.BLUE && color != Color.YELLOW) return;
+            graphics.fillOval((int) x1 - (int) (scaling * 1000 * size / 2), (int) y1 - (int) (scaling * 1000 * size / 2), (int) (scaling * 1000 * size), (int) (scaling * 1000 * size));
         } else {
             graphics.fillOval((int) x1, (int) y1, (int) (scaling * 1000 * size), (int) (scaling * 1000 * size));
 
         }
-
     }
 
     public void drawCoordinate(Vector2F c) {
@@ -145,6 +169,7 @@ public class Camera {
     }
 
     public void updateKeyPresses(ActionManager manager, WeaponType weaponType) {
+        translatedMouseCoords = reverseScaleAndShift(manager.getAbsoluteMouseLocation());
         if (weaponType == WeaponType.RANGED && !isMapCamera) {
             if (manager.getPressed(KeyEvent.VK_UP)) {
                 offset.changeY(-1500);
@@ -209,6 +234,13 @@ public class Camera {
             double y1 = scaleAndShiftY(offset.getY());
             graphics.drawOval((int) x1, (int) y1, (int) scaling, (int) scaling);
 
+        } else {
+            graphics.drawImage(
+                    backgroundImage,
+                    -backgroundImage.getWidth() * 5 - offset.getX() / 1000, -backgroundImage.getHeight() * 6 - offset.getY() / 1000, backgroundImage.getWidth() * 5 - offset.getX() / 1000, backgroundImage.getHeight() * 4 - offset.getY() / 1000,
+                    0, 0, backgroundImage.getWidth(), backgroundImage.getHeight(),
+                    null
+            );
         }
     }
 
@@ -255,5 +287,21 @@ public class Camera {
 
     private double scaleAndShiftY(double y) {
         return ((y - offset.getY()) * scaling) + absoluteOffset.getY();
+    }
+
+    private Vector2F scaleAndShift(Vector2F coords) {
+        return new Vector2F((int) scaleAndShiftX(coords.getX()), (int) scaleAndShiftY(coords.getY()));
+    }
+
+    private Vector2F reverseScaleAndShift(Vector2F screenCoords) {
+        return new Vector2F((int) ((screenCoords.getX() - absoluteOffset.getX()) / scaling + offset.getX()), (int) ((screenCoords.getY() - absoluteOffset.getY()) / scaling + offset.getY()));
+    }
+
+    public Vector2F getTranslatedMouseCoords() {
+        return translatedMouseCoords;
+    }
+
+    public void drawMouse() {
+        drawCoordinate(translatedMouseCoords, Color.YELLOW, 1);
     }
 }

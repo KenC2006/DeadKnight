@@ -1,8 +1,8 @@
-package Entities;
+package Entities.Enemies;
 
+import Entities.Enemy;
+import Entities.Player;
 import Items.ActivationType;
-import Items.Melee.BasicSpear;
-import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
 import Items.Melee.ShortSword;
 import Managers.ActionManager;
@@ -45,7 +45,7 @@ public class ShortMeleeEnemy extends Enemy {
         super.updatePlayerInfo(player);
         sword.doCollisionCheck(this, player);
     }
-
+    int n = 0;
     public void followPlayer() {
         if (getPath().isEmpty()) {
             return;
@@ -137,10 +137,10 @@ public class ShortMeleeEnemy extends Enemy {
 //            stopXMovement();
 //            System.out.println(getPlayerPos() + " " + getPos() + " " + getPlayerPos().getYDistance(getPos()));
             if (getPlayerPos().getXDistance(getCenterVector()) > 0) {
-                sword.activate(ActivationType.LEFT, am, getStats());
+                sword.activate(ActivationType.LEFT, am, this);
             }
             else {
-                sword.activate(ActivationType.RIGHT, am, getStats());
+                sword.activate(ActivationType.RIGHT, am, this);
             }
         }
         sword.update();
@@ -158,5 +158,10 @@ public class ShortMeleeEnemy extends Enemy {
     public void paint(Camera c) {
         super.paint(c);
         sword.draw(c);
+//        for (int i = 0; i < getPath().size() - 1; i++) {
+//            if (i + 1 >= getPath().size()) break;
+//            if (getPath().get(i) == null || getPath().get(i+1) == null) continue;
+//            c.drawLine(getPath().get(i), getPath().get(i + 1), Color.RED);
+//        }
     }
 }

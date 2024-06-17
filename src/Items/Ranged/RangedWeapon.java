@@ -1,6 +1,7 @@
 package Items.Ranged;
 
 import Entities.Entity;
+import Entities.Player;
 import Entities.Projectile;
 import Entities.Stats;
 import Items.ActivationType;
@@ -13,6 +14,7 @@ import Universal.GameTimer;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class RangedWeapon extends Weapon {
     private GameTimer fireCooldownTimer;
@@ -25,9 +27,10 @@ public class RangedWeapon extends Weapon {
     }
 
     @Override
-    public boolean activate(ActivationType dir, ActionManager ac, Stats owner) {
-        if (fireCooldownTimer.isReady() && (ac.getPressed(KeyEvent.VK_RIGHT) || ac.getPressed(KeyEvent.VK_LEFT) || ac.getPressed(KeyEvent.VK_UP) || ac.getPressed(KeyEvent.VK_DOWN))) {
-            int vx = 0, vy = 0;
+    public boolean activate(ActivationType dir, ActionManager ac, Entity owner) {
+        int vx = 0, vy = 0;
+        if (!fireCooldownTimer.isReady()) return false;
+        if (ac.getPressed(KeyEvent.VK_RIGHT) || ac.getPressed(KeyEvent.VK_LEFT) || ac.getPressed(KeyEvent.VK_UP) || ac.getPressed(KeyEvent.VK_DOWN)) {
             fireCooldownTimer.reset();
             if (ac.getPressed(KeyEvent.VK_RIGHT)) vx = 2000;
             else if (ac.getPressed(KeyEvent.VK_LEFT)) vx = -2000;
@@ -38,30 +41,20 @@ public class RangedWeapon extends Weapon {
             playerProjectileList.add(bullet);
             return true;
         }
+
+        if (ac.isMousePressed() && (owner instanceof Player)) {
+            fireCooldownTimer.reset();
+            System.out.println(owner.getIntendedVelocity());
+            Vector2F diff = ((Player) owner).getMouseLocation().getTranslated(owner.getCenterVector().getNegative()).normalize();
+            vx = diff.getX();
+            vy = diff.getY();
+
+            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy), getDamagePerHit());
+            playerProjectileList.add(bullet);
+            return true;
+        }
         return false;
     }
-
-//    @Override
-//    public void activate(ActivationType dir, ActionManager ac) {
-//        if (fireCooldownTimer.isReady() && (ac.getPressed(KeyEvent.VK_RIGHT) || ac.getPressed(KeyEvent.VK_LEFT) || ac.getPressed(KeyEvent.VK_UP) || ac.getPressed(KeyEvent.VK_DOWN))) {
-//            int vx = 0, vy = 0;
-//            if (ac.getPressed(KeyEvent.VK_RIGHT)) vx = 1;
-//            else if (ac.getPressed(KeyEvent.VK_LEFT)) vx = -1;
-//            else if (ac.getPressed(KeyEvent.VK_DOWN)) vy = 1;
-//            else if (ac.getPressed(KeyEvent.VK_UP)) vy = -1;
-//
-//            fireCooldownTimer.reset();
-//
-//            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-0.5, -0.5)), new Vector2F(vx, vy));
-//            bullet.setVY(vy);
-//            bullet.setVX(vx);
-//            playerProjectileList.add(bullet);
-//
-//
-////            playerProjectileList.add(new Projectile(getLocation().getTranslated(new Vector2F(-0.5, -0.5)), new Vector2F(vx, vy)));
-//
-//        }
-//    }
 
 
     @Override
