@@ -11,12 +11,30 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Objects;
 
-
 public class RoomEditor extends JFrame {
     private final Grid grid;
-    private static final File roomStorage = new File("src/Rooms/Set3"); // CHANGE SET NUMBER
+    private static File roomStorage; // CHANGE SET NUMBER
     public RoomEditor() {
+    	for (File f:new File(".").listFiles()) {
+    		System.out.println(f.getName());
+    	}
+    	System.out.println("------------");
+//		System.out.println(new File(".").getParent());
 
+//    	for (File f:new File("/bin").listFiles()) {
+//    		System.out.println(f.getName());
+//    	}
+    	System.out.println("------------");
+    	for (File f:new File("./bin").listFiles()) {
+    		System.out.println(f.getName());
+    	}
+//    	System.out.println("------------");
+//    	for (File f:new File("bin").listFiles()) {
+//    		System.out.println(f.getName());
+//    	}
+//    	System.out.println(new File("/").listFiles());
+
+    	roomStorage = new File("Rooms/Set3");
         grid = new Grid(roomStorage);
         add(grid);
         setLayout(new BorderLayout());

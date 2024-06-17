@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class MeleeWeapon extends Weapon {
@@ -34,8 +35,7 @@ public class MeleeWeapon extends Weapon {
     public void loadHitboxes(String filePath) {
         hitboxes = new HashMap<>();
         try {
-            File file = new File(getResourcePath() + filePath);
-            Scanner in = new Scanner(file);
+            Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + filePath)));
 
             ArrayList<Vector2F> points = new ArrayList<>();
             int n = in.nextInt();
@@ -71,7 +71,7 @@ public class MeleeWeapon extends Weapon {
                 h.setColour(Color.MAGENTA);
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             System.out.println("File not found: " + e);
         }
     }

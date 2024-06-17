@@ -54,16 +54,16 @@ public class ShortMeleeEnemy extends Enemy {
             return;
         }
         isPlayerFound = false;
-        if (Objects.equals(getPath().getFirst(), getPos()) && getPath().size() > 1) {
-            getPath().removeFirst();
+        if (Objects.equals(getPath().get(0), getPos()) && getPath().size() > 1) {
+            getPath().remove(0);
         }
-        if (getBottomPos().getXDistance(getPath().getFirst()) < 0) {
+        if (getBottomPos().getXDistance(getPath().get(0)) < 0) {
             super.moveX(-300);
         } else {
             super.moveX(300);
         }
-        if (getPath().getFirst().getYDistance(new Vector2F(super.getBottomPos().getX(), super.getBottomPos().getY())) > 2000) {
-            double xDist = Math.abs(getPath().getFirst().getXDistance(getBottomPos()));
+        if (getPath().get(0).getYDistance(new Vector2F(super.getBottomPos().getX(), super.getBottomPos().getY())) > 2000) {
+            double xDist = Math.abs(getPath().get(0).getXDistance(getBottomPos()));
             if (xDist < 10000 && isGrounded()) {
                 jump();
             }
@@ -117,7 +117,7 @@ public class ShortMeleeEnemy extends Enemy {
         while (!q2.isEmpty()) {
             getPath().add(0, q2.peek().getTranslated(graph.getTranslateOffset()));
             if (reversedMap.get(q2.peek()) == null) break;
-            q2.add(reversedMap.get(q2.remove()).getFirst());
+            q2.add(reversedMap.get(q2.remove()).get(0));
         }
     }
 
