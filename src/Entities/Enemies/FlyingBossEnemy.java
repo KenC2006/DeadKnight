@@ -18,7 +18,7 @@ public class FlyingBossEnemy extends Enemy {
     private final static int defaultWidth = 5000;
 
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
-    private GameTimer shootTimer = new GameTimer(5);
+    private GameTimer shootTimer = new GameTimer(10);
 
     private Vector2F velocity = new Vector2F();
     private GameTimer dashTimer = new GameTimer(120);
@@ -37,7 +37,7 @@ public class FlyingBossEnemy extends Enemy {
 
         stopXMovement();
         stopYMovement();
-        if (getStats().getHealth() != 500) System.out.println(getStats().getHealth());
+//        if (getStats().getHealth() != 500) System.out.println(getStats().getHealth());
         if (dashTimer.isReady() && getStats().getHealth() < 250) {
             dashTimer.reset();
 //            System.out.println(getStats().getHealth());

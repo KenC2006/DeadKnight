@@ -19,7 +19,7 @@ public class FlyingEnemy extends Enemy {
     private Vector2F velocity = new Vector2F();
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
     private GameTimer moveTimer = new GameTimer(5);
-    private GameTimer shootTimer = new GameTimer(5);
+    private GameTimer shootTimer = new GameTimer(30);
 
     public FlyingEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 25000000);
