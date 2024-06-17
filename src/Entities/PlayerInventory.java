@@ -15,10 +15,12 @@ public class PlayerInventory {
     private ArrayList<Weapon> primarySlot = new ArrayList<>();
     private ArrayList<Item> secondarySlot = new ArrayList<>();
     private GameTimer itemSwapCooldown;
-    private int intelligence, selectedPrimary, selectedSecondary;
+    private final Player player;
+    private int intelligence = 1000, selectedPrimary, selectedSecondary;
 
-    public PlayerInventory() {
+    public PlayerInventory(Player p) {
         itemSwapCooldown = new GameTimer(10);
+        player = p;
     }
 
     public void draw(Camera c) {
@@ -43,6 +45,7 @@ public class PlayerInventory {
         switch (item.getType()) {
             case RANGED:
             case MELEE:
+                item.setLocation(player.getLocation());
                 primarySlot.add((Weapon) item);
                 return true;
             case CONSUMABLE:
@@ -117,5 +120,9 @@ public class PlayerInventory {
 
     public void setIntelligence(int intelligence) {
         this.intelligence = intelligence;
+    }
+
+    public void spendIntelligence(int cost) {
+        setIntelligence(getIntelligence() - cost);
     }
 }

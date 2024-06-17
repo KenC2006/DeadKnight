@@ -1,6 +1,7 @@
 package Structure;
 
 import Entities.*;
+import Items.Chest;
 import Items.ItemPickup;
 import Managers.ActionManager;
 import Managers.EnemyManager;
@@ -29,6 +30,7 @@ public class Room {
     private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
     private ArrayList<ItemPickup> groundedItems = new ArrayList<>();
+    private ArrayList<Chest> chests = new ArrayList<>();
     private NodeMap nodeMap;
     private ArrayList<EnemySpawn> enemySpawns = new ArrayList<>();
     private ArrayList<PlayerSpawn> playerSpawns = new ArrayList<>();
@@ -71,8 +73,6 @@ public class Room {
 
         cleared = enemies.isEmpty();
         walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
-
-
     }
 
     public Room(File file, int setNumber, int fileNumber) throws IOException {
@@ -190,6 +190,8 @@ public class Room {
         for (ItemSpawn i: itemSpawns) {
             addItemPickup(new ItemPickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
         }
+
+        chests.add(new Chest(getTopLeft().getTranslated(new Vector2F(0, 0))));
     }
 
     public void spawnPlayer(Player p) {
@@ -212,6 +214,10 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.paint(c);
         }
+
+        for (Chest chest: chests) {
+            chest.paint(c);
+        }
         nodeMap.drawNodes(c);
     }
 
@@ -220,6 +226,11 @@ public class Room {
         isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 60__0_000_000_0L;
         for (ItemPickup item: groundedItems) {
             item.updateValues(player);
+
+        }
+
+        for (Chest chest: chests) {
+            chest.updateValues();
 
         }
 
@@ -234,6 +245,9 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.resolveRoomCollisions(loadedRooms);
         }
+        for (Chest chest: chests) {
+            chest.resolveRoomCollisions(loadedRooms);
+        }
         if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             e.resolveRoomCollisions(loadedRooms);
@@ -245,6 +259,10 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             player.resolveEntityCollision(item);
         }
+        for (Chest chest: chests) {
+            player.resolveEntityCollision(chest);
+        }
+
         if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
             player.resolveEntityCollision(e);
@@ -254,8 +272,16 @@ public class Room {
     public void updateData() {
         groundedItems.removeIf(Entity::getToDelete);
 
+//        System.out.println("Before: " + chests.size());
+        chests.removeIf(Entity::getToDelete);
+//        System.out.println("After: " + chests.size());
+
         for (ItemPickup item: groundedItems) {
             item.updateData();
+        }
+
+        for (Chest chest: chests) {
+            chest.updateData();
         }
         if (!isPlayerInRoom) return;
 
@@ -297,6 +323,24 @@ public class Room {
             walls.addHitbox(new Hitbox(e.getHitbox()));
 //            System.out.println("HITBOX COLOUR IS " + e.getHitbox().getColour());
         }
+    }
+
+    public void toggleChest() {
+        for (Chest c: chests) {
+            if (!c.getCollidingWithPlayer()) {
+                c.setOpen(false);
+                continue;
+            }
+            c.setOpen(!c.getOpen());
+            return;
+        }
+    }
+
+    public Chest getOpenChest() {
+        for (Chest c: chests) {
+            if (c.getOpen()) return c;
+        }
+        return null;
     }
 
     public boolean isVisited() {

@@ -31,7 +31,7 @@ public class GamePanel extends JPanel{
         actionManager = new ActionManager();
         entityManager = new EntityManager();
         cameraManager = new CameraManager(entityManager.getPlayer());
-        gameUIManager=new GameUIManager(entityManager.getPlayer(),this);
+        gameUIManager = new GameUIManager(entityManager,this);
         actionManager.addPanel(this);
 //        setBackground(new Color(78, 42, 10));
         setBackground(Color.BLACK);
@@ -68,8 +68,9 @@ public class GamePanel extends JPanel{
 
         cameraManager.update(actionManager, entityManager);
         gameUIManager.update(actionManager);
+        entityManager.updateKeyPresses(actionManager);
         if (!gamePaused) {
-            entityManager.updateKeyPresses(actionManager);
+            entityManager.updatePlayerPresses(actionManager);
             entityManager.update(actionManager);
         }
     }

@@ -58,8 +58,6 @@ public class ItemPickup extends Entity {
                 setDefaultColour(Color.BLUE.darker()); break;
             case MANA:
                 setDefaultColour(Color.BLUE.brighter()); break;
-
-
         }
     }
 

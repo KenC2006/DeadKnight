@@ -1,9 +1,6 @@
 package Entities;
 
-import Items.ActivationType;
-import Items.GameItem;
-import Items.InstantItem;
-import Items.ItemPickup;
+import Items.*;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
@@ -35,11 +32,11 @@ public class Player extends Entity {
 
     public Player(int x, int y){
         super(x, y, 1000, 2000);
-        playerInventory = new PlayerInventory();
+        playerInventory = new PlayerInventory(this);
         playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
-        playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
-        playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
-        playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
+//        playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
+//        playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
+//        playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
         setDefaultControls();
         getStats().changeBaseHealth(100);
         getStats().changeBaseMana(100);
@@ -202,7 +199,12 @@ public class Player extends Entity {
             item.pickupItem(this);
 //            item.markToDelete(true);
 //            playerInventory.setIntelligence(playerInventory.getIntelligence()+1);
+    }
 
+    public void resolveEntityCollision(Chest chest) {
+        chest.setCollidingWithPlayer(false);
+        if (!chest.collidesWith(this)) return;
+        chest.setCollidingWithPlayer(true);
     }
 
     @Override

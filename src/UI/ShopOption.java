@@ -30,6 +30,15 @@ public class ShopOption {
     public boolean purchaseItem(Player purchaser) {
         if (!canPurchase(purchaser)) return false;
         purchaser.addItem(soldItem);
+        purchaser.getPlayerInventory().spendIntelligence(costToPurchase);
         return true;
+    }
+
+    public String getTitle() {
+        return soldItem.getItemName();
+    }
+
+    public String getLore() {
+        return soldItem.getItemDescription();
     }
 }

@@ -1,7 +1,10 @@
 package Managers;
 
 import Entities.Player;
+import Items.Chest;
 import Structure.Room;
+import UI.GameUIManager;
+import UI.ShopUIContainer;
 import Universal.Camera;
 
 import java.awt.event.KeyEvent;
@@ -10,6 +13,7 @@ public class EntityManager {
     private final Player player;
     private RoomManager roomManager;
     private int levelNumber = 2; // CHANGE SET NUMBER
+    private Chest openChest;
 
     public EntityManager() {
         player = new Player(-1000, -6000);
@@ -19,10 +23,24 @@ public class EntityManager {
     }
 
     public void updateKeyPresses(ActionManager manager) {
-        player.updateKeyPresses(manager);
         if (manager.getPressed(KeyEvent.VK_L)) {
             roomManager.generateLevel(player, levelNumber);
         }
+
+        if (manager.getPressed(KeyEvent.VK_F)) {
+            roomManager.toggleChest();
+        }
+
+        openChest = roomManager.getOpenChest();
+        roomManager.updateRoomUI(player);
+    }
+
+    public void updatePlayerPresses(ActionManager manager) {
+        player.updateKeyPresses(manager);
+    }
+
+    public Chest getOpenChest() {
+        return openChest;
     }
 
     public void update(ActionManager actionManager) {

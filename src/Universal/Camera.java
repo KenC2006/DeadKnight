@@ -8,6 +8,7 @@ import Structure.Hitbox;
 import Structure.Line;
 import Managers.ActionManager;
 import Structure.Vector2F;
+import UI.ShopUIContainer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -244,11 +245,17 @@ public class Camera {
         }
     }
 
+    public void drawShopUI(ShopUIContainer s) {
+
+    }
+
     public void paintForeground() {
         if (isMapCamera) {
             graphics.setStroke(new BasicStroke(10f));
             graphics.setColor(Color.YELLOW);
             graphics.drawRect((int) (scaleAndShiftX(offset.getX()) - renderWidth), (int) (scaleAndShiftY(offset.getY()) - renderHeight), (int) renderWidth * 2, (int) renderHeight * 2);
+        } else {
+
         }
     }
 
