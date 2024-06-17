@@ -15,15 +15,15 @@ import java.util.*;
 
 public class ShortMeleeEnemy extends Enemy {
 
-    private final static int defaultHeight = 5000; // asl
-    private final static int defaultWidth = 2000;
+    private final static int defaultHeight = 2000; // asl
+    private final static int defaultWidth = 1000;
 
     private boolean isDashing, isAttacking, isPlayerFound;
     private MeleeWeapon sword;
     private static int playerWidth, playerHeight;
 
     public ShortMeleeEnemy(int x, int y, int health) {
-        super(x, y, 2000, 5000, health, 25000000);
+        super(x, y, defaultWidth, defaultHeight, health, 25000000);
         sword = new ShortSword(getCenterVector());
     }
 
