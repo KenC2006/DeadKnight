@@ -22,14 +22,12 @@ public class PlayerUI extends UI {
     private int boxHeight = brushStroke;
     private int hpFill = 0;
     private int manaFill = 0;
-    private int currentPlayerHealth;
-    private int currentPlayerMana;
+    private int currentPlayerHealth=0;
+    private int currentPlayerMana=0;
 
 
     public PlayerUI(Player player) throws IOException {
         this.player = player;
-        currentPlayerHealth=player.getStats().getHealth();
-        currentPlayerMana = player.getStats().getMana();
         intelligenceIcon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/intelligence.png")));
         killStreakIcon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/skull.png")));
         intelligenceIcon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/intelligence.png")));
@@ -119,6 +117,8 @@ public class PlayerUI extends UI {
 
     @Override
     public void draw() {
+        if (currentPlayerHealth<player.getStats().getHealth()) currentPlayerHealth=player.getStats().getHealth();
+        if (currentPlayerMana<player.getStats().getMana()) currentPlayerMana=player.getStats().getMana();
         Graphics2D g = getGraphics();
         drawPlayerHP(g);
         drawIntelligenceCount(g);

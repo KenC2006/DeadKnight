@@ -51,7 +51,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             }
         });
     }
-    
+
     public void addHazard(){
         if (selected !=null && walls.contains(selected.getObject())) {
             hazards.add((Rectangle)selected.getObject());
@@ -316,9 +316,12 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
 
         topLeftPoint = p1.getMin(topLeftPoint);
+        if (p2 !=null){
+            System.out.println(p2.getX()/1000+" "+p2.getY()/1000);
+        }
 
-        walls.add(new Rectangle(p1.getX(), p1.getY(), p1.getXDistance(p2) + 1000, p1.getYDistance(p2) + 1000));
-        stack.add(2);
+//        walls.add(new Rectangle(p1.getX(), p1.getY(), p1.getXDistance(p2) + 1000, p1.getYDistance(p2) + 1000));
+//        stack.add(2);
         p1 = null;
         p2 = null;
         repaint();
@@ -439,7 +442,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         int mouseX =  ((e.getX() / scaledBoxSize) * 1000), mouseY =  ((e.getY() / scaledBoxSize) * 1000);
         if (p1 == null) {
             p1 = new Vector2F(mouseX, mouseY);
-            selected.setObject(returnSelected());
+         //   selected.setObject(returnSelected());
         } else if (p2 == null) {
             p2 = new Vector2F(mouseX, mouseY);
             addRect();
