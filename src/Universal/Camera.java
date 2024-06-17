@@ -9,9 +9,12 @@ import Structure.Line;
 import Managers.ActionManager;
 import Structure.Vector2F;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * ARROW KEYS TO MOVE CAMERA
@@ -25,12 +28,18 @@ public class Camera {
     private int renderWidth, renderHeight;
     private boolean isMapCamera, centered, enabled;
     private Vector2F translatedMouseCoords = new Vector2F();
+    private BufferedImage backgroundImage;
 
     public Camera(double scalingFactor, Vector2F offset, double size) {
         initialScaling = scalingFactor;
         renderScaling = size;
         this.topLeftLocation.copy(offset);
         enabled = true;
+        try {
+            backgroundImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/cloud_bg.png")));
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     public Camera(double scalingFactor) {
@@ -89,8 +98,8 @@ public class Camera {
                 0, 0, bufferedImage.getWidth(), bufferedImage.getHeight(),
                 null
         );
-        drawCoordinate(reverseScaleAndShift(topLeftLocation), Color.BLACK);
-        drawCoordinate(reverseScaleAndShift(bottomRightLocation), Color.BLACK);
+//        drawCoordinate(reverseScaleAndShift(topLeftLocation), Color.BLACK);
+//        drawCoordinate(reverseScaleAndShift(bottomRightLocation), Color.BLACK);
     }
 
     public void drawGameCharacter(Entity e) {
@@ -160,7 +169,7 @@ public class Camera {
     }
 
     public void updateKeyPresses(ActionManager manager, WeaponType weaponType) {
-        translatedMouseCoords = reverseScaleAndShift(manager.getMouseLocation());
+        translatedMouseCoords = reverseScaleAndShift(manager.getAbsoluteMouseLocation());
         if (weaponType == WeaponType.RANGED && !isMapCamera) {
             if (manager.getPressed(KeyEvent.VK_UP)) {
                 offset.changeY(-1500);
@@ -225,6 +234,13 @@ public class Camera {
             double y1 = scaleAndShiftY(offset.getY());
             graphics.drawOval((int) x1, (int) y1, (int) scaling, (int) scaling);
 
+        } else {
+            graphics.drawImage(
+                    backgroundImage,
+                    -backgroundImage.getWidth() * 5 - offset.getX() / 1000, -backgroundImage.getHeight() * 6 - offset.getY() / 1000, backgroundImage.getWidth() * 5 - offset.getX() / 1000, backgroundImage.getHeight() * 4 - offset.getY() / 1000,
+                    0, 0, backgroundImage.getWidth(), backgroundImage.getHeight(),
+                    null
+            );
         }
     }
 

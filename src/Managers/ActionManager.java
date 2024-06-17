@@ -8,11 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-public class
-ActionManager implements KeyListener, MouseListener, MouseMotionListener {
+public class ActionManager implements KeyListener, MouseListener, MouseMotionListener {
     private final Map<Integer, Boolean> pressed = new HashMap<>();
     private int lastPressed = 0;
-    private Vector2F mouseLocation = new Vector2F();
+    private Vector2F absoluteMouseLocation = new Vector2F();
     private boolean mousePressed;
 
     public void addPanel(JPanel panel) {
@@ -21,8 +20,8 @@ ActionManager implements KeyListener, MouseListener, MouseMotionListener {
         panel.addMouseMotionListener(this);
     }
 
-    public Vector2F getMouseLocation() {
-        return mouseLocation;
+    public Vector2F getAbsoluteMouseLocation() {
+        return absoluteMouseLocation;
     }
 
     public boolean getPressed(int code) {
@@ -88,7 +87,8 @@ ActionManager implements KeyListener, MouseListener, MouseMotionListener {
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        absoluteMouseLocation.setX(e.getX());
+        absoluteMouseLocation.setY(e.getY());
     }
 
     /**
@@ -96,7 +96,7 @@ ActionManager implements KeyListener, MouseListener, MouseMotionListener {
      */
     @Override
     public void mouseMoved(MouseEvent e) {
-        mouseLocation.setX(e.getX());
-        mouseLocation.setY(e.getY());
+        absoluteMouseLocation.setX(e.getX());
+        absoluteMouseLocation.setY(e.getY());
     }
 }

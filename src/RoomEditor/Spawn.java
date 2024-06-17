@@ -41,4 +41,8 @@ public class Spawn {
         setX(x);
         setY(y);
     }
+
+    public void translateInPlace(Vector2F change) {
+        location.translateInPlace(change);
+    }
 }

@@ -67,13 +67,15 @@ public class Room {
         background = copy.background;
         setNumber = copy.setNumber;
 
+        cleared = enemies.isEmpty();
+        walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
+
     }
 
     public Room(File file, int setNumber, int fileNumber) throws IOException {
         numberOfUniqueRooms++;
         this.setNumber = setNumber;
         Scanner in = new Scanner(file);
-        System.out.println(fileNumber);
         try {
             background = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/set" + setNumber + "/background" + fileNumber + ".png")));
 
@@ -88,7 +90,7 @@ public class Room {
             int y1 = Integer.parseInt(temp[1]);
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
-            walls.addHitbox(new Hitbox(x1, y1, x2, y2, Color.RED));
+            walls.addHitbox(new Hitbox(x1, y1, x2, y2, Color.GREEN));
         }
 
         int nEntrances = Integer.parseInt(in.nextLine());
@@ -128,12 +130,14 @@ public class Room {
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new EnemySpawn(x, y));
             enemies.add(enemyManager.createEnemy(x, y)); // change when more types of enemies added
-            cleared = false;
         }
         nodeMap = new NodeMap(this);
 
         roomID = numberOfUniqueRooms;
         setVisited(true);
+
+        cleared = enemies.isEmpty();
+        walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
     }
 
     public Vector2F getCenterRelativeToRoom() {
@@ -189,8 +193,8 @@ public class Room {
     }
 
     public void drawRoom(Camera c) {
-//        if (c.isMapCamera()) walls.draw(c);
-        walls.draw(c);
+        if (c.isMapCamera()) walls.draw(c);
+//        walls.draw(c);
         if (background != null) {
             c.drawImage(background, walls.getBoundingBox().getTopLeft(), walls.getBoundingBox().getBottomRight());
         }
@@ -209,7 +213,7 @@ public class Room {
 //        System.out.println(player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()));
         isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 10000000000L;
         for (ItemPickup item: groundedItems) {
-            item.updateValues();
+            item.updateValues(player);
 
         }
 
@@ -264,8 +268,14 @@ public class Room {
         for (Enemy e : enemies) {
             if (e.getToDelete()) {
                 ItemPickup newItem = new ItemPickup(e.getCenterVector());
-                newItem.setActualVX((int) (Math.random() * 4000 - 2000));
-                newItem.setActualVY((int) (-2000));
+                if (setNumber == 1) {
+                    newItem.setActualVX((int) (Math.random() * 4000 - 2000));
+                    newItem.setActualVY((int) (-2000));
+                } else if (setNumber == 2) {
+                    newItem.setAffectedByGravity(false);
+                    newItem.setActualVX((int) (Math.random() * 4000 - 2000));
+                    newItem.setActualVY((int) (Math.random() * 4000 - 2000));
+                }
                 addItemPickup(newItem);
             }
             e.attack(am);
