@@ -26,10 +26,10 @@ public class MeleeWeapon extends Weapon {
         super(damage, startingLocation, ItemType.MELEE);
         swingCooldownTimer = new GameTimer(swingCooldown);
         swingLengthTimer = new GameTimer(swingLength);
-        loadHitboxes("/" + weaponName + ".txt");
+        loadHitboxes(weaponName);
     }
 
-    public void loadHitboxes(String filePath) {
+    public void loadHitboxes(String weaponName) {
         hitboxes = new HashMap<>();
         try {
 //            System.out.println("Fetching: " + "/Items/WeaponData" + filePath);
@@ -37,7 +37,7 @@ public class MeleeWeapon extends Weapon {
 //                System.out.println(f.getName());
 //            }
 //            Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + filePath)));
-            Scanner in =  new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + "/BasicSpear.txt")));
+            Scanner in =  new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData/" + weaponName + ".txt")));
 
             ArrayList<Vector2F> points = new ArrayList<>();
             int n = in.nextInt();

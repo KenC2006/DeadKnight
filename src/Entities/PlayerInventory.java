@@ -47,6 +47,7 @@ public class PlayerInventory {
             case MELEE:
                 item.setLocation(player.getLocation());
                 primarySlot.add((Weapon) item);
+                System.out.println("Added item " + item.getItemName());
                 return true;
             case CONSUMABLE:
                 secondarySlot.add((Item) item);
@@ -71,6 +72,7 @@ public class PlayerInventory {
     public void setPrimaryIndex(int selectedPrimary) {
         if (itemSwapCooldown.isReady()) {
             this.selectedPrimary = (selectedPrimary + primarySlot.size()) % primarySlot.size();
+//            System.out.println("Swapped to " +  primarySlot.get(this.selectedPrimary).getItemName());
             itemSwapCooldown.reset();
         }
     }

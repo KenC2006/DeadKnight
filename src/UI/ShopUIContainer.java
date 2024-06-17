@@ -52,14 +52,14 @@ public class ShopUIContainer {
                 g2d.setColor(new Color(155, 103, 60));
             }
             g2d.fillRect(xLoc, yLoc, itemWidth, itemHeight);
-            drawCenteredString(g2d, options.get(i).getTitle(), new Font("Monospaced", Font.PLAIN, 10),  xLoc + itemWidth / 2,  yLoc + margin, itemWidth);
-            drawCenteredString(g2d, options.get(i).getLore(), new Font("Monospaced", Font.PLAIN, 10), xLoc + itemWidth / 2, yLoc + itemHeight - margin * 5, itemWidth);
-            drawCenteredString(g2d, "Cost: " + options.get(i).getCostToPurchase(), new Font("Monospaced", Font.PLAIN, 10), xLoc + itemWidth / 2, yLoc + itemHeight - margin, itemWidth);
+            drawCenteredString(g2d, options.get(i).getTitle(), new Font("Times New Roman", Font.BOLD, margin / 2),  xLoc + itemWidth / 2,  yLoc + margin, itemWidth);
+            drawCenteredString(g2d, options.get(i).getLore(), new Font("Times New Roman", Font.BOLD, margin / 2), xLoc + itemWidth / 2, yLoc + itemHeight - margin * 5, itemWidth);
+            drawCenteredString(g2d, "Cost: " + options.get(i).getCostToPurchase(), new Font("Times New Roman", Font.BOLD, margin / 2), xLoc + itemWidth / 2, yLoc + itemHeight - margin, itemWidth);
             BufferedImage image = options.get(i).getItemIcon();
 
             int imageWidth = itemWidth;
-            int imageHeight = image.getHeight() * imageWidth / itemWidth;
-            if (imageHeight < itemHeight - margin * 7) {
+            int imageHeight = image.getHeight() * imageWidth / image.getWidth();
+            if (imageHeight < itemHeight - margin * 9) {
                 g2d.drawImage(
                         image,
                         xLoc, yLoc + margin * 2, xLoc + itemWidth, yLoc + image.getHeight() * itemWidth / image.getWidth() + margin * 2,
@@ -67,7 +67,7 @@ public class ShopUIContainer {
                         null
                 );
             } else {
-                imageHeight = itemHeight - margin * 7;
+                imageHeight = itemHeight - margin * 9;
                 imageWidth = image.getWidth() * imageHeight / image.getHeight();
                 g2d.drawImage(
                         image,
@@ -107,12 +107,16 @@ public class ShopUIContainer {
             ArrayList<String> newWords = new ArrayList<>();
             StringBuilder currentLine = new StringBuilder();
             for (int i = 0; i < words.size(); i++) {
-                if (metrics.stringWidth(currentLine.toString() + words.get(i)) > maxWidth || i == words.size() - 1) {
+                if (metrics.stringWidth(currentLine.toString() + words.get(i)) > maxWidth) {
                     splitString.add(currentLine.toString());
-                    if (i == words.size() - 1) break;
                     for (int j = i; j < words.size(); j++) {
                         newWords.add(words.get(j));
                     }
+                    break;
+
+                } else if (i == words.size() - 1) {
+                    currentLine.append(words.get(i));
+                    splitString.add(currentLine.toString());
                     break;
                 }
                 currentLine.append(words.get(i)).append(" ");

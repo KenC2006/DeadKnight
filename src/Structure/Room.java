@@ -62,8 +62,12 @@ public class Room {
             itemSpawns.add(new Spawn(spawn));
         }
 
-        for (Enemy e : copy.enemies) {
-            enemies.add(enemyManager.copy(e)); // change when more types of enemies added
+        for (Spawn spawn: copy.chestSpawns) {
+            chestSpawns.add(new Spawn(spawn));
+        }
+
+        for (Spawn spawn: copy.bossSpawns) {
+            bossSpawns.add(new Spawn(spawn));
         }
 
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
@@ -137,9 +141,10 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new Spawn(x, y, Spawn.SpawnType.ENEMY));
-            enemies.add(enemyManager.createEnemy(x, y)); // change when more types of enemies added
             cleared = false;
         }
+
+        int nHazards = Integer.parseInt(in.nextLine()); // UNUSED
 
         int nChestSpawns = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nChestSpawns; i++) {
@@ -211,7 +216,18 @@ public class Room {
             addItemPickup(new ItemPickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
         }
 
-        chests.add(new Chest(getTopLeft().getTranslated(new Vector2F(0, 0))));
+        for (Spawn chest: chestSpawns) {
+            System.out.println("Spawning at " + getTopLeft().getTranslated(chest.getLocation()) + " | " + chest.getLocation());
+            addChest(new Chest(getTopLeft().getTranslated(chest.getLocation())));
+        }
+
+        for (Spawn enemy: enemySpawns) {
+            enemies.add(enemyManager.createEnemy(getTopLeft().getTranslated(enemy.getLocation()).getX(), getTopLeft().getTranslated(enemy.getLocation()).getY())); //TODO CHANGE TO TAKE VECTOR // change when more types of enemies added
+        }
+
+        for (Spawn boss: bossSpawns) {
+            enemies.add(enemyManager.createEnemy(getTopLeft().getTranslated(boss.getLocation()).getX(), getTopLeft().getTranslated(boss.getLocation()).getY())); //TODO CHANGE TO TAKE VECTOR // change when more types of enemies added
+        }
     }
 
     public void spawnPlayer(Player p) {
@@ -383,8 +399,12 @@ public class Room {
         return roomID;
     }
 
-    public void addItemPickup(ItemPickup item) {
+    private void addItemPickup(ItemPickup item) {
         groundedItems.add(item);
+    }
+
+    private void addChest(Chest chest) {
+        chests.add(chest);
     }
 
     public HitboxGroup getHitbox() {

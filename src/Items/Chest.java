@@ -30,7 +30,7 @@ public class Chest extends Entity {
     private void initialize() {
         container.addShopItem(10, new BasicSword(new Vector2F(0, 0)));
         container.addShopItem(10, new BasicSpear(new Vector2F(0, 0)));
-        container.addShopItem(10, new InstantItem(new Vector2F(0, 0), InstantItem.InstantType.MAX_HEALTH));
+        container.addShopItem(10, new InstantItem(new Vector2F(0, 0)));
     }
 
     public void setCollidingWithPlayer(boolean collidingWithPlayer) {

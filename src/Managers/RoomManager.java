@@ -53,7 +53,7 @@ public class RoomManager {
             ArrayList<Room> roomsToDraw = new ArrayList<>(loadedRooms);
 //            if (loadedRooms.isEmpty()) return;
             for (Room room : roomsToDraw) {
-                if (room == null) System.out.println(roomsToDraw);
+//                if (room == null) System.out.println(roomsToDraw);
                 assert room != null;
                 room.drawRoom(c);
                 enemyManager.drawEnemies(room.getEnemies(), c);
@@ -196,7 +196,7 @@ public class RoomManager {
             r.setupRoom();
         }
         allRooms.get(0).spawnPlayer(p);
-        System.out.println(allRooms.get(0));
+//        System.out.println(allRooms.get(0));
     }
 
     public void loadRoomsFromFile(int setNumber) {

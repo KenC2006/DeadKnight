@@ -7,7 +7,7 @@ import Universal.GameTimer;
 
 public class Stats {
     private int baseHealth, health, baseMana, mana, damageAddition, damageRemoval, defence, baseJumps, jumps, manaRegen;
-    private double damageMultiplier, healthMultiplier, manaMultiplier;
+    private double damageMultiplier, healthMultiplier, manaMultiplier, critChance, critDamage;
     private GameTimer jumpTimer, manaRegenerationTimer;
 
     public Stats(int baseHealth, int baseMana) {
@@ -22,6 +22,8 @@ public class Stats {
         healthMultiplier = 1;
         manaMultiplier = 1;
         baseJumps = 1;
+        critChance = 0;
+        critDamage = 1;
         jumps = 1;
         jumpTimer = new GameTimer(10);
         manaRegen = 0;
@@ -58,7 +60,7 @@ public class Stats {
     }
 
     private int getBuffedDamage(int initialDamage) {
-        return (int) ((initialDamage + damageAddition) * damageMultiplier);
+        return (int) ((initialDamage + damageAddition) * damageMultiplier * (Math.random() * 100 < critChance ? critDamage / 100 : 1));
     }
 
     private int getReducedDamage(int initialDamage) {
@@ -121,5 +123,13 @@ public class Stats {
 
     public void changeManaMultiplier(double change) {
         manaMultiplier = Math.max(1, manaMultiplier + change);
+    }
+
+    public void increaseCritDamage(double amount) {
+        critDamage += amount;
+    }
+
+    public void increaseCritRate(double chance) {
+        critChance = Math.min(100, critChance + chance);
     }
 }
