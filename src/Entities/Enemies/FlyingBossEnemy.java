@@ -30,7 +30,7 @@ public class FlyingBossEnemy extends Enemy {
 
     @Override
     public void followPlayer() {
-        System.out.println("s");
+//        System.out.println("s");
         velocity = getPlayerPos().getTranslated(new Vector2F(getX(), getY()).getNegative());
         velocity.normalize();
         velocity = new Vector2F(velocity.getX()/20, velocity.getY()/20);
