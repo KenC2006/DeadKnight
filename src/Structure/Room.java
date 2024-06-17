@@ -23,7 +23,6 @@ import java.util.Scanner;
 
 public class Room {
     private static int numberOfUniqueRooms = 0;
-    private boolean isPlayerInRoom = false;
     private boolean visited = false, cleared = true;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
@@ -211,14 +210,14 @@ public class Room {
 
     public void updateValues(Player player) {
 //        System.out.println(player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()));
-        isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 13000000000L;
         for (ItemPickup item: groundedItems) {
             item.updateValues(player);
 
         }
 
         for (Enemy e : enemies) {
-            if (isPlayerInRoom) {
+            e.updatePlayerInfo(player);
+            if (e.isPlayerNear()) {
                 e.updateValues(nodeMap, player);
             }
         }
@@ -228,8 +227,8 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.resolveRoomCollisions(loadedRooms);
         }
-        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
+            if (!e.isPlayerNear()) continue;
             e.resolveRoomCollisions(loadedRooms);
         }
 
@@ -239,8 +238,8 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             player.resolveEntityCollision(item);
         }
-        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
+            if (!e.isPlayerNear()) continue;
             player.resolveEntityCollision(e);
         }
     }
@@ -251,7 +250,6 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.updateData();
         }
-        if (!isPlayerInRoom) return;
 
         if (enemies.isEmpty() != cleared) {
             walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
@@ -259,13 +257,14 @@ public class Room {
         }
 
         for (Enemy e : enemies) {
+            if (!e.isPlayerNear()) continue;
             e.updateData();
         }
     }
 
     public void updateEnemies(ActionManager am) {
-        if (!isPlayerInRoom) return;
         for (Enemy e : enemies) {
+            if (!e.isPlayerNear()) continue;
             if (e.getToDelete()) {
                 ItemPickup newItem = new ItemPickup(e.getCenterVector());
                 if (setNumber == 1) {
