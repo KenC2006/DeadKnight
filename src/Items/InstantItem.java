@@ -2,6 +2,7 @@ package Items;
 
 import Entities.Entity;
 import Entities.Player;
+import Entities.PlayerInventory;
 import Entities.Stats;
 import Managers.ActionManager;
 import Structure.Vector2F;

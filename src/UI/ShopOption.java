@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 public class ShopOption {
     private final GameItem soldItem;
     private int costToPurchase;
-
     public ShopOption(GameItem soldItem, int cost) {
         this.soldItem = soldItem;
         this.costToPurchase = cost;

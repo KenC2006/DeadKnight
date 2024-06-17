@@ -11,13 +11,13 @@ import Universal.GameTimer;
 
 import java.util.ArrayList;
 
-public class Inventory {
+public class PlayerInventory {
     private ArrayList<Weapon> primarySlot = new ArrayList<>();
     private ArrayList<Item> secondarySlot = new ArrayList<>();
     private GameTimer itemSwapCooldown;
     private int intelligence, selectedPrimary, selectedSecondary;
 
-    public Inventory() {
+    public PlayerInventory() {
         itemSwapCooldown = new GameTimer(10);
     }
 
@@ -118,5 +118,4 @@ public class Inventory {
     public void setIntelligence(int intelligence) {
         this.intelligence = intelligence;
     }
-
 }

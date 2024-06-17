@@ -199,8 +199,8 @@ public class Room {
     }
 
     public void drawRoom(Camera c) {
-        if (c.isMapCamera()) walls.draw(c);
-//        walls.draw(c);
+//        if (c.isMapCamera()) walls.draw(c);
+        walls.draw(c);
         if (background != null) {
             c.drawImage(background, walls.getBoundingBox().getTopLeft(), walls.getBoundingBox().getBottomRight());
         }
@@ -312,6 +312,7 @@ public class Room {
         this.revealed = true;
         walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
         for (Entrance e: entrances) {
+            if (!e.isConnected()) continue;
             e.getConnectedEntrance().getParentRoom().setRevealed(true);
         }
     }

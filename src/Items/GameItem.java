@@ -22,6 +22,8 @@ public abstract class GameItem {
     private BufferedImage imageIcon;
     private Vector2F location = new Vector2F();
     private ItemType itemType;
+    private String itemName;
+    private String itemDescription;
 
     public GameItem(Vector2F location, ItemType itemType) {
         this.itemType = itemType;
@@ -58,5 +60,21 @@ public abstract class GameItem {
 
     private void setItemType(ItemType type) {
         itemType = type;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getItemDescription() {
+        return itemDescription;
+    }
+
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
     }
 }

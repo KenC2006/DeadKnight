@@ -27,7 +27,7 @@ public class Player extends Entity {
     private Direction direction;
     private int framesSinceStartedJumping;
     private int framesPassed, lastUpPressed;
-    private Inventory playerInventory;
+    private PlayerInventory playerInventory;
     private int killStreak=0;
     private final ArrayList<Integer> controls = new ArrayList<>();
     private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
@@ -35,7 +35,7 @@ public class Player extends Entity {
 
     public Player(int x, int y){
         super(x, y, 1000, 2000);
-        playerInventory = new Inventory();
+        playerInventory = new PlayerInventory();
         playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
         playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
@@ -49,10 +49,6 @@ public class Player extends Entity {
         dashLengthTimer = new GameTimer(10);
         dashImmunityTimer = new GameTimer(15);
 
-    }
-
-    public Inventory getPlayerInventory() {
-        return playerInventory;
     }
 
     public ArrayList<Integer> getControls() {
@@ -269,5 +265,9 @@ public class Player extends Entity {
 
     public void setMouseLocation(Vector2F mouseLocation) {
         this.mouseLocation = mouseLocation;
+    }
+
+    public PlayerInventory getPlayerInventory() {
+        return playerInventory;
     }
 }
