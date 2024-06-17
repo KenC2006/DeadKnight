@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class TeleportEnemy extends Enemy {
 
     private final static int defaultHeight = 10000; // asl
-    private final static int defaultWidth = 2000;
+    private final static int defaultWidth = 1000;
     private Vector2F teleportOption = new Vector2F();
 
     GameTimer teleportTimer = new GameTimer(180);

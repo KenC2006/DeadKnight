@@ -211,7 +211,7 @@ public class Room {
 
     public void updateValues(Player player) {
 //        System.out.println(player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()));
-        isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 60__0_000_000_0L;
+        isPlayerInRoom = player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()) < 10000000000L;
         for (ItemPickup item: groundedItems) {
             item.updateValues(player);
 
