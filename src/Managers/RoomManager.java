@@ -7,6 +7,7 @@ import RoomEditor.Entrance;
 import Structure.Room;
 import Structure.Vector2F;
 
+import javax.xml.stream.events.EntityReference;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -87,6 +88,7 @@ public class RoomManager {
             Entrance e = entrancesToGenerate.get((int)(Math.random() * entrancesToGenerate.size())); // TODO generate rooms based on entrances closest to the center
             entrancesToGenerate.remove(e);
             ArrayList<Room> compatibleRooms = new ArrayList<>();
+            ArrayList<Entrance> connectedEntrance = new ArrayList<>();
             for (Room newRoom: possibleBiomeRooms) {
                 Room testRoom = new Room(newRoom);
                 if (testRoom.getRoomID() == r.getRoomID()) continue;
@@ -104,15 +106,16 @@ public class RoomManager {
                     }
 
                     if (collides) continue;
-                    connectingEntrance.setConnected(true);
+                    connectingEntrance.setConnected(true, e);
                     compatibleRooms.add(testRoom);
+                    connectedEntrance.add(connectingEntrance);
                     break;
                 }
             }
 
             int randomRoom = (int)(Math.random() * compatibleRooms.size());
             if (compatibleRooms.isEmpty()) continue;
-            e.setConnected(true);
+            e.setConnected(true, connectedEntrance.get(randomRoom));
             addRoom(compatibleRooms.get(randomRoom));
             loadRoom(compatibleRooms.get(randomRoom));
             toGenerateNeighbours.add(compatibleRooms.get(randomRoom));

@@ -82,8 +82,11 @@ public class Room {
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
 
-            entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
-            entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
+            Entrance newEntrance = new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2));
+            newEntrance.setParent(this);
+            entrances.add(newEntrance);
+
+            entranceHitboxes.addHitbox(new Hitbox(newEntrance.getHitbox()));
 
         }
         int nPlayerSpawns = Integer.parseInt(in.nextLine());
@@ -115,7 +118,7 @@ public class Room {
         nodeMap = new NodeMap(this);
 
         roomID = numberOfUniqueRooms;
-        setVisited(true);
+//        setVisited(true);
     }
 
     public Vector2F getCenterRelativeToRoom() {
