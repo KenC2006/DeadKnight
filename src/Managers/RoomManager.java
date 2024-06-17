@@ -142,7 +142,7 @@ public class RoomManager {
 
                     if (collides) continue;
                     if (setNumber == 1 || setNumber == 3) {
-                        connectingEntrance.setConnected(true);
+                        connectingEntrance.setConnected(true, e);
                         compatibleRooms.add(testRoom);
                         connectedEntrance.add(connectingEntrance);
 
