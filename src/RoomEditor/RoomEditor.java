@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class RoomEditor extends JFrame {
     private final Grid grid;
-    private static final File roomStorage = new File("src/Rooms/Set2"); // CHANGE SET NUMBER
+    private static final File roomStorage = new File("src/Rooms/Set3"); // CHANGE SET NUMBER
     public RoomEditor() {
 
         grid = new Grid(roomStorage);
@@ -39,10 +39,10 @@ public class RoomEditor extends JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_I) grid.addItemSpawn();
                 if (e.getKeyCode() == KeyEvent.VK_E) grid.addEnemySpawn();
 
-                if (e.getKeyCode() == KeyEvent.VK_I) grid.shift(new Vector2F(0, -1000));
-                if (e.getKeyCode() == KeyEvent.VK_J) grid.shift(new Vector2F(-1000, 0));
-                if (e.getKeyCode() == KeyEvent.VK_K) grid.shift(new Vector2F(0, 1000));
-                if (e.getKeyCode() == KeyEvent.VK_L) grid.shift(new Vector2F(1000, 0));
+                if (e.getKeyCode() == KeyEvent.VK_U) grid.shift(new Vector2F(0, -1000));
+                if (e.getKeyCode() == KeyEvent.VK_H) grid.shift(new Vector2F(-1000, 0));
+                if (e.getKeyCode() == KeyEvent.VK_J) grid.shift(new Vector2F(0, 1000));
+                if (e.getKeyCode() == KeyEvent.VK_K) grid.shift(new Vector2F(1000, 0));
 
 
                 if (e.getKeyCode() == KeyEvent.VK_H) grid.addHazard();

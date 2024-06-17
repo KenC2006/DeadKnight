@@ -80,7 +80,7 @@ public class RoomManager {
         loadRoom(startingRoom);
 
         toGenerateNeighbours.add(startingRoom);
-        while (!toGenerateNeighbours.isEmpty() && (setNumber != 1 || allRooms.size() < 30)) {
+        while (!toGenerateNeighbours.isEmpty() && (!(setNumber == 1 || setNumber == 3) || allRooms.size() < 30)) {
 //        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 30) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
@@ -116,7 +116,7 @@ public class RoomManager {
 //                            collides = true;
 //                            break;
 //                        }
-                        if (setNumber == 1) {
+                        if (setNumber == 1 || setNumber == 3) {
                             if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
                                 collides = true;
                                 break;
@@ -130,7 +130,7 @@ public class RoomManager {
                     }
 
                     if (collides) continue;
-                    if (setNumber == 1) {
+                    if (setNumber == 1 || setNumber == 3) {
                         connectingEntrance.setConnected(true);
                         compatibleRooms.add(testRoom);
                         break;
