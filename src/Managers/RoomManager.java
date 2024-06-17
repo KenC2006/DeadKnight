@@ -169,11 +169,16 @@ public class RoomManager {
     }
 
     public void loadRoomsFromFile(int setNumber) {
-        for (File f: Objects.requireNonNull(new File("src/Rooms/Set" + setNumber).listFiles())) {
+    	int numOfRooms = 0;
+    	if (setNumber == 1) numOfRooms = 23;
+    	if (setNumber == 2) numOfRooms = 17;
+    	if (setNumber == 3) numOfRooms = 19;
+    	for (int i = 1; i <= numOfRooms; i++) {
+//        for (File f: Objects.requireNonNull(new File("res/Rooms/Set" + setNumber).listFiles())) {
             try {
-                possibleBiomeRooms.add(new Room(f, setNumber, Integer.parseInt(f.getName().substring(4, f.getName().length() - 4))));
+                possibleBiomeRooms.add(new Room("/Rooms/Set" + setNumber, setNumber, i));
             } catch (IOException e) {
-                System.out.println("Unable to load file " + f.getName());
+                System.out.println("Unable to load file " + setNumber + ":" + i);
                 System.out.println(e);
             }
         }

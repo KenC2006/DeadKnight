@@ -69,10 +69,11 @@ public class Room {
 
     }
 
-    public Room(File file, int setNumber, int fileNumber) throws IOException {
+    public Room(String filePath, int setNumber, int fileNumber) throws IOException {
         numberOfUniqueRooms++;
         this.setNumber = setNumber;
-        Scanner in = new Scanner(file);
+        System.out.println(filePath + "/room" + fileNumber + ".txt");
+        Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream(filePath + "/room" + fileNumber + ".txt")));
       //  System.out.println(fileNumber);
         try {
             background = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/set" + setNumber + "/background" + fileNumber + ".png")));

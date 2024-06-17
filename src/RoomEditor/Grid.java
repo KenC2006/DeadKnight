@@ -56,7 +56,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         if (selected !=null && walls.contains(selected.getObject())) {
             hazards.add((Rectangle)selected.getObject());
             walls.remove(selected.getObject());
-            stack.removeLast();
+            stack.remove(stack.size()-1);
             stack.add(6);
             selected.reset();
         }
@@ -226,18 +226,18 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void undoLastMove() {
         if (stack.isEmpty()) return;
-        if (stack.getLast() == 1) {
-            getEntrances().removeLast();
-        } else if (stack.getLast() == 2) {
-            getWalls().removeLast();
-        } else if (stack.getLast() == 3) {
-            getPlayerSpawns().removeLast();
-        } else if (stack.getLast() == 4) {
-            getItemSpawns().removeLast();
-        } else if (stack.getLast() == 5) {
-            getEnemySpawns().removeLast();
-        } else if (stack.getLast() == 6) {
-            getHazards().removeLast();
+        if (stack.get(stack.size()-1) == 1) {
+            getEntrances().remove(stack.size()-1);
+        } else if (stack.get(stack.size()-1) == 2) {
+            getWalls().remove(stack.size()-1);
+        } else if (stack.get(stack.size()-1) == 3) {
+            getPlayerSpawns().remove(stack.size()-1);
+        } else if (stack.get(stack.size()-1) == 4) {
+            getItemSpawns().remove(stack.size()-1);
+        } else if (stack.get(stack.size()-1) == 5) {
+            getEnemySpawns().remove(stack.size()-1);
+        } else if (stack.get(stack.size()-1) == 6) {
+            getHazards().remove(stack.size()-1);
         }
         stack.pop();
         p1 = null;

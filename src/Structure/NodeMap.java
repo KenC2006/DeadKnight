@@ -27,9 +27,9 @@ public class NodeMap {
         enemySpawns = room.getEnemySpawns();
         if (room.getPlayerSpawns().isEmpty()) {
             System.out.println(room.getRoomID());
-            playerSpawn = new PlayerSpawn(room.getEnemySpawns().getFirst().getX(), room.getEnemySpawns().getFirst().getY());
+            playerSpawn = new PlayerSpawn(room.getEnemySpawns().get(0).getX(), room.getEnemySpawns().get(0).getY());
         } else {
-            playerSpawn = room.getPlayerSpawns().getFirst();
+            playerSpawn = room.getPlayerSpawns().get(0);
 
         }
 

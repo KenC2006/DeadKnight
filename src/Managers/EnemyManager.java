@@ -48,7 +48,7 @@ public class EnemyManager {
                 for (Room room : loadedRooms) {
                     if (isEnemyInRoom(room, cur_room.getEnemies().get(i))) {
                         room.getEnemies().add(cur_room.getEnemies().get(i)); // need to change for more types of enemies
-                        toRemove.addFirst(i);
+                        toRemove.add(i);
                     }
                 }
             }
