@@ -1,6 +1,5 @@
 package Items.Melee;
 
-import Entities.Enemy;
 import Entities.Entity;
 import Entities.Stats;
 import Items.ActivationType;
@@ -13,8 +12,6 @@ import Universal.Camera;
 import Universal.GameTimer;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -35,7 +32,12 @@ public class MeleeWeapon extends Weapon {
     public void loadHitboxes(String filePath) {
         hitboxes = new HashMap<>();
         try {
-            Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + filePath)));
+//            System.out.println("Fetching: " + "/Items/WeaponData" + filePath);
+//            for (File f: new File("/Rooms").listFiles()) {
+//                System.out.println(f.getName());
+//            }
+//            Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + filePath)));
+            Scanner in =  new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + "/BasicSpear.txt")));
 
             ArrayList<Vector2F> points = new ArrayList<>();
             int n = in.nextInt();
