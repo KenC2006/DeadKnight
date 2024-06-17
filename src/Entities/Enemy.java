@@ -25,7 +25,7 @@ public abstract class Enemy extends Entity {
     private Vector2F enemyPos = new Vector2F();
     private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
     private GameTimer generatePathTimer = new GameTimer(60);
-    private boolean isPlayerNear;
+    private boolean isPlayerNear, shouldAddEnemy;
 
     private static int enemyCount;
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
@@ -102,7 +102,6 @@ public abstract class Enemy extends Entity {
         isPlayerNear = player.getCenterVector().getEuclideanDistance(getCenterVector()) < 10000000000L;
 //        System.out.println(isPlayerNear);
     }
-
 
     public void translateEnemy(Vector2F offset) {
         setX(getX() + offset.getX());
@@ -205,6 +204,14 @@ public abstract class Enemy extends Entity {
 
     public boolean isPlayerNear() {
         return isPlayerNear;
+    }
+
+    public boolean shouldAddEnemy() {
+        return shouldAddEnemy;
+    }
+
+    public void changeShouldAddEnemy(boolean change) {
+        shouldAddEnemy = change;
     }
 
     @Override

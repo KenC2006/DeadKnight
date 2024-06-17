@@ -1,6 +1,9 @@
 package Structure;
 
 import Entities.*;
+import Entities.Enemies.FlyingEnemy;
+import Entities.Enemies.SummonerBossEnemy;
+import Entities.Enemies.TeleportEnemy;
 import Items.ItemPickup;
 import Managers.ActionManager;
 import Managers.EnemyManager;
@@ -68,7 +71,6 @@ public class Room {
 
         cleared = enemies.isEmpty();
         walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
-
     }
 
     public Room(File file, int setNumber, int fileNumber) throws IOException {
@@ -215,12 +217,15 @@ public class Room {
 
         }
 
+        ArrayList<Enemy> toAdd = new ArrayList<> ();
         for (Enemy e : enemies) {
             e.updatePlayerInfo(player);
             if (e.isPlayerNear()) {
+                if (e instanceof SummonerBossEnemy && e.shouldAddEnemy()) toAdd.add(new FlyingEnemy(e.getX(), e.getY(), 50));
                 e.updateValues(nodeMap, player);
             }
         }
+        enemies.addAll(toAdd);
     }
 
     public void resolveRoomCollisions(ArrayList<Room> loadedRooms) {
