@@ -8,7 +8,10 @@ import Structure.Vector2F;
 import Universal.Camera;
 import Universal.GameTimer;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TeleportEnemy extends Enemy {
 
@@ -20,6 +23,12 @@ public class TeleportEnemy extends Enemy {
 
     public TeleportEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 225);
+        try {
+            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/leaf.png"))));
+
+        } catch (IOException e) {
+            System.out.println("Enemy image not found: " + e);
+        }
     }
 
     @Override

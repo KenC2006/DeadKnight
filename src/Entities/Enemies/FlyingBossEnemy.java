@@ -11,7 +11,10 @@ import Structure.Vector2F;
 import Universal.Camera;
 import Universal.GameTimer;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class FlyingBossEnemy extends Enemy {
     private final static int defaultHeight = 5000; // asl
@@ -27,6 +30,12 @@ public class FlyingBossEnemy extends Enemy {
     public FlyingBossEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 679);
         setAffectedByGravity(false);
+        try {
+            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/acorn2.png"))));
+
+        } catch (IOException e) {
+            System.out.println("Enemy image not found: " + e);
+        }
     }
 
     @Override

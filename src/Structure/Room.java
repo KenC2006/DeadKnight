@@ -85,7 +85,7 @@ public class Room {
     public Room(String filePath, int setNumber, int fileNumber) throws IOException {
         numberOfUniqueRooms++;
         this.setNumber = setNumber;
-        System.out.println(filePath + "/room" + fileNumber + ".txt");
+//        System.out.println(filePath + "/room" + fileNumber + ".txt");
         Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream(filePath + "/room" + fileNumber + ".txt")));
       //  System.out.println(fileNumber);
         try {
@@ -221,7 +221,7 @@ public class Room {
         }
 
         for (Spawn chest: chestSpawns) {
-            System.out.println("Spawning at " + getTopLeft().getTranslated(chest.getLocation()) + " | " + chest.getLocation());
+//            System.out.println("Spawning at " + getTopLeft().getTranslated(chest.getLocation()) + " | " + chest.getLocation());
             addChest(new Chest(getTopLeft().getTranslated(chest.getLocation())));
         }
 
@@ -236,7 +236,7 @@ public class Room {
 
     public void spawnPlayer(Player p) {
         Spawn spawn = playerSpawns.get((int) (Math.random() * playerSpawns.size()));
-        System.out.println("Spawning player at " + spawn.getLocation());
+//        System.out.println("Spawning player at " + spawn.getLocation());
         p.setLocation(getTopLeft().getTranslated(spawn.getLocation()).getTranslated(new Vector2F(-p.getWidth() / 2, -p.getHeight() * 9 / 10)));
     }
 
@@ -264,7 +264,7 @@ public class Room {
     public void updateValues(Player player) {
 //        System.out.println(player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()));
         for (ItemPickup item: groundedItems) {
-            item.updateValues();
+            item.updateValues(player);
 
         }
 
@@ -353,7 +353,7 @@ public class Room {
     }
 
     public void closeEntrances() {
-        if (setNumber == 2) return;
+        if (setNumber == 2 || setNumber == 3) return;
         for (Entrance e: entrances) {
             if (e.isConnected()) continue;
             e.getHitbox().setColour(Color.GREEN);
