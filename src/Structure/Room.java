@@ -130,7 +130,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new Spawn(x, y, Spawn.SpawnType.ENEMY));
-            enemies.add(enemyManager.createEnemy(x, y)); // change when more types of enemies added
+            enemies.add(enemyManager.createEnemy(x, y));
             cleared = false;
         }
 
@@ -148,6 +148,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             bossSpawns.add(new Spawn(x, y, Spawn.SpawnType.BOSS));
+            enemies.add(enemyManager.createBoss(x, y));
         }
 
         nodeMap = new NodeMap(this);
@@ -236,7 +237,7 @@ public class Room {
         for (Enemy e : enemies) {
             e.updatePlayerInfo(player);
             if (e.isPlayerNear()) {
-                if (e instanceof SummonerBossEnemy && e.shouldAddEnemy()) toAdd.add(new FlyingEnemy(e.getX(), e.getY(), 50));
+                if (e instanceof SummonerBossEnemy && e.shouldAddEnemy()) toAdd.add(new FlyingEnemy(e.getCenterVector().getX(), e.getCenterVector().getY(), 50));
                 e.updateValues(nodeMap, player);
             }
         }

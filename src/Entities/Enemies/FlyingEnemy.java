@@ -75,7 +75,7 @@ public class FlyingEnemy extends Enemy {
         }
         if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
             shootTimer.reset();
-            velocity = new Vector2F(velocity.getX() * 10, velocity.getY() * 10);
+            velocity = new Vector2F(velocity.getX() * 3, velocity.getY() * 3);
             projectiles.add(new Projectile(new Vector2F(getX(), getY()), new Vector2F(1000, 1000), velocity, 1));
         }
         resolveEntityCollision(player);

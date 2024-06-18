@@ -20,7 +20,6 @@ public class ShortMeleeEnemy extends Enemy {
 
     private boolean isDashing, isAttacking, isPlayerFound;
     private MeleeWeapon sword;
-    private static int playerWidth, playerHeight;
 
     public ShortMeleeEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 25000000);

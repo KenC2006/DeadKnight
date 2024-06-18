@@ -15,20 +15,28 @@ public class EnemyManager {
 
     public Enemy createEnemy(int x, int y) {
         int rn = (int)(Math.random() * 100);
-        if (rn > 80) {
-            return new FlyingBossEnemy(x - FlyingBossEnemy.getDefaultWidth()/2, y - FlyingBossEnemy.getDefaultHeight() + 500, 500);
-        }
-        else if (rn > 50) {
+        if (rn > 63) {
             return new FlyingEnemy(x - FlyingEnemy.getDefaultWidth()/2, y - FlyingEnemy.getDefaultHeight() + 500, 50);
         }
-        else if (rn > 20) {
+        else if (rn > 25) {
             return new ShortMeleeEnemy(x - ShortMeleeEnemy.getDefaultWidth()/2, y - ShortMeleeEnemy.getDefaultHeight() + 500, 50);
-        }
-        else if (rn > 1) {
-            return new SummonerBossEnemy(x - SummonerBossEnemy.getDefaultWidth()/2, y - SummonerBossEnemy.getDefaultHeight() + 500, 500);
         }
         else {
             return new TeleportEnemy(x - TeleportEnemy.getDefaultWidth()/2, y - TeleportEnemy.getDefaultHeight() + 3000, 50);
+        }
+    }
+
+    public Enemy createBoss(int x, int y) {
+        int rn = (int)(Math.random() * 100);
+        if (rn > 70) {
+            return new FlyingBossEnemy(x - FlyingBossEnemy.getDefaultWidth()/2, y - FlyingBossEnemy.getDefaultHeight() + 500, 500);
+        }
+        else if (rn > 40) {
+            return new TossBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 500);
+//            return new SummonerBossEnemy(x - SummonerBossEnemy.getDefaultWidth()/2, y - SummonerBossEnemy.getDefaultHeight() + 500, 500);
+        }
+        else {
+            return new SummonerBossEnemy(x - SummonerBossEnemy.getDefaultWidth()/2, y - SummonerBossEnemy.getDefaultHeight() + 3000, 50);
         }
     }
 
@@ -38,6 +46,7 @@ public class EnemyManager {
         if (e instanceof TeleportEnemy) return new TeleportEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         if (e instanceof FlyingBossEnemy) return new FlyingBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         if (e instanceof SummonerBossEnemy) return new SummonerBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
+        if (e instanceof TossBossEnemy) return new TossBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         System.out.println("poop!");
         return null;
     }

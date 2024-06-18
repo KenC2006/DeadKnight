@@ -26,6 +26,7 @@ public abstract class Enemy extends Entity {
     private ArrayList<Vector2F> path = new ArrayList<Vector2F>();
     private GameTimer generatePathTimer = new GameTimer(60);
     private boolean isPlayerNear, shouldAddEnemy;
+    private Vector2F translateOffset = new Vector2F();
 
     private static int enemyCount;
     public Enemy(int x, int y, int width, int height, int health, int sightRadius) {
@@ -104,8 +105,13 @@ public abstract class Enemy extends Entity {
     }
 
     public void translateEnemy(Vector2F offset) {
+        translateOffset = new Vector2F(offset);
         setX(getX() + offset.getX());
         setY(getY() + offset.getY());
+    }
+
+    public Vector2F getTranslateOffset() {
+        return translateOffset;
     }
 
     public ArrayList<Vector2F> getPath() {

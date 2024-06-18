@@ -40,8 +40,8 @@ public class FlyingBossEnemy extends Enemy {
         if (dashTimer.isReady() && getStats().getHealth() < 250) {
             dashTimer.reset();
 //            System.out.println(getStats().getHealth());
-            setIntendedVX(velocity.getX() * 10);
-            setIntendedVY(velocity.getY() * 10);
+            setIntendedVX(velocity.getX() * 5);
+            setIntendedVY(velocity.getY() * 5);
         }
         else {
             if (getPlayerPos().getEuclideanDistance(getCenterVector()) > 300000000) {
@@ -78,7 +78,7 @@ public class FlyingBossEnemy extends Enemy {
             if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
                 shootTimer.reset();
                 double rDegree = Math.random() * Math.PI/4 * ((int)(Math.random() * 2 + 0.5) - 1);
-                velocity = new Vector2F(((int)(velocity.getX() * Math.cos(rDegree) - velocity.getY() * Math.sin(rDegree)) * 10), (int)((velocity.getY() * Math.cos(rDegree) - velocity.getX() * Math.sin(rDegree))) * 10);
+                velocity = new Vector2F(((int)(velocity.getX() * Math.cos(rDegree) - velocity.getY() * Math.sin(rDegree)) * 5), (int)((velocity.getY() * Math.cos(rDegree) - velocity.getX() * Math.sin(rDegree))) * 5);
                 projectiles.add(new Projectile(getCenterVector(), new Vector2F(1000, 1000), velocity, 1));
             }
         }
