@@ -43,6 +43,7 @@ public class GameUIManager {
         if (em.getPlayer().isDead()) {
             menu.setMenuOn(true);
         }
+        em.getPlayer().setDead(false);
     }
 
     public void draw(Graphics g) {

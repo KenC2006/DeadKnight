@@ -146,6 +146,9 @@ public class Menu extends UI implements ActionListener {
             for (JButton uiButton : uiButtons) {
                 uiButton.setVisible(false);
             }
+            for (JButton controlButton : controlButtons) {
+                controlButton.setVisible(false);
+            }
             Graphics2D g = getGraphics();
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
@@ -158,6 +161,7 @@ public class Menu extends UI implements ActionListener {
             g.drawString(text, textX,(getPanelHeight() - metrics.getHeight()) / 2 + metrics.getAscent());
             g.drawImage(gameIcon,textX+metrics.stringWidth(text),(panel.getHeight()-gameIcon.getHeight())/2,null);
             player.setGenerateRooms(true);
+            panel.repaint();
         }
         if (e.getSource() == resetControls) {
             for (int i = 0; i < player.getControls().size(); i++) {
@@ -186,11 +190,11 @@ public class Menu extends UI implements ActionListener {
             }
         } else if (e.getSource() == controls) {
             controlsOn = true;
-            for (JButton uiButton : uiButtons) {
-                uiButton.setVisible(false);
-            }
             for (JButton controlButton : controlButtons) {
                 controlButton.setVisible(true);
+            }
+            for (JButton uiButton : uiButtons) {
+                uiButton.setVisible(false);
             }
         }
     }
@@ -212,11 +216,10 @@ public class Menu extends UI implements ActionListener {
     public void setMenuOn(boolean menuOn) {
         this.menuOn = menuOn;
         if (menuOn) {
-            for (JButton b: uiButtons) {
-                b.setVisible(true);
-
-            }
             text = "Dead Knight";
+        }
+        for (JButton b: uiButtons) {
+            b.setVisible(true);
         }
     }
 }
