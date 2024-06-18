@@ -2,11 +2,14 @@ package Entities;
 
 import Universal.Camera;
 import Structure.*;
+import Universal.GameTimer;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Entity {
+    private ArrayList<BufferedImage> frames;
     private Vector2F position, velocity, lastVelocity, constantVelocity;
     private Stats entityStats;
     private Hitbox hitbox;
@@ -15,6 +18,8 @@ public class Entity {
     private Color defaultColour = Color.GREEN;
     private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, onLeft, onRight, destroyedOnWallImpact;
     private boolean toDelete;
+    private int frameIndex;
+    private GameTimer frameSpeed;
 
     public Entity(int x, int y, int width, int height) {
         position = new Vector2F(x, y);
@@ -22,6 +27,8 @@ public class Entity {
         constantVelocity = new Vector2F();
         hitbox = new Hitbox(x, y, x + width, y + height);
         entityStats = new Stats(0, 0);
+        frames = new ArrayList<>();
+        frameSpeed = new GameTimer(5);
     }
 
     public Entity(Vector2F position, Vector2F size, Vector2F constantVelocity) {
@@ -30,6 +37,9 @@ public class Entity {
         this.constantVelocity = new Vector2F(constantVelocity);
 
         hitbox = new Hitbox(position, position.getTranslated(size));
+        frames = new ArrayList<>();
+        frameSpeed = new GameTimer(5);
+
 
     }
 
@@ -38,8 +48,19 @@ public class Entity {
         this(position, size, new Vector2F(0, 0));
     }
 
+    public void addFrame(BufferedImage frame) {
+        frames.add(frame);
+    }
+
     public void paint(Camera c) {
         c.drawGameCharacter(this);
+        if (frames == null || frames.size() == 0) return;
+        if (frameSpeed.isReady()) {
+            frameIndex = (frameIndex + 1) % frames.size();
+            frameSpeed.reset();
+        }
+        BufferedImage frame = frames.get(frameIndex);
+        c.drawImage(frame, getLocation().getTranslated(new Vector2F(-1000, -1000)), getLocation().getTranslated(new Vector2F(frame.getWidth() * (getHeight() + 1000) / frame.getHeight(), getHeight() + 1000)));
 //        c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 

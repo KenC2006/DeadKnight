@@ -11,6 +11,8 @@ import Structure.NodeMap;
 import Structure.Vector2F;
 import Universal.Camera;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.*;
 
 public class ShortMeleeEnemy extends Enemy {
@@ -26,6 +28,12 @@ public class ShortMeleeEnemy extends Enemy {
         super(x, y, defaultWidth, defaultHeight, health, 25000000);
         sword = new ShortSword();
         sword.setLocation(getCenterVector());
+        try {
+            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/wizard.png"))));
+
+        } catch (IOException e) {
+            System.out.println("Enemy image not found: " + e);
+        }
     }
 
     public String getType() {

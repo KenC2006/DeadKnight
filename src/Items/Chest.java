@@ -14,8 +14,12 @@ import UI.ShopUIContainer;
 import Universal.Camera;
 import Universal.GameTimer;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Chest extends Entity {
     private boolean collidingWithPlayer;
@@ -23,10 +27,19 @@ public class Chest extends Entity {
     private int selectedIndex = -1;
     private GameTimer openCooldown;
     private ShopUIContainer container;
+    private BufferedImage chestImage;
     public Chest(Vector2F location) {
         super(location.getX(), location.getY(), 3000, 2000);
         container = new ShopUIContainer(this);
         openCooldown = new GameTimer(20);
+
+        try {
+            chestImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/chest.png")));
+
+        } catch (IOException e) {
+            System.out.println("Chest image not found: " + e);
+        }
+
         initialize();
     }
 
@@ -87,5 +100,13 @@ public class Chest extends Entity {
         allWeapons.add(new BasicSpear());
         allWeapons.add(new BasicSword());
         return allWeapons.get((int) (Math.random() * allWeapons.size()));
+    }
+
+    @Override
+    public void paint(Camera c) {
+        c.drawGameCharacter(this);
+
+        c.drawImage(chestImage, getLocation(), getLocation().getTranslated(new Vector2F(chestImage.getWidth() * (getHeight()) / chestImage.getHeight(), getHeight())));
+//        c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 }
