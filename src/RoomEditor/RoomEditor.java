@@ -11,12 +11,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Objects;
 
-
 public class RoomEditor extends JFrame {
     private final Grid grid;
-    private static final File roomStorage = new File("src/Rooms/Set2"); // CHANGE SET NUMBER
+    private static File roomStorage; // CHANGE SET NUMBER
     public RoomEditor() {
 
+    	roomStorage = new File("res/Rooms/Set2");
+        for (File f: roomStorage.listFiles()) {
+            System.out.println(f.getName());
+        }
         grid = new Grid(roomStorage);
         add(grid);
         setLayout(new BorderLayout());
@@ -38,11 +41,14 @@ public class RoomEditor extends JFrame {
                 if (e.getKeyCode() == KeyEvent.VK_P) grid.addPlayerSpawn();
                 if (e.getKeyCode() == KeyEvent.VK_I) grid.addItemSpawn();
                 if (e.getKeyCode() == KeyEvent.VK_E) grid.addEnemySpawn();
+                if (e.getKeyCode() == KeyEvent.VK_C) grid.addChestSpawn();
+                if (e.getKeyCode() == KeyEvent.VK_B) grid.addBossSpawn();
 
-                if (e.getKeyCode() == KeyEvent.VK_I) grid.shift(new Vector2F(0, -1000));
-                if (e.getKeyCode() == KeyEvent.VK_J) grid.shift(new Vector2F(-1000, 0));
-                if (e.getKeyCode() == KeyEvent.VK_K) grid.shift(new Vector2F(0, 1000));
-                if (e.getKeyCode() == KeyEvent.VK_L) grid.shift(new Vector2F(1000, 0));
+
+                if (e.getKeyCode() == KeyEvent.VK_U) grid.shift(new Vector2F(0, -1000));
+                if (e.getKeyCode() == KeyEvent.VK_H) grid.shift(new Vector2F(-1000, 0));
+                if (e.getKeyCode() == KeyEvent.VK_J) grid.shift(new Vector2F(0, 1000));
+                if (e.getKeyCode() == KeyEvent.VK_K) grid.shift(new Vector2F(1000, 0));
 
 
                 if (e.getKeyCode() == KeyEvent.VK_H) grid.addHazard();
@@ -80,22 +86,33 @@ public class RoomEditor extends JFrame {
                         }
 
                         fw.write(grid.getPlayerSpawns().size() + "\n");
-                        for (PlayerSpawn r: grid.getPlayerSpawns()) {
+                        for (Spawn r: grid.getPlayerSpawns()) {
                             fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
                         }
 
                         fw.write(grid.getItemSpawns().size() + "\n");
-                        for (ItemSpawn r: grid.getItemSpawns()) {
+                        for (Spawn r: grid.getItemSpawns()) {
                             fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
                         }
 
                         fw.write(grid.getEnemySpawns().size() + "\n");
-                        for (EnemySpawn r: grid.getEnemySpawns()) {
+                        for (Spawn r: grid.getEnemySpawns()) {
                             fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
                         }
+
                         fw.write(grid.getHazards().size() + "\n");
                         for (Rectangle r: grid.getHazards()) {
                             fw.write((r.x - ox) + " " + (r.y - oy) + " " + (r.width + r.x - ox) + " " + (r.height + r.y - oy) + "\n");
+                        }
+
+                        fw.write(grid.getChestSpawns().size() + "\n");
+                        for (Spawn r: grid.getChestSpawns()) {
+                            fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
+                        }
+
+                        fw.write(grid.getBossSpawns().size() + "\n");
+                        for (Spawn r: grid.getBossSpawns()) {
+                            fw.write((r.getX() - ox) + " " + (r.getY() - oy) + "\n");
                         }
 
                         fw.close();

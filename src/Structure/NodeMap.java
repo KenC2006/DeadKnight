@@ -2,17 +2,16 @@ package Structure;
 
 import java.util.*;
 
-import RoomEditor.EnemySpawn;
 import RoomEditor.Entrance;
-import RoomEditor.PlayerSpawn;
+import RoomEditor.Spawn;
 import Universal.Camera;
 
 public class NodeMap {
 
     private final ArrayList<Vector2F> nodes;
     private Map<Vector2F, ArrayList<Vector2F>> edges;
-    private ArrayList<EnemySpawn> enemySpawns;
-    private PlayerSpawn playerSpawn;
+    private ArrayList<Spawn> enemySpawns;
+    private Spawn playerSpawn;
     private Room room;
     private KDTree kdTree;
 
@@ -27,9 +26,9 @@ public class NodeMap {
         enemySpawns = room.getEnemySpawns();
         if (room.getPlayerSpawns().isEmpty()) {
             System.out.println(room.getRoomID());
-            playerSpawn = new PlayerSpawn(room.getEnemySpawns().getFirst().getX(), room.getEnemySpawns().getFirst().getY());
+            playerSpawn = new Spawn(room.getEnemySpawns().get(0).getLocation(), Spawn.SpawnType.PLAYER);
         } else {
-            playerSpawn = room.getPlayerSpawns().getFirst();
+            playerSpawn = room.getPlayerSpawns().get(0);
 
         }
 

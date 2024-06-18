@@ -22,9 +22,11 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final ArrayList<Rectangle> walls = new ArrayList<>();
     private final ArrayList<Rectangle> hazards = new ArrayList<>();
     private final ArrayList<Entrance> entrances = new ArrayList<>();
-    private final ArrayList<PlayerSpawn> playerSpawns = new ArrayList<>();
-    private final ArrayList<EnemySpawn> enemySpawns = new ArrayList<>();
-    private final ArrayList<ItemSpawn> itemSpawns = new ArrayList<>();
+    private final ArrayList<Spawn> playerSpawns = new ArrayList<>();
+    private final ArrayList<Spawn> enemySpawns = new ArrayList<>();
+    private final ArrayList<Spawn> itemSpawns = new ArrayList<>();
+    private final ArrayList<Spawn> chestSpawns = new ArrayList<>();
+    private final ArrayList<Spawn> bossSpawns = new ArrayList<>();
     private final Stack<Integer> stack = new Stack<>();
     private Vector2F topLeftPoint = null;
     private final RoomObject selected = new RoomObject();
@@ -51,12 +53,12 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             }
         });
     }
-    
+
     public void addHazard(){
         if (selected !=null && walls.contains(selected.getObject())) {
             hazards.add((Rectangle)selected.getObject());
             walls.remove(selected.getObject());
-            stack.removeLast();
+            stack.remove(stack.size()-1);
             stack.add(6);
             selected.reset();
         }
@@ -72,14 +74,22 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         for (Entrance entrance : entrances) {
             entrance.setRelativeLocation(entrance.getLocation().getTranslated(change));
         }
-        for (PlayerSpawn playerSpawn : playerSpawns) {
+        for (Spawn playerSpawn : playerSpawns) {
             playerSpawn.translateInPlace(change);
         }
-        for (ItemSpawn itemSpawn : itemSpawns) {
+        for (Spawn itemSpawn : itemSpawns) {
             itemSpawn.translateInPlace(change);
-
         }
-        for (EnemySpawn enemySpawn : enemySpawns) {
+
+        for (Spawn chestSpawn: chestSpawns) {
+            chestSpawn.translateInPlace(change);
+        }
+
+        for (Spawn bossSpawn: bossSpawns) {
+            bossSpawn.translateInPlace(change);
+        }
+
+        for (Spawn enemySpawn : enemySpawns) {
             enemySpawn.translateInPlace(change);
 
         }
@@ -145,20 +155,32 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             else g.setColor(Color.BLUE);
             entrance.draw(g, scaledBoxSize);
         }
-        for (PlayerSpawn playerSpawn : playerSpawns) {
+        for (Spawn playerSpawn : playerSpawns) {
             if (selected.getObject() == playerSpawn) g.setColor(Color.GREEN);
             else g.setColor(Color.YELLOW);
             g.fillRect(playerSpawn.getX() * scaledBoxSize / 1000, playerSpawn.getY() * scaledBoxSize / 1000, scaledBoxSize, scaledBoxSize);
         }
-        for (ItemSpawn itemSpawn : itemSpawns) {
+        for (Spawn itemSpawn : itemSpawns) {
             if (selected.getObject() == itemSpawn) g.setColor(Color.GREEN);
             else g.setColor(Color.MAGENTA);
             g.fillRect(itemSpawn.getX()* scaledBoxSize / 1000, itemSpawn.getY() * scaledBoxSize / 1000, scaledBoxSize, scaledBoxSize);
         }
-        for (EnemySpawn enemySpawn : enemySpawns) {
+        for (Spawn enemySpawn : enemySpawns) {
             if (selected.getObject() == enemySpawn) g.setColor(Color.GREEN);
             else g.setColor(Color.BLACK);
             g.fillRect(enemySpawn.getX() * scaledBoxSize / 1000, enemySpawn.getY() * scaledBoxSize / 1000, scaledBoxSize, scaledBoxSize);
+        }
+        for (Spawn chestSpawn: chestSpawns) {
+            if (selected.getObject() == chestSpawn) g.setColor(Color.GREEN);
+            else g.setColor(Color.PINK);
+            g.fillRect(chestSpawn.getX() * scaledBoxSize / 1000, chestSpawn.getY() * scaledBoxSize / 1000, scaledBoxSize * 3, scaledBoxSize * 2);
+        }
+
+        for (Spawn bossSpawn: bossSpawns) {
+            if (selected.getObject() == bossSpawn) g.setColor(Color.GREEN);
+            else g.setColor(Color.ORANGE);
+            g.fillRect(bossSpawn.getX() * scaledBoxSize / 1000, bossSpawn.getY() * scaledBoxSize / 1000, scaledBoxSize * 3, scaledBoxSize * 3);
+
         }
 
         g.setColor(Color.GREEN);
@@ -200,25 +222,44 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                 return entrance;
             }
         }
-        for (PlayerSpawn playerSpawn : playerSpawns) {
+
+        for (Spawn playerSpawn : playerSpawns) {
             if (playerSpawn.getLocation().getManhattanDistance(p1) == 0){
                 selected.setObject(playerSpawn);
                 p1 = null;
                 return playerSpawn;
             }
         }
-        for (ItemSpawn itemSpawns : itemSpawns) {
+
+        for (Spawn itemSpawns : itemSpawns) {
             if (itemSpawns.getLocation().getManhattanDistance(p1) == 0){
                 selected.setObject(itemSpawns);
                 p1 = null;
                 return itemSpawns;
             }
         }
-        for (EnemySpawn enemySpawn : enemySpawns) {
+
+        for (Spawn enemySpawn : enemySpawns) {
             if (enemySpawn.getLocation().getManhattanDistance(p1) == 0){
                 selected.setObject(enemySpawn);
                 p1 = null;
                 return enemySpawn;
+            }
+        }
+
+        for (Spawn chestSpawn : chestSpawns) {
+            if (chestSpawn.getLocation().getManhattanDistance(p1) == 0){
+                selected.setObject(chestSpawn);
+                p1 = null;
+                return chestSpawn;
+            }
+        }
+
+        for (Spawn bossSpawn : enemySpawns) {
+            if (bossSpawn.getLocation().getManhattanDistance(p1) == 0){
+                selected.setObject(bossSpawn);
+                p1 = null;
+                return bossSpawn;
             }
         }
         return null;
@@ -226,19 +267,24 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void undoLastMove() {
         if (stack.isEmpty()) return;
-        if (stack.getLast() == 1) {
-            getEntrances().removeLast();
-        } else if (stack.getLast() == 2) {
-            getWalls().removeLast();
-        } else if (stack.getLast() == 3) {
-            getPlayerSpawns().removeLast();
-        } else if (stack.getLast() == 4) {
-            getItemSpawns().removeLast();
-        } else if (stack.getLast() == 5) {
-            getEnemySpawns().removeLast();
-        } else if (stack.getLast() == 6) {
-            getHazards().removeLast();
+        if (stack.get(stack.size() - 1) == 1) {
+            getEntrances().remove(stack.size() - 1);
+        } else if (stack.get(stack.size() - 1) == 2) {
+            getWalls().remove(stack.size() - 1);
+        } else if (stack.get(stack.size() - 1) == 3) {
+            getPlayerSpawns().remove(stack.size() - 1);
+        } else if (stack.get(stack.size() - 1) == 4) {
+            getItemSpawns().remove(stack.size() - 1);
+        } else if (stack.get(stack.size() - 1) == 5) {
+            getEnemySpawns().remove(stack.size() - 1);
+        } else if (stack.get(stack.size() - 1) == 6) {
+            getHazards().remove(stack.size() - 1);
+        } else if (stack.get(stack.size() - 1) == 7) {
+            chestSpawns.remove(stack.size() - 1);
+        } else if (stack.get(stack.size() - 1) == 8) {
+            bossSpawns.remove(stack.size() - 1);
         }
+
         stack.pop();
         p1 = null;
         updateTopLeft();
@@ -251,10 +297,15 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void delete() {
         if (selected.getObject() instanceof Entrance) entrances.remove((Entrance) selected.getObject());
-        else if (selected.getObject() instanceof PlayerSpawn) playerSpawns.remove((PlayerSpawn) selected.getObject());
-        else if (selected.getObject() instanceof ItemSpawn) itemSpawns.remove((ItemSpawn) selected.getObject());
-        else if (selected.getObject() instanceof EnemySpawn) enemySpawns.remove((EnemySpawn) selected.getObject());
-        else if (hazards.contains(selected.getObject())) hazards.remove((Rectangle) selected.getObject());
+        else if (selected.getObject() instanceof Spawn) {
+            switch (((Spawn) selected.getObject()).getType()) {
+                case PLAYER: playerSpawns.remove((Spawn) selected.getObject()); break;
+                case ITEM: itemSpawns.remove((Spawn) selected.getObject()); break;
+                case ENEMY: enemySpawns.remove((Spawn) selected.getObject()); break;
+                case CHEST: chestSpawns.remove((Spawn) selected.getObject()); break;
+                case BOSS: bossSpawns.remove((Spawn) selected.getObject()); break;
+            }
+        } else if (hazards.contains(selected.getObject())) hazards.remove((Rectangle) selected.getObject());
 
         else walls.remove((Rectangle) selected.getObject());
         stack.remove(selected.getObject());
@@ -276,7 +327,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void addPlayerSpawn(){
         if (p1 == null) return;
-        playerSpawns.add(new PlayerSpawn(p1.getX(),p1.getY()));
+        playerSpawns.add(new Spawn(p1.getX(),p1.getY(), Spawn.SpawnType.PLAYER));
         stack.add(3);
         p1=null;
         repaint();
@@ -284,7 +335,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void addItemSpawn(){
         if (p1 == null) return;
-        itemSpawns.add(new ItemSpawn(p1.getX(),p1.getY()));
+        itemSpawns.add(new Spawn(p1.getX(),p1.getY(), Spawn.SpawnType.ITEM));
         stack.add(4);
         p1=null;
         repaint();
@@ -292,8 +343,24 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
     public void addEnemySpawn(){
         if (p1 == null) return;
-        enemySpawns.add(new EnemySpawn(p1.getX(),p1.getY()));
+        enemySpawns.add(new Spawn(p1.getX(),p1.getY(), Spawn.SpawnType.ENEMY));
         stack.add(5);
+        p1=null;
+        repaint();
+    }
+
+    public void addChestSpawn(){
+        if (p1 == null) return;
+        chestSpawns.add(new Spawn(p1.getX(),p1.getY(), Spawn.SpawnType.CHEST));
+        stack.add(7);
+        p1=null;
+        repaint();
+    }
+
+    public void addBossSpawn(){
+        if (p1 == null) return;
+        bossSpawns.add(new Spawn(p1.getX(),p1.getY(), Spawn.SpawnType.BOSS));
+        stack.add(8);
         p1=null;
         repaint();
     }
@@ -316,6 +383,10 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
 
         topLeftPoint = p1.getMin(topLeftPoint);
+        if (p2 !=null){
+//            System.out.println(topLeftPoint);
+            System.out.println((p2.getX() - topLeftPoint.getX())/1000 + " " + (p2.getY() - topLeftPoint.getY())/1000);
+        }
 
         walls.add(new Rectangle(p1.getX(), p1.getY(), p1.getXDistance(p2) + 1000, p1.getYDistance(p2) + 1000));
         stack.add(2);
@@ -324,16 +395,24 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         repaint();
     }
 
-    public ArrayList<PlayerSpawn> getPlayerSpawns() {
+    public ArrayList<Spawn> getPlayerSpawns() {
         return playerSpawns;
     }
 
-    public ArrayList<EnemySpawn> getEnemySpawns() {
+    public ArrayList<Spawn> getEnemySpawns() {
         return enemySpawns;
     }
 
-    public ArrayList<ItemSpawn> getItemSpawns() {
+    public ArrayList<Spawn> getItemSpawns() {
         return itemSpawns;
+    }
+
+    public ArrayList<Spawn> getChestSpawns() {
+        return chestSpawns;
+    }
+
+    public ArrayList<Spawn> getBossSpawns() {
+        return bossSpawns;
     }
 
     public void reset() {
@@ -343,6 +422,8 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         getItemSpawns().clear();
         getEnemySpawns().clear();
         getHazards().clear();
+        getChestSpawns().clear();
+        getBossSpawns().clear();
         getStack().clear();
         fileToSave = null;
         selected.reset();
@@ -378,14 +459,14 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    File file=(File) Objects.requireNonNull(dropDown.getSelectedItem());
+                    File file = (File) Objects.requireNonNull(dropDown.getSelectedItem());
                     Scanner in = new Scanner(file);
                     reset();
                     fileToSave = file;
                     int wallNum = in.nextInt();
                     for (int i = 0; i < wallNum; i++) {
-                        int x=in.nextInt();
-                        int y=in.nextInt();
+                        int x = in.nextInt();
+                        int y = in.nextInt();
                         topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
 
                         walls.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
@@ -397,33 +478,47 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
                         entrances.add(new Entrance(v1, v2));
                     }
-                    int playerSpawnNum=in.nextInt();
+                    int playerSpawnNum = in.nextInt();
                     for (int i = 0; i < playerSpawnNum; i++) {
-                        int x=in.nextInt();
-                        int y=in.nextInt();
-                        playerSpawns.add(new PlayerSpawn(x,y));
+                        int x = in.nextInt();
+                        int y = in.nextInt();
+                        playerSpawns.add(new Spawn(x, y, Spawn.SpawnType.PLAYER));
                     }
 
-                    int itemSpawnNum=in.nextInt();
+                    int itemSpawnNum = in.nextInt();
                     for (int i = 0; i < itemSpawnNum; i++) {
-                        int x=in.nextInt();
-                        int y=in.nextInt();
-                        itemSpawns.add(new ItemSpawn(x,y));
+                        int x = in.nextInt();
+                        int y = in.nextInt();
+                        itemSpawns.add(new Spawn(x, y, Spawn.SpawnType.ITEM));
                     }
 
-                    int enemySpawnNum=in.nextInt();
+                    int enemySpawnNum = in.nextInt();
                     for (int i = 0; i < enemySpawnNum; i++) {
-                        int x=in.nextInt();
-                        int y=in.nextInt();
-                        enemySpawns.add(new EnemySpawn(x,y));
+                        int x = in.nextInt();
+                        int y = in.nextInt();
+                        enemySpawns.add(new Spawn(x, y, Spawn.SpawnType.ENEMY));
                     }
-                    int hazardNum=in.nextInt();
-                    System.out.println(hazardNum);
+
+                    int hazardNum = in.nextInt();
                     for (int i = 0; i < hazardNum; i++) {
-                        int x=in.nextInt();
-                        int y=in.nextInt();
+                        int x = in.nextInt();
+                        int y = in.nextInt();
                         topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
                         hazards.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
+                    }
+
+                    int chestSpawnNum = in.nextInt();
+                    for (int i = 0; i < chestSpawnNum; i++) {
+                        int x = in.nextInt();
+                        int y = in.nextInt();
+                        chestSpawns.add(new Spawn(x, y, Spawn.SpawnType.CHEST));
+                    }
+
+                    int bossSpawnNum = in.nextInt();
+                    for (int i = 0; i < bossSpawnNum; i++) {
+                        int x = in.nextInt();
+                        int y = in.nextInt();
+                        bossSpawns.add(new Spawn(x, y, Spawn.SpawnType.BOSS));
                     }
                 } catch (FileNotFoundException ex) {
                     throw new RuntimeException(ex);
