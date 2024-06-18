@@ -1,6 +1,8 @@
 package UI;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public abstract class UI {
     private Graphics2D graphics;
@@ -9,6 +11,16 @@ public abstract class UI {
 
     public void setGraphics(Graphics g) {
         graphics = (Graphics2D) g;
+    }
+
+        public BufferedImage resizeImage(BufferedImage image, int newH, int newW) {
+        Image temp = image.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage newImage = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = newImage.createGraphics();
+        g2d.drawImage(temp, 0, 0, null);
+        g2d.dispose();
+        System.out.println(newImage.getWidth() + " " + newImage.getHeight());
+        return newImage;
     }
 
     public static void setPanelHeight(int panelHeight) {

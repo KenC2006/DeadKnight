@@ -63,7 +63,6 @@ public class PlayerUI extends UI {
     }
 
     private void drawPlayerHP(Graphics2D g) {
-
         if (player.getStats().getHealth()<currentPlayerHealth && barWidth>0){
             double fill1=((double)currentPlayerHealth/player.getStats().getMaxHealth());
             double fill2=((double)player.getStats().getHealth()/player.getStats().getMaxHealth());
@@ -106,19 +105,19 @@ public class PlayerUI extends UI {
         boxHeight = brushStroke;
     }
 
-    private BufferedImage resizeImage(BufferedImage image, int newH, int newW) {
-        Image temp = image.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-        BufferedImage newImage = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = newImage.createGraphics();
-        g2d.drawImage(temp, 0, 0, null);
-        g2d.dispose();
-        return newImage;
-    }
 
     @Override
     public void draw() {
-        if (currentPlayerHealth<player.getStats().getHealth()) currentPlayerHealth=player.getStats().getHealth();
-        if (currentPlayerMana<player.getStats().getMana()) currentPlayerMana=player.getStats().getMana();
+        if (currentPlayerHealth<player.getStats().getHealth()) {
+            if (hpFill-(player.getStats().getHealth()-currentPlayerHealth)/player.getStats().getMaxHealth()>0) hpFill-=(player.getStats().getHealth()-currentPlayerHealth)/player.getStats().getMaxHealth();
+            else hpFill=0;
+            currentPlayerHealth=player.getStats().getHealth();
+        }
+        if (currentPlayerMana<player.getStats().getMana()) {
+            if (manaFill-(player.getStats().getMana()-currentPlayerMana)/player.getStats().getMaxMana()>0) manaFill-=(player.getStats().getMana()-currentPlayerMana)/player.getStats().getMaxMana();
+            else manaFill=0;
+            currentPlayerMana=player.getStats().getMana();
+        }
         Graphics2D g = getGraphics();
         drawPlayerHP(g);
         drawIntelligenceCount(g);
