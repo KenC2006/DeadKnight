@@ -19,7 +19,7 @@ public abstract class UI {
         Graphics2D g2d = newImage.createGraphics();
         g2d.drawImage(temp, 0, 0, null);
         g2d.dispose();
-        System.out.println(newImage.getWidth() + " " + newImage.getHeight());
+//        System.out.println(newImage.getWidth() + " " + newImage.getHeight());
         return newImage;
     }
 

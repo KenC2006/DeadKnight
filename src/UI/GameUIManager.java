@@ -39,6 +39,10 @@ public class GameUIManager {
         if (shop != null) {
             shop.getUI().updateKeyPresses(manager);
         }
+
+        if (em.getPlayer().isDead()) {
+            menu.setMenuOn(true);
+        }
     }
 
     public void draw(Graphics g) {

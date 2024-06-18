@@ -42,10 +42,8 @@ public class FlyingEnemy extends Enemy {
 //        Vector2F velocity = new Vector2F(xDistToPlayer, yDistToPlayer).normalize();
         if (!moveTimer.isReady()) return;
         moveTimer.reset();
-        velocity = getPlayerPos().getTranslated(new Vector2F(getX(), getY()).getNegative());
+        velocity = getPlayerPos().getTranslated(getCenterVector().getNegative()).normalize().multiply(1/5.0);
 
-        velocity.normalize();
-        velocity = new Vector2F(velocity.getX()/50, velocity.getY()/50);
 //        stopXMovement();
 //        stopYMovement();
         if (getPlayerPos().getEuclideanDistance(getCenterVector()) > 300000000) {
@@ -84,8 +82,14 @@ public class FlyingEnemy extends Enemy {
         }
         if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
             shootTimer.reset();
-            velocity = new Vector2F(velocity.getX() * 3, velocity.getY() * 3);
-            projectiles.add(new Projectile(new Vector2F(getX(), getY()), new Vector2F(1000, 1000), velocity, 1));
+            Projectile newProjectile = new Projectile(getCenterVector(), new Vector2F(1000, 1000), velocity.multiply(3), 1);
+            try {
+                newProjectile.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/enemy_projectile.png"))));
+
+            } catch (IOException e) {
+                System.out.println("Enemy image not found: " + e);
+            }
+            projectiles.add(newProjectile);
         }
         resolveEntityCollision(player);
     }

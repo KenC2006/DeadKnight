@@ -86,9 +86,16 @@ public class FlyingBossEnemy extends Enemy {
         if (getStats().getHealth() > getStats().getMaxHealth()/2) {
             if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
                 shootTimer.reset();
-                double rDegree = Math.random() * Math.PI/4 * ((int)(Math.random() * 2 + 0.5) - 1);
-                velocity = new Vector2F(((int)(velocity.getX() * Math.cos(rDegree) - velocity.getY() * Math.sin(rDegree)) * 5), (int)((velocity.getY() * Math.cos(rDegree) - velocity.getX() * Math.sin(rDegree))) * 5);
-                projectiles.add(new Projectile(getCenterVector(), new Vector2F(1000, 1000), velocity, 1));
+                player.getCenterVector().getTranslated(getCenterVector().getNegative()).normalize();
+                Projectile newProjectile = new Projectile(getCenterVector(), new Vector2F(1000, 1000), velocity.multiply(5), 1);
+                try {
+                    newProjectile.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/enemy_projectile.png"))));
+
+                } catch (IOException e) {
+                    System.out.println("Enemy image not found: " + e);
+                }
+                projectiles.add(newProjectile);
+
             }
         }
         resolveEntityCollision(player);

@@ -100,6 +100,31 @@ public class PlayerUI extends UI {
 
     private void drawWeaponSlot(Graphics2D g) {
         g.setColor(Color.BLACK);
+        if (player.getPlayerInventory().getCurrentPrimaryItem() != null) mainWeapon = player.getPlayerInventory().getCurrentPrimaryItem().getImageIcon();
+        if (player.getPlayerInventory().getCurrentSecondaryItem() != null) secondaryWeapon = player.getPlayerInventory().getCurrentSecondaryItem().getImageIcon();
+
+        int boundWidth = barWidth / 2 - brushStroke, boundHeight = barHeight * 4;
+        if (mainWeapon != null) {
+            int x1 = brushStroke, y1 = boxHeight, imageWidth = mainWeapon.getWidth() * boundHeight / mainWeapon.getHeight();
+            g.drawImage(
+                    mainWeapon,
+                    x1 + (boundWidth - imageWidth) / 2, y1, x1 + (boundWidth + imageWidth) / 2, y1 + boundHeight,
+                    0, 0, mainWeapon.getWidth(), mainWeapon.getHeight(),
+                    null
+            );
+        }
+
+        if (secondaryWeapon != null) {
+            int x1 = barWidth / 2 + brushStroke * 2, y1 = boxHeight;
+            int imageWidth = secondaryWeapon.getWidth() * boundHeight / secondaryWeapon.getHeight();
+            g.drawImage(
+                    mainWeapon,
+                    x1 + (boundWidth - imageWidth) / 2, y1, x1 + (boundWidth + imageWidth) / 2, y1 + boundHeight,
+                    0, 0, secondaryWeapon.getWidth(), secondaryWeapon.getHeight(),
+                    null
+            );
+        }
+
         g.drawRoundRect(brushStroke, boxHeight, barWidth / 2 - brushStroke, barHeight * 4, brushStroke, brushStroke);
         g.drawRoundRect(barWidth / 2 + brushStroke * 2, boxHeight, barWidth / 2 - brushStroke, barHeight * 4, brushStroke, brushStroke);
         boxHeight = brushStroke;

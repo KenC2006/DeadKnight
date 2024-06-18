@@ -11,8 +11,11 @@ import Structure.Vector2F;
 import Universal.Camera;
 import Universal.GameTimer;
 
+import javax.imageio.ImageIO;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RangedWeapon extends Weapon {
     private GameTimer fireCooldownTimer;
@@ -43,6 +46,12 @@ public class RangedWeapon extends Weapon {
             else if (ac.getPressed(KeyEvent.VK_UP)) vy = -2000;
 
             Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy), getBaseDamage());
+            try {
+                bullet.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/player_projectile.png"))));
+
+            } catch (IOException e) {
+                System.out.println("Enemy image not found: " + e);
+            }
             playerProjectileList.add(bullet);
             return true;
         }
@@ -55,6 +64,12 @@ public class RangedWeapon extends Weapon {
             vy = diff.getY();
 
             Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy), getBaseDamage());
+            try {
+                bullet.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/player_projectile.png"))));
+
+            } catch (IOException e) {
+                System.out.println("Enemy image not found: " + e);
+            }
             playerProjectileList.add(bullet);
             return true;
         }

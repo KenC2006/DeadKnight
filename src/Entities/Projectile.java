@@ -12,7 +12,7 @@ public class Projectile extends Entity {
         super(position, size, velocity);
         setDestroyedOnWallImpact(true);
         setAffectedByGravity(false);
-        lifespan = new GameTimer(30);
+        lifespan = new GameTimer(120);
         setDefaultColour(Color.CYAN);
         this.baseDamage = damage;
 

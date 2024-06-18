@@ -44,9 +44,15 @@ public class Chest extends Entity {
     }
 
     private void initialize() {
-        container.addShopItem(10, getRandomWeapon());
-        container.addShopItem(10, getRandomWeapon());
-        container.addShopItem(10, new InstantItem(new Vector2F(0, 0)));
+        for (int i = 0; i < Math.random() * 2 + 3; i++) {
+            if (Math.random() > 0.2) {
+                container.addShopItem((int) (Math.random() * 5), new InstantItem(new Vector2F(0, 0)));
+
+            } else {
+                container.addShopItem((int) (Math.random() * 10) + 30, getRandomWeapon());
+
+            }
+        }
     }
 
     public void setCollidingWithPlayer(boolean collidingWithPlayer) {

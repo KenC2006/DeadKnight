@@ -29,8 +29,10 @@ public class Menu extends UI implements ActionListener {
     private final Player player;
     private boolean controlsOn = false;
 
-    private boolean menuOn = true;
+    private boolean menuOn = true, waitingForPlayer;
     private JPanel panel;
+
+    private String text = "Dead Knight";
 
     public Menu(JPanel panel, Player player) throws IOException {
         this.player = player;
@@ -45,7 +47,8 @@ public class Menu extends UI implements ActionListener {
         JButton primaryButton = new JButton("Set Primary: " + KeyEvent.getKeyText(player.getControls().get(4)));
         JButton cameraRight = new JButton("Use Weapon Right: " + KeyEvent.getKeyText(player.getControls().get(5)));
         JButton cameraLeft = new JButton("Use Weapon Left: " + KeyEvent.getKeyText(player.getControls().get(6)));
-        JButton rollButton = new JButton("Roll: " + KeyEvent.getKeyText(player.getControls().get(7)));
+        JButton rollButton = new JButton("Roll / Dash: " + KeyEvent.getKeyText(player.getControls().get(7)));
+        JButton openButton = new JButton("Chests / Portal: " + KeyEvent.getKeyText(player.getControls().get(8)));
         addButton(jumpButton, controlButtons);
         addButton(rightButton, controlButtons);
         addButton(leftButton, controlButtons);
@@ -54,6 +57,7 @@ public class Menu extends UI implements ActionListener {
         addButton(cameraRight, controlButtons);
         addButton(cameraLeft, controlButtons);
         addButton(rollButton, controlButtons);
+        addButton(openButton, controlButtons);
         addButton(resetControls, controlButtons);
         addButton(returnToMenu, controlButtons);
         resize();
@@ -111,14 +115,19 @@ public class Menu extends UI implements ActionListener {
 
     public void draw() {
         Graphics2D g = getGraphics();
+        if (waitingForPlayer && !player.generateRooms()) {
+            menuOn = false;
+            waitingForPlayer = false;
+        }
+
         if (menuOn) {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
-            String text = "DeadKnight";
             Font font = new Font("Times New Roman", Font.BOLD, getPanelWidth() / 20);
             g.setFont(font);
             g.setColor(Color.RED);
             FontMetrics metrics = g.getFontMetrics(font);
+
             int textX=(getPanelWidth() - metrics.stringWidth(text)) / 2-gameIcon.getWidth()/3;
             g.drawString(text, textX,(getPanelHeight() - metrics.getHeight()) / 2 + metrics.getAscent());
             g.drawImage(gameIcon,textX+metrics.stringWidth(text),(panel.getHeight()-gameIcon.getHeight())/2,null);
@@ -129,10 +138,26 @@ public class Menu extends UI implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == start) {
-            menuOn = false;
+            player.reset();
+            waitingForPlayer = true;
+            text = "Loading";
+            player.setDead(false);
             for (JButton uiButton : uiButtons) {
                 uiButton.setVisible(false);
             }
+            Graphics2D g = getGraphics();
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
+            Font font = new Font("Times New Roman", Font.BOLD, getPanelWidth() / 20);
+            g.setFont(font);
+            g.setColor(Color.RED);
+            FontMetrics metrics = g.getFontMetrics(font);
+
+            int textX=(getPanelWidth() - metrics.stringWidth(text)) / 2-gameIcon.getWidth()/3;
+            g.drawString(text, textX,(getPanelHeight() - metrics.getHeight()) / 2 + metrics.getAscent());
+            g.drawImage(gameIcon,textX+metrics.stringWidth(text),(panel.getHeight()-gameIcon.getHeight())/2,null);
+
+            player.setGenerateRooms(true);
         }
         if (e.getSource() == resetControls) {
             for (int i = 0; i < player.getControls().size(); i++) {
@@ -186,6 +211,13 @@ public class Menu extends UI implements ActionListener {
 
     public void setMenuOn(boolean menuOn) {
         this.menuOn = menuOn;
+        if (menuOn) {
+            for (JButton b: uiButtons) {
+                b.setVisible(true);
+
+            }
+            text = "Dead Knight";
+        }
     }
 }
 

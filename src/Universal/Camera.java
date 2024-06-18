@@ -6,6 +6,7 @@ import Entities.Player;
 import Items.Chest;
 import Items.GameItem;
 import Items.ItemPickup;
+import RoomEditor.LevelPortal;
 import Structure.Hitbox;
 import Structure.Line;
 import Managers.ActionManager;
@@ -110,16 +111,15 @@ public class Camera {
             if (e instanceof Player) {
                 drawCoordinate(e.getCenterVector(), Color.BLUE, 3);
             } else if (e instanceof ItemPickup) {
-                drawCoordinate(e.getCenterVector(), e.getDefaultColour(), 3);
-            } else {
+                drawCoordinate(e.getCenterVector(), e.getDefaultColour(), 1);
+            } else if (e instanceof Enemy ) {
                 drawCoordinate(e.getCenterVector(), Color.RED, 3);
             }
 
             return;
         }
 
-//        if (e instanceof Player || e instanceof Enemy || e instanceof Chest) return;
-        drawHitbox(e.getHitbox());
+        if (e instanceof ItemPickup) drawHitbox(e.getHitbox());
     }
 
     public void drawCoordinate(Vector2F c, Color color, float size) {
