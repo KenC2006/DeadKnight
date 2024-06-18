@@ -37,7 +37,7 @@ public class RoomManager {
         do {
             generateRooms();
             System.out.println("Generated " + allRooms.size() + " rooms");
-        } while (allRooms.size() < 1);
+        } while (allRooms.size() < 20);
         setupRooms(p);
     }
 
