@@ -24,5 +24,7 @@ public class GameTimer {
     public int getLength() {
         return lengthTime;
     }
-
+    public void changeTime(int newTime) {
+        lengthTime = newTime;
+    }
 }

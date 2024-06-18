@@ -48,4 +48,8 @@ public class Projectile extends Entity {
 
         }
     }
+
+    public void changeLifeSpan(int newValue) {
+        lifespan.changeTime(newValue);
+    }
 }

@@ -15,6 +15,7 @@ public class EnemyManager {
 
     public Enemy createEnemy(int x, int y) {
         int rn = (int)(Math.random() * 100);
+//        return new TossBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 500);
         if (rn > 63) {
             return new FlyingEnemy(x - FlyingEnemy.getDefaultWidth()/2, y - FlyingEnemy.getDefaultHeight() + 500, 50);
         }
