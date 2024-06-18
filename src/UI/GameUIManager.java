@@ -1,6 +1,8 @@
 package UI;
 import Entities.Player;
+import Items.Chest;
 import Managers.ActionManager;
+import Managers.EntityManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,11 +10,15 @@ import java.io.IOException;
 
 public class GameUIManager {
     private PlayerUI playerUI;
+    private boolean menuOpen;
     private Menu menu;
+    private Chest shop;
+    private EntityManager em;
 
-    public GameUIManager(Player player, JPanel panel) throws IOException {
-        playerUI = new PlayerUI(player);
-        menu = new Menu(panel, player);
+    public GameUIManager(EntityManager entityManager, JPanel panel) throws IOException {
+        playerUI = new PlayerUI(entityManager.getPlayer());
+        menu = new Menu(panel, entityManager.getPlayer());
+        em = entityManager;
     }
 
     public void setPanelHeight(int panelHeight) {
@@ -30,6 +36,9 @@ public class GameUIManager {
 
     public void update(ActionManager manager) {
         menu.updateKeyPresses(manager);
+        if (shop != null) {
+            shop.getUI().updateKeyPresses(manager);
+        }
     }
 
     public void draw(Graphics g) {
@@ -37,9 +46,17 @@ public class GameUIManager {
         playerUI.draw();
         menu.setGraphics(g);
         menu.draw();
+
+        shop = em.getOpenChest();
+
+        if (shop != null) {
+            shop.getUI().draw(g);
+        }
+
+        menuOpen = shop != null || menu.isMenuOn();
     }
 
     public boolean getMenuEnabled() {
-        return menu.isMenuOn();
+        return menuOpen;
     }
 }

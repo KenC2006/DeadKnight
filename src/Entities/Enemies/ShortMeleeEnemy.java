@@ -24,7 +24,8 @@ public class ShortMeleeEnemy extends Enemy {
 
     public ShortMeleeEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 25000000);
-        sword = new ShortSword(getCenterVector());
+        sword = new ShortSword();
+        sword.setLocation(getCenterVector());
     }
 
     public String getType() {

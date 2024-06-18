@@ -25,7 +25,7 @@ public class NodeMap {
         edges = new HashMap<Vector2F, ArrayList<Vector2F>> (); //add edge connecting
         enemySpawns = room.getEnemySpawns();
         if (room.getPlayerSpawns().isEmpty()) {
-            System.out.println(room.getRoomID());
+//            System.out.println(room.getRoomID());
             playerSpawn = new Spawn(room.getEnemySpawns().get(0).getLocation(), Spawn.SpawnType.PLAYER);
         } else {
             playerSpawn = room.getPlayerSpawns().get(0);

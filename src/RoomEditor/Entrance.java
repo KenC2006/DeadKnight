@@ -1,6 +1,7 @@
 package RoomEditor;
 
 import Structure.Hitbox;
+import Structure.Room;
 import Structure.Vector2F;
 import Universal.Camera;
 
@@ -9,6 +10,8 @@ import java.awt.*;
 public class Entrance {
     private final int VERTICAL_ENTRANCE_LENGTH = 6000;
     private final int HORIZONTAL_ENTRANCE_LENGTH = 4000;
+    private Room parent;
+    private Entrance connectedEntrance;
     private Vector2F relativeLocation;
     private Vector2F absoluteLocation;
     private Vector2F connectionPoint;
@@ -50,6 +53,12 @@ public class Entrance {
         connectionPoint = new Vector2F(e.connectionPoint);
         type = e.type;
         hitbox = new Hitbox(e.hitbox);
+        parent = e.parent;
+        connectedEntrance = e.connectedEntrance;
+    }
+
+    public void setParent(Room parent) {
+        this.parent = parent;
     }
 
     public void setRelativeLocation(Vector2F relativeLocation) {
@@ -106,11 +115,20 @@ public class Entrance {
         return connectionPoint;
     }
 
+    public Entrance getConnectedEntrance() {
+        return connectedEntrance;
+    }
+
+    public Room getParentRoom() {
+        return parent;
+    }
+
     public boolean isConnected() {
         return connected;
     }
 
-    public void setConnected(Boolean connected) {
+    public void setConnected(Boolean connected, Entrance connectedEntrance) {
+        this.connectedEntrance = connectedEntrance;
         this.connected = connected;
     }
 

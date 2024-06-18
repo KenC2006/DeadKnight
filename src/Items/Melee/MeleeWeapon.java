@@ -4,7 +4,6 @@ import Entities.Entity;
 import Entities.Stats;
 import Items.ActivationType;
 import Items.Weapon;
-import Items.WeaponType;
 import Managers.ActionManager;
 import Structure.Hitbox;
 import Structure.Vector2F;
@@ -22,14 +21,14 @@ public class MeleeWeapon extends Weapon {
     private ActivationType lastSwingDirection;
     private HashMap<ActivationType, Hitbox> hitboxes;
 
-    public MeleeWeapon(int damage, Vector2F startingLocation, int swingCooldown, int swingLength, String weaponName) {
-        super(damage, startingLocation, WeaponType.MELEE);
+    public MeleeWeapon(int damage, int swingCooldown, int swingLength, String weaponName) {
+        super(damage, ItemType.MELEE);
         swingCooldownTimer = new GameTimer(swingCooldown);
         swingLengthTimer = new GameTimer(swingLength);
-        loadHitboxes("/" + weaponName + ".txt");
+        loadHitboxes(weaponName);
     }
 
-    public void loadHitboxes(String filePath) {
+    public void loadHitboxes(String weaponName) {
         hitboxes = new HashMap<>();
         try {
 //            System.out.println("Fetching: " + "/Items/WeaponData" + filePath);
@@ -37,7 +36,7 @@ public class MeleeWeapon extends Weapon {
 //                System.out.println(f.getName());
 //            }
 //            Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + filePath)));
-            Scanner in =  new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + "/BasicSpear.txt")));
+            Scanner in =  new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData/" + weaponName + ".txt")));
 
             ArrayList<Vector2F> points = new ArrayList<>();
             int n = in.nextInt();
@@ -91,7 +90,7 @@ public class MeleeWeapon extends Weapon {
                     kb = -3000;
                 }
                 defender.setActualVX(kb);
-                defender.getStats().doDamage(Stats.calculateDamage(getDamagePerHit(), attacker.getStats(), defender.getStats()));
+                defender.getStats().doDamage(Stats.calculateDamage(getBaseDamage(), attacker.getStats(), defender.getStats()));
             }
 
         }

@@ -1,13 +1,16 @@
 package Managers;
 
 import Entities.Player;
+import Items.Chest;
 import Structure.HitboxGroup;
+import UI.ShopUIContainer;
 import Universal.Camera;
 import RoomEditor.Entrance;
 import Structure.Room;
 import Structure.Vector2F;
 import Universal.GameTimer;
 
+import javax.xml.stream.events.EntityReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -21,25 +24,27 @@ public class RoomManager {
     private GameTimer teleportCooldown;
     private int setNumber, maxRooms;
 
-    public void generateLevel(Player p, int setNumber) {
-        allRooms = new ArrayList<>();
-        loadedRooms = new ArrayList<>();
-        possibleBiomeRooms = new ArrayList<>();
-        toGenerateNeighbours = new ArrayDeque<>();
+    public RoomManager() {
         enemyManager = new EnemyManager();
         teleportCooldown = new GameTimer(20);
+        possibleBiomeRooms = new ArrayList<>();
 
+    }
+
+    public void generateLevel(Player p, int setNumber) {
         this.setNumber = setNumber;
         loadRoomsFromFile(setNumber);
-        generateRooms();
-        if (allRooms.size() < 20) generateLevel(p, setNumber);
+        do {
+            generateRooms();
+            System.out.println("Generated " + allRooms.size() + " rooms");
+        } while (allRooms.size() < 1);
         setupRooms(p);
     }
 
     public void drawRooms(Camera c) {
         if (c.isMapCamera()) {
             for (Room room : allRooms) {
-                if (!room.isVisited()) continue;
+                if (!room.isRevealed()) continue;
                 room.drawRoom(c);
                 enemyManager.drawEnemies(room.getEnemies(), c);
             }
@@ -48,7 +53,7 @@ public class RoomManager {
             ArrayList<Room> roomsToDraw = new ArrayList<>(loadedRooms);
 //            if (loadedRooms.isEmpty()) return;
             for (Room room : roomsToDraw) {
-                if (room == null) System.out.println(roomsToDraw);
+//                if (room == null) System.out.println(roomsToDraw);
                 assert room != null;
                 room.drawRoom(c);
                 enemyManager.drawEnemies(room.getEnemies(), c);
@@ -65,6 +70,11 @@ public class RoomManager {
     }
 
     public void generateRooms() {
+        System.out.println("Attempting Generation");
+        allRooms = new ArrayList<>();
+        loadedRooms = new ArrayList<>();
+        toGenerateNeighbours = new ArrayDeque<>();
+
         if (possibleBiomeRooms.isEmpty()) return;
         mapBoundingbox = new HitboxGroup();
         ArrayList<Room> roomsWithPlayerSpawn =  new ArrayList<>();
@@ -101,6 +111,7 @@ public class RoomManager {
             Entrance e = entrancesToGenerate.get((int)(Math.random() * entrancesToGenerate.size())); // TODO generate rooms based on entrances closest to the center
             entrancesToGenerate.remove(e);
             ArrayList<Room> compatibleRooms = new ArrayList<>();
+            ArrayList<Entrance> connectedEntrance = new ArrayList<>();
             for (Room newRoom: possibleBiomeRooms) {
                 Room testRoom = new Room(newRoom);
                 if (testRoom.getRoomID() == r.getRoomID()) continue;
@@ -131,19 +142,25 @@ public class RoomManager {
 
                     if (collides) continue;
                     if (setNumber == 1 || setNumber == 3) {
-                        connectingEntrance.setConnected(true);
+                        connectingEntrance.setConnected(true, e);
                         compatibleRooms.add(testRoom);
+                        connectedEntrance.add(connectingEntrance);
+
                         break;
 
                     } else if (setNumber == 2) {
                         if (allRooms.size() < 30) {
-                            connectingEntrance.setConnected(true);
+                            connectingEntrance.setConnected(true, e);
                             compatibleRooms.add(testRoom);
+                            connectedEntrance.add(connectingEntrance);
+
                             break;
                         } else {
                             if (Math.random() > (Math.pow(numberOfEntrances, 1 + allRooms.size() / 15.0)) * 0.01) {
-                                connectingEntrance.setConnected(true);
+                                connectingEntrance.setConnected(true, e);
                                 compatibleRooms.add(testRoom);
+                                connectedEntrance.add(connectingEntrance);
+
                                 break;
                             }
                         }
@@ -153,11 +170,25 @@ public class RoomManager {
 
             int randomRoom = (int)(Math.random() * compatibleRooms.size());
             if (compatibleRooms.isEmpty()) continue;
-            e.setConnected(true);
+            e.setConnected(true, connectedEntrance.get(randomRoom));
             addRoom(compatibleRooms.get(randomRoom));
             loadRoom(compatibleRooms.get(randomRoom));
             toGenerateNeighbours.add(compatibleRooms.get(randomRoom));
         }
+    }
+
+    public void toggleChest() {
+        for (Room r: getLoadedRooms()) {
+            r.toggleChest();
+        }
+    }
+
+    public Chest getOpenChest() {
+        for (Room r: getLoadedRooms()) {
+            Chest openChest = r.getOpenChest();
+            if (openChest != null) return openChest;
+        }
+        return null;
     }
 
     public void setupRooms(Player p) {
@@ -165,7 +196,7 @@ public class RoomManager {
             r.setupRoom();
         }
         allRooms.get(0).spawnPlayer(p);
-        System.out.println(allRooms.get(0));
+//        System.out.println(allRooms.get(0));
     }
 
     public void loadRoomsFromFile(int setNumber) {
@@ -191,6 +222,13 @@ public class RoomManager {
     private void addRoom(Room r) {
         mapBoundingbox.addHitbox(r.getHitbox().getBoundingBox());
         allRooms.add(r);
+    }
+
+    public void updateRoomUI(Player player) {
+        if (getOpenChest() != null && getOpenChest().isItemSelected() && getOpenChest().getPurchasedOption().purchaseItem(player)) {
+            System.out.println("Deleting chest at " + getOpenChest().getCenterVector());
+            getOpenChest().setUsed(true);
+        }
     }
 
     public void updateValues(Player player, ActionManager actionManager) {
