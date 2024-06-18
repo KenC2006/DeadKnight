@@ -6,19 +6,26 @@ import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
 import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
+import Items.Ranged.RangedWeapon;
 import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
 import Structure.Vector2F;
 import Universal.GameTimer;
 
+import javax.imageio.ImageIO;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Stack;
 
 /**
  * WASD TO MOVE PLAYER
  */
 public class Player extends Entity {
+    private enum State {IDLE, RUNNING, SWORD_ATTACK, SPEAR_ATTACK, RANGED}
     private final ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
     private boolean immune, upPressed, leftRightPressed, jumping;
     private Direction direction;
@@ -29,6 +36,16 @@ public class Player extends Entity {
     private final ArrayList<Integer> controls = new ArrayList<>();
     private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
     private Vector2F mouseLocation = new Vector2F();
+    private ArrayList<BufferedImage> idleFrames;
+    private ArrayList<BufferedImage> runFrames;
+    private ArrayList<BufferedImage> swordFrames;
+    private ArrayList<BufferedImage> spearFrames;
+    private ArrayList<BufferedImage> rangedFrames;
+    private int frame = 0;
+    private GameTimer animationTimer;
+    private BufferedImage currentFrame;
+
+    private State playerState;
 
     public Player(int x, int y){
         super(x, y, 1000, 2000);
@@ -45,6 +62,53 @@ public class Player extends Entity {
         dashCooldownTimer = new GameTimer(30);
         dashLengthTimer = new GameTimer(10);
         dashImmunityTimer = new GameTimer(15);
+        playerState = State.IDLE;
+
+        animationTimer = new GameTimer(4);
+        idleFrames = new ArrayList<>();
+        runFrames = new ArrayList<>();
+        swordFrames = new ArrayList<>();
+        spearFrames = new ArrayList<>();
+        rangedFrames = new ArrayList<>();
+
+        try {
+            idleFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Idle/idle.png"))));
+            idleFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Idle/magic_idle.png"))));
+            idleFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Idle/spear_idle.png"))));
+            idleFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Idle/sword_idle.png"))));
+
+            runFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Run/run1.png"))));
+            runFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Run/run2.png"))));
+
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack1.png"))));
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack2.png"))));
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack3.png"))));
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack4.png"))));
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack5.png"))));
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack6.png"))));
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack7.png"))));
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack8.png"))));
+            swordFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Melee/attack9.png"))));
+
+//            rangedFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Ranged/ranged1.png"))));
+//            rangedFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Ranged/ranged2.png"))));
+//            rangedFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Ranged/ranged3.png"))));
+//            rangedFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Ranged/ranged4.png"))));
+
+            rangedFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Magic/magic1.png"))));
+            rangedFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Magic/magic2.png"))));
+            rangedFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Magic/magic3.png"))));
+
+            spearFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Spear/spear1.png"))));
+            spearFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Spear/spear2.png"))));
+            spearFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Spear/spear3.png"))));
+            spearFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Spear/spear4.png"))));
+            spearFrames.add(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/Spear/spear5.png"))));
+
+
+        } catch (IOException e) {
+            System.out.println("Enemy image not found: " + e);
+        }
 
     }
 
@@ -107,9 +171,11 @@ public class Player extends Entity {
 
         }
 
+        playerState = State.IDLE;
         if (manager.getPressed(controls.get(1))) {
             dx += 500;
             direction = Direction.RIGHT;
+
         }
 
         if (manager.getPressed(controls.get(2))) {
@@ -140,8 +206,8 @@ public class Player extends Entity {
             dashCooldownTimer.reset();
             dashLengthTimer.reset();
             dashImmunityTimer.reset();
-        }
 
+        }
 
         if (!dashLengthTimer.isReady()) {
             if (direction == Direction.LEFT) dx = -1500;
@@ -159,6 +225,24 @@ public class Player extends Entity {
         } else {
             getHitbox().setEnabled(true);
             immune = false;
+        }
+
+
+        if (manager.getPressed(controls.get(5)) || manager.getPressed(controls.get(6)) || manager.isMousePressed()) {
+            if (playerInventory.getCurrentPrimaryItem() instanceof RangedWeapon) {
+                playerState = State.RANGED;
+
+            } else if (playerInventory.getCurrentPrimaryItem() instanceof BasicSpear) {
+                playerState = State.SPEAR_ATTACK;
+
+            } else {
+                playerState = State.SWORD_ATTACK;
+
+            }
+        } else if ((manager.getPressed(controls.get(7)) && dashCooldownTimer.isReady()) || manager.getPressed(controls.get(2)) || manager.getPressed(controls.get(1))) {
+            playerState = State.RUNNING;
+        } else {
+            playerState = State.IDLE;
         }
 
         setIntendedVX(dx);
@@ -223,11 +307,64 @@ public class Player extends Entity {
 
     @Override
     public void paint(Camera c) {
-        super.paint(c);
+//      super.paint(c);
         for (Projectile p: new ArrayList<>(projectiles)) { // TODO currently temp fix for when the size of projectiles changes between a frame
             p.paint(c);
         }
         playerInventory.draw(c);
+
+        c.drawGameCharacter(this);
+
+        if (currentFrame != null) {
+            int extraHeight = 1000, extraWidth = 1000;
+            Vector2F topLeft = getLocation().getTranslated(new Vector2F(-extraWidth, -extraHeight));
+            if (direction == Direction.LEFT) {
+                topLeft = topLeft.getTranslated(new Vector2F(getWidth() + extraWidth * 2, 0));
+                c.drawImage(currentFrame, topLeft, topLeft.getTranslated(new Vector2F(-currentFrame.getWidth() * (getHeight() + extraHeight) / currentFrame.getHeight(), getHeight() + extraHeight)));
+
+            } else {
+                c.drawImage(currentFrame, topLeft, topLeft.getTranslated(new Vector2F(currentFrame.getWidth() * (getHeight() + extraHeight) / currentFrame.getHeight(), getHeight() + extraHeight)));
+
+            }
+        }
+
+        if (!animationTimer.isReady()) return;
+        animationTimer.reset();
+
+        switch (playerState) {
+            case IDLE:
+//                frame = (frame + 1) % idleFrames.size();
+                if (playerInventory.getCurrentPrimaryItem() instanceof BasicSpear) {
+                    frame = 2;
+                } else if (playerInventory.getCurrentPrimaryItem() instanceof RangedWeapon) {
+                    frame = 1;
+                } else if (playerInventory.getCurrentPrimaryItem() instanceof BasicSword) {
+                    frame = 3;
+                } else {
+                    frame = 1;
+                }
+                currentFrame = idleFrames.get(frame);
+                break;
+            case RUNNING:
+                frame = (frame + 1) % runFrames.size();
+                currentFrame = runFrames.get(frame);
+                break;
+            case SWORD_ATTACK:
+                frame = (frame + 1) % swordFrames.size();
+                currentFrame = swordFrames.get(frame);
+                break;
+            case SPEAR_ATTACK:
+                frame = (frame + 1) % spearFrames.size();
+                currentFrame = spearFrames.get(frame);
+                break;
+            case RANGED:
+                frame = (frame + 1) % rangedFrames.size();
+                currentFrame = rangedFrames.get(frame);
+                break;
+            default:
+                currentFrame = null;
+        }
+        //      c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 
     @Override

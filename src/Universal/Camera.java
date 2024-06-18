@@ -1,7 +1,9 @@
 package Universal;
 
+import Entities.Enemy;
 import Entities.Entity;
 import Entities.Player;
+import Items.Chest;
 import Items.GameItem;
 import Items.ItemPickup;
 import Structure.Hitbox;
@@ -115,6 +117,8 @@ public class Camera {
 
             return;
         }
+
+//        if (e instanceof Player || e instanceof Enemy || e instanceof Chest) return;
         drawHitbox(e.getHitbox());
     }
 
