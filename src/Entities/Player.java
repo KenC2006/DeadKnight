@@ -389,7 +389,7 @@ public class Player extends Entity {
             p.updateValues();
         }
 
-        if (getY() < 10000000) { // Fall off the map
+        if (getY() > 10000000) { // Fall off the map
             getStats().doDamage(1000000000);
         }
     }
