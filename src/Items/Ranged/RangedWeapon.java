@@ -3,27 +3,32 @@ package Items.Ranged;
 import Entities.Entity;
 import Entities.Player;
 import Entities.Projectile;
-import Entities.Stats;
 import Items.ActivationType;
 import Items.Weapon;
-import Items.WeaponType;
 import Managers.ActionManager;
+import Structure.Hitbox;
 import Structure.Vector2F;
 import Universal.Camera;
 import Universal.GameTimer;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Vector;
 
 public class RangedWeapon extends Weapon {
     private GameTimer fireCooldownTimer;
-    private final ArrayList<Projectile> playerProjectileList;
+    private ArrayList<Projectile> playerProjectileList;
+    private int manaCost;
 
-    public RangedWeapon(int damage, Vector2F startingLocation, int fireCooldown, ArrayList<Projectile> playerProjectileList) {
-        super(damage, startingLocation, WeaponType.RANGED);
+    public RangedWeapon(int damage, int fireCooldown, ArrayList<Projectile> playerProjectileList) {
+        super(damage, ItemType.RANGED);
         fireCooldownTimer = new GameTimer(fireCooldown);
         this.playerProjectileList = playerProjectileList;
+    }
+
+    public RangedWeapon(int damage, int fireCooldown) {
+        super(damage, ItemType.RANGED);
+        fireCooldownTimer = new GameTimer(fireCooldown);
+        playerProjectileList = new ArrayList<>();
     }
 
     @Override
@@ -37,19 +42,19 @@ public class RangedWeapon extends Weapon {
             else if (ac.getPressed(KeyEvent.VK_DOWN)) vy = 2000;
             else if (ac.getPressed(KeyEvent.VK_UP)) vy = -2000;
 
-            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy), getDamagePerHit());
+            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy), getBaseDamage());
             playerProjectileList.add(bullet);
             return true;
         }
 
         if (ac.isMousePressed() && (owner instanceof Player)) {
             fireCooldownTimer.reset();
-            System.out.println(owner.getIntendedVelocity());
+//            System.out.println(owner.getIntendedVelocity());
             Vector2F diff = ((Player) owner).getMouseLocation().getTranslated(owner.getCenterVector().getNegative()).normalize();
             vx = diff.getX();
             vy = diff.getY();
 
-            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy), getDamagePerHit());
+            Projectile bullet = new Projectile(getLocation().getTranslated(new Vector2F(-500, -500)), new Vector2F(1000, 1000), new Vector2F(vx, vy), getBaseDamage());
             playerProjectileList.add(bullet);
             return true;
         }
@@ -71,4 +76,17 @@ public class RangedWeapon extends Weapon {
     public int processDamageEntity(Entity attacker, Entity defender) {
         return 0;
     }
+
+    public int getManaCost() {
+        return manaCost;
+    }
+
+    public void setManaCost(int manaCost) {
+        this.manaCost = manaCost;
+    }
+
+    public void setPlayerProjectileList(ArrayList<Projectile> playerProjectileList) {
+        this.playerProjectileList = playerProjectileList;
+    }
+
 }

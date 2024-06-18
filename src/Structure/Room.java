@@ -4,6 +4,7 @@ import Entities.*;
 import Entities.Enemies.FlyingEnemy;
 import Entities.Enemies.SummonerBossEnemy;
 import Entities.Enemies.TeleportEnemy;
+import Items.Chest;
 import Items.ItemPickup;
 import Managers.ActionManager;
 import Managers.EnemyManager;
@@ -21,11 +22,12 @@ import java.util.Scanner;
 
 public class Room {
     private static int numberOfUniqueRooms = 0;
-    private boolean visited = false, cleared = true;
+    private boolean visited = false, revealed = false, cleared = true;
     private Vector2F center = new Vector2F(), drawLocation = new Vector2F();
     private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
     private ArrayList<ItemPickup> groundedItems = new ArrayList<>();
+    private ArrayList<Chest> chests = new ArrayList<>();
     private NodeMap nodeMap;
     private ArrayList<Spawn> enemySpawns = new ArrayList<>();
     private ArrayList<Spawn> playerSpawns = new ArrayList<>();
@@ -45,7 +47,9 @@ public class Room {
         walls = new HitboxGroup(copy.walls);
         entranceHitboxes = new HitboxGroup(copy.entranceHitboxes);
         for (Entrance e: copy.entrances) {
-            entrances.add(new Entrance(e));
+            Entrance copyEntrance = new Entrance(e);
+            copyEntrance.setParent(this);
+            entrances.add(copyEntrance);
         }
 
         for (Spawn spawn: copy.playerSpawns) {
@@ -60,8 +64,12 @@ public class Room {
             itemSpawns.add(new Spawn(spawn));
         }
 
-        for (Enemy e : copy.enemies) {
-            enemies.add(enemyManager.copy(e)); // change when more types of enemies added
+        for (Spawn spawn: copy.chestSpawns) {
+            chestSpawns.add(new Spawn(spawn));
+        }
+
+        for (Spawn spawn: copy.bossSpawns) {
+            bossSpawns.add(new Spawn(spawn));
         }
 
         nodeMap = new NodeMap(copy.nodeMap); // copy by refrence except for translate vector
@@ -70,6 +78,8 @@ public class Room {
         background = copy.background;
         setNumber = copy.setNumber;
 
+        cleared = enemies.isEmpty();
+        walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
     }
 
     public Room(String filePath, int setNumber, int fileNumber) throws IOException {
@@ -103,8 +113,11 @@ public class Room {
             int x2 = Integer.parseInt(temp[2]);
             int y2 = Integer.parseInt(temp[3]);
 
-            entrances.add(new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2)));
-            entranceHitboxes.addHitbox(new Hitbox(entrances.get(entrances.size() - 1).getHitbox()));
+            Entrance newEntrance = new Entrance(new Vector2F(x1, y1), new Vector2F(x2, y2));
+            newEntrance.setParent(this);
+            entrances.add(newEntrance);
+
+            entranceHitboxes.addHitbox(new Hitbox(newEntrance.getHitbox()));
 
         }
         int nPlayerSpawns = Integer.parseInt(in.nextLine());
@@ -134,6 +147,8 @@ public class Room {
             cleared = false;
         }
 
+        int nHazards = Integer.parseInt(in.nextLine()); // UNUSED
+
         int nChestSpawns = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nChestSpawns; i++) {
             String[] temp = in.nextLine().trim().split(" ");
@@ -154,7 +169,10 @@ public class Room {
         nodeMap = new NodeMap(this);
 
         roomID = numberOfUniqueRooms;
-        setVisited(true);
+//        setVisited(true);
+
+        cleared = enemies.isEmpty();
+        walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
     }
 
     public Vector2F getCenterRelativeToRoom() {
@@ -201,6 +219,19 @@ public class Room {
         for (Spawn i: itemSpawns) {
             addItemPickup(new ItemPickup(getTopLeft().getTranslated(i.getLocation()).getTranslated(new Vector2F(0, -1))));
         }
+
+        for (Spawn chest: chestSpawns) {
+            System.out.println("Spawning at " + getTopLeft().getTranslated(chest.getLocation()) + " | " + chest.getLocation());
+            addChest(new Chest(getTopLeft().getTranslated(chest.getLocation())));
+        }
+
+        for (Spawn enemy: enemySpawns) {
+            enemies.add(enemyManager.createEnemy(getTopLeft().getTranslated(enemy.getLocation()).getX(), getTopLeft().getTranslated(enemy.getLocation()).getY())); //TODO CHANGE TO TAKE VECTOR // change when more types of enemies added
+        }
+
+        for (Spawn boss: bossSpawns) {
+            enemies.add(enemyManager.createEnemy(getTopLeft().getTranslated(boss.getLocation()).getX(), getTopLeft().getTranslated(boss.getLocation()).getY())); //TODO CHANGE TO TAKE VECTOR // change when more types of enemies added
+        }
     }
 
     public void spawnPlayer(Player p) {
@@ -223,6 +254,10 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.paint(c);
         }
+
+        for (Chest chest: chests) {
+            chest.paint(c);
+        }
         nodeMap.drawNodes(c);
     }
 
@@ -230,6 +265,11 @@ public class Room {
 //        System.out.println(player.getHitbox().getCenter().getEuclideanDistance(getAbsoluteCenter()));
         for (ItemPickup item: groundedItems) {
             item.updateValues();
+
+        }
+
+        for (Chest chest: chests) {
+            chest.updateValues();
 
         }
 
@@ -248,6 +288,9 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             item.resolveRoomCollisions(loadedRooms);
         }
+        for (Chest chest: chests) {
+            chest.resolveRoomCollisions(loadedRooms);
+        }
         for (Enemy e : enemies) {
             if (!e.isPlayerNear()) continue;
             e.resolveRoomCollisions(loadedRooms);
@@ -259,6 +302,10 @@ public class Room {
         for (ItemPickup item: groundedItems) {
             player.resolveEntityCollision(item);
         }
+        for (Chest chest: chests) {
+            player.resolveEntityCollision(chest);
+        }
+
         for (Enemy e : enemies) {
             if (!e.isPlayerNear()) continue;
             player.resolveEntityCollision(e);
@@ -268,12 +315,20 @@ public class Room {
     public void updateData() {
         groundedItems.removeIf(Entity::getToDelete);
 
+//        System.out.println("Before: " + chests.size());
+        chests.removeIf(Entity::getToDelete);
+//        System.out.println("After: " + chests.size());
+
         for (ItemPickup item: groundedItems) {
             item.updateData();
         }
 
+        for (Chest chest: chests) {
+            chest.updateData();
+        }
+
         if (enemies.isEmpty() != cleared) {
-            walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
+            walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
             cleared = enemies.isEmpty();
         }
 
@@ -307,20 +362,56 @@ public class Room {
         }
     }
 
+    public void toggleChest() {
+        for (Chest c: chests) {
+            if (!c.getCollidingWithPlayer()) {
+                c.setOpen(false);
+                continue;
+            }
+            c.setOpen(!c.getOpen());
+            return;
+        }
+    }
+
+    public Chest getOpenChest() {
+        for (Chest c: chests) {
+            if (c.getOpen()) return c;
+        }
+        return null;
+    }
+
     public boolean isVisited() {
         return visited;
     }
 
-    public void setVisited(boolean visited) {
-        this.visited = visited;
+    public boolean isRevealed() {
+        return revealed;
+    }
+
+    public void setVisited() {
+        this.visited = true;
+        this.revealed = true;
+        walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
+        for (Entrance e: entrances) {
+            if (!e.isConnected()) continue;
+            e.getConnectedEntrance().getParentRoom().setRevealed(true);
+        }
+    }
+
+    public void setRevealed(boolean revealed) {
+        this.revealed = revealed;
     }
 
     public int getRoomID() {
         return roomID;
     }
 
-    public void addItemPickup(ItemPickup item) {
+    private void addItemPickup(ItemPickup item) {
         groundedItems.add(item);
+    }
+
+    private void addChest(Chest chest) {
+        chests.add(chest);
     }
 
     public HitboxGroup getHitbox() {

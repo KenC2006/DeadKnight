@@ -1,7 +1,10 @@
 package Entities;
 
 import Items.ActivationType;
+import Items.GameItem;
 import Items.Item;
+import Items.Melee.MeleeWeapon;
+import Items.Ranged.RangedWeapon;
 import Items.Weapon;
 import Managers.ActionManager;
 import Structure.Vector2F;
@@ -10,15 +13,16 @@ import Universal.GameTimer;
 
 import java.util.ArrayList;
 
-public class Inventory {
+public class PlayerInventory {
     private ArrayList<Weapon> primarySlot = new ArrayList<>();
     private ArrayList<Item> secondarySlot = new ArrayList<>();
-    private ArrayList<Item> heldItems = new ArrayList<>();
     private GameTimer itemSwapCooldown;
-    private int intelligence, selectedPrimary, selectedSecondary;
+    private final Player player;
+    private int intelligence = 1000, selectedPrimary, selectedSecondary;
 
-    public Inventory() {
+    public PlayerInventory(Player p) {
         itemSwapCooldown = new GameTimer(10);
+        player = p;
     }
 
     public void draw(Camera c) {
@@ -30,7 +34,6 @@ public class Inventory {
         }
     }
 
-
     public void update() {
         for (Weapon w: primarySlot) {
             w.update();
@@ -40,10 +43,26 @@ public class Inventory {
         }
     }
 
+    public boolean addItem(GameItem item) {
+        switch (item.getType()) {
+            case RANGED:
+            case MELEE:
+                primarySlot.add((Weapon) item);
+                System.out.println("Added item " + item.getItemName());
+                if (item instanceof RangedWeapon) ((RangedWeapon) item).setPlayerProjectileList(player.getProjectiles());
+                if (item instanceof MeleeWeapon) item.setLocation(player.getLocation());
+                return true;
+            case CONSUMABLE:
+                secondarySlot.add((Item) item);
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public void updatePosition(Vector2F newPosition) {
         primarySlot.get(selectedPrimary).setLocation(newPosition);
     }
-
 
     public void addSecondaryItem(Item item) {
         secondarySlot.add(item);
@@ -56,6 +75,7 @@ public class Inventory {
     public void setPrimaryIndex(int selectedPrimary) {
         if (itemSwapCooldown.isReady()) {
             this.selectedPrimary = (selectedPrimary + primarySlot.size()) % primarySlot.size();
+//            System.out.println("Swapped to " +  primarySlot.get(this.selectedPrimary).getItemName());
             itemSwapCooldown.reset();
         }
     }
@@ -107,4 +127,7 @@ public class Inventory {
         this.intelligence = intelligence;
     }
 
+    public void spendIntelligence(int cost) {
+        setIntelligence(getIntelligence() - cost);
+    }
 }

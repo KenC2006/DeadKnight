@@ -1,13 +1,11 @@
 package Entities;
 
-import Items.ActivationType;
-import Items.ItemPickup;
+import Items.*;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
 import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
-import Items.WeaponType;
 import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
@@ -26,7 +24,7 @@ public class Player extends Entity {
     private Direction direction;
     private int framesSinceStartedJumping;
     private int framesPassed, lastUpPressed;
-    private Inventory playerInventory;
+    private PlayerInventory playerInventory;
     private int killStreak=0;
     private final ArrayList<Integer> controls = new ArrayList<>();
     private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
@@ -34,11 +32,11 @@ public class Player extends Entity {
 
     public Player(int x, int y){
         super(x, y, 1000, 2000);
-        playerInventory = new Inventory();
-        playerInventory.addPrimaryItem(new BasicSword(new Vector2F(x, y)));
-        playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
-        playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
-        playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
+        playerInventory = new PlayerInventory(this);
+        playerInventory.addPrimaryItem(new BasicSword());
+//        playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
+//        playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
+//        playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
         setDefaultControls();
         getStats().changeBaseHealth(100);
         getStats().changeBaseMana(100);
@@ -48,10 +46,6 @@ public class Player extends Entity {
         dashLengthTimer = new GameTimer(10);
         dashImmunityTimer = new GameTimer(15);
 
-    }
-
-    public Inventory getPlayerInventory() {
-        return playerInventory;
     }
 
     public ArrayList<Integer> getControls() {
@@ -170,7 +164,14 @@ public class Player extends Entity {
         setIntendedVX(dx);
     }
 
-    public WeaponType getPrimaryType() {
+    public void addItem(GameItem item) {
+        if (playerInventory.addItem(item)) return;
+        if (item.getType() == GameItem.ItemType.STAT) {
+            if (item instanceof InstantItem) ((InstantItem) item).use(this);
+        }
+    }
+
+    public GameItem.ItemType getPrimaryType() {
         if (playerInventory.getCurrentPrimaryItem() == null) return null;
         return playerInventory.getCurrentPrimaryItem().getType();
     }
@@ -198,7 +199,12 @@ public class Player extends Entity {
             item.pickupItem(this);
 //            item.markToDelete(true);
 //            playerInventory.setIntelligence(playerInventory.getIntelligence()+1);
+    }
 
+    public void resolveEntityCollision(Chest chest) {
+        chest.setCollidingWithPlayer(false);
+        if (!chest.collidesWith(this)) return;
+        chest.setCollidingWithPlayer(true);
     }
 
     @Override
@@ -206,7 +212,7 @@ public class Player extends Entity {
         super.resolveRoomCollisions(roomList);
         for (Room r: roomList) {
             if (getHitbox().quickIntersect(r.getHitbox())) {
-                r.setVisited(true);
+                r.setVisited();
             }
         }
         for (Projectile p: projectiles) {
@@ -261,5 +267,9 @@ public class Player extends Entity {
 
     public void setMouseLocation(Vector2F mouseLocation) {
         this.mouseLocation = mouseLocation;
+    }
+
+    public PlayerInventory getPlayerInventory() {
+        return playerInventory;
     }
 }

@@ -2,12 +2,13 @@ package Universal;
 
 import Entities.Entity;
 import Entities.Player;
+import Items.GameItem;
 import Items.ItemPickup;
-import Items.WeaponType;
 import Structure.Hitbox;
 import Structure.Line;
 import Managers.ActionManager;
 import Structure.Vector2F;
+import UI.ShopUIContainer;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -168,9 +169,9 @@ public class Camera {
         drawLine(l.getStart(), l.getEnd(), c);
     }
 
-    public void updateKeyPresses(ActionManager manager, WeaponType weaponType) {
+    public void updateKeyPresses(ActionManager manager, GameItem.ItemType itemType) {
         translatedMouseCoords = reverseScaleAndShift(manager.getAbsoluteMouseLocation());
-        if (weaponType == WeaponType.RANGED && !isMapCamera) {
+        if (itemType == GameItem.ItemType.RANGED && !isMapCamera) {
             if (manager.getPressed(KeyEvent.VK_UP)) {
                 offset.changeY(-1500);
             }
@@ -244,11 +245,17 @@ public class Camera {
         }
     }
 
+    public void drawShopUI(ShopUIContainer s) {
+
+    }
+
     public void paintForeground() {
         if (isMapCamera) {
             graphics.setStroke(new BasicStroke(10f));
             graphics.setColor(Color.YELLOW);
             graphics.drawRect((int) (scaleAndShiftX(offset.getX()) - renderWidth), (int) (scaleAndShiftY(offset.getY()) - renderHeight), (int) renderWidth * 2, (int) renderHeight * 2);
+        } else {
+
         }
     }
 

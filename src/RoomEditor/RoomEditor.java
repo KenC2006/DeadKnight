@@ -16,10 +16,8 @@ public class RoomEditor extends JFrame {
     private static File roomStorage; // CHANGE SET NUMBER
     public RoomEditor() {
 
-    	roomStorage = new File("res/Rooms/Set2");
-        for (File f: roomStorage.listFiles()) {
-            System.out.println(f.getName());
-        }
+    	roomStorage = new File("res/Rooms/Set3");
+
         grid = new Grid(roomStorage);
         add(grid);
         setLayout(new BorderLayout());
