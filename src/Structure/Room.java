@@ -351,7 +351,7 @@ public class Room {
     }
 
     public void closeEntrances() {
-        if (setNumber == 2) return;
+        if (setNumber == 2 || setNumber == 3) return;
         for (Entrance e: entrances) {
             if (e.isConnected()) continue;
             e.getHitbox().setColour(Color.GREEN);
