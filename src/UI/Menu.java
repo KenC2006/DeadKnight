@@ -140,6 +140,7 @@ public class Menu extends UI implements ActionListener {
         if (e.getSource() == start) {
             player.reset();
             waitingForPlayer = true;
+            controlsOn = false;
             text = "Loading";
             player.setDead(false);
             for (JButton uiButton : uiButtons) {
@@ -156,7 +157,6 @@ public class Menu extends UI implements ActionListener {
             int textX=(getPanelWidth() - metrics.stringWidth(text)) / 2-gameIcon.getWidth()/3;
             g.drawString(text, textX,(getPanelHeight() - metrics.getHeight()) / 2 + metrics.getAscent());
             g.drawImage(gameIcon,textX+metrics.stringWidth(text),(panel.getHeight()-gameIcon.getHeight())/2,null);
-
             player.setGenerateRooms(true);
         }
         if (e.getSource() == resetControls) {

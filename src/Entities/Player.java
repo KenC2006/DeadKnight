@@ -57,7 +57,10 @@ public class Player extends Entity {
 //        playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
 //        playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
         setDefaultControls();
-        reset();
+        getStats().changeBaseHealth(100);
+        getStats().changeBaseMana(100);
+        getStats().setMaxJumps(1);
+        getStats().setManaRegen(10);
         dashCooldownTimer = new GameTimer(30);
         dashLengthTimer = new GameTimer(10);
         dashImmunityTimer = new GameTimer(15);
@@ -112,11 +115,9 @@ public class Player extends Entity {
     }
 
     public void reset() {
+        getStats().heal(10000000);
+        getStats().gainMana(1000000);
 //        resetStats();
-//        getStats().changeBaseHealth(100);
-//        getStats().changeBaseMana(100);
-//        getStats().setMaxJumps(1);
-//        getStats().setManaRegen(10);
     }
 
     public ArrayList<Integer> getControls() {
@@ -390,6 +391,7 @@ public class Player extends Entity {
         }
 
         if (getY() > 10000000) { // Fall off the map
+            System.out.println("Dies: " + getCenterVector());
             getStats().doDamage(1000000000);
         }
     }

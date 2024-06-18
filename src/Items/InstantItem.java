@@ -121,6 +121,13 @@ public class InstantItem extends GameItem {
                 break;
             case CRIT_RATE:
                 p.getStats().increaseCritRate(1);
+                break;
+            case DEFENCE:
+                p.getStats().increaseDefence(10);
+                break;
+            case DOUBLE_JUMP:
+                p.getStats().setMaxJumps(p.getStats().getMaxJumps() + 1);
+                break;
         }
     }
 
