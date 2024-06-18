@@ -97,9 +97,10 @@ public class MeleeWeapon extends Weapon {
     }
 
     public void draw(Camera c) { // TODO remove hitbox from being drawn on mini map
+        if (c.isMapCamera()) return;
         for (Hitbox h: hitboxes.values()) {
             if (h.getEnabled()) {
-                c.drawHitbox(h);
+//                c.drawHitbox(h); // DISABLED FOR NOW
 
             }
         }

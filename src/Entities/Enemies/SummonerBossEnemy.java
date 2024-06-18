@@ -8,7 +8,10 @@ import Structure.Vector2F;
 import Universal.GameTimer;
 import Universal.Camera;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class SummonerBossEnemy extends Enemy {
 
@@ -21,6 +24,12 @@ public class SummonerBossEnemy extends Enemy {
 
     public SummonerBossEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 'D' + 'a' + 'b' + 'a' + 'b' + 'y');
+        try {
+            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/leaf.png"))));
+
+        } catch (IOException e) {
+            System.out.println("Enemy image not found: " + e);
+        }
     }
 
     @Override

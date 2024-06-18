@@ -12,13 +12,14 @@ import java.awt.event.KeyEvent;
 public class EntityManager {
     private final Player player;
     private RoomManager roomManager;
-    private int levelNumber = 3; // CHANGE SET NUMBER
+    private int levelNumber = 1; // CHANGE SET NUMBER
     private Chest openChest;
 
     public EntityManager() {
         player = new Player(-1000, -6000);
 
         roomManager = new RoomManager();
+        levelNumber = (int) (Math.random() * 3 + 1);
         roomManager.generateLevel(player, levelNumber);
     }
 

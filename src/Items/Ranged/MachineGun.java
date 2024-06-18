@@ -7,7 +7,10 @@ import Items.ActivationType;
 import Managers.ActionManager;
 import Structure.Vector2F;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MachineGun extends RangedWeapon {
     public MachineGun() {
@@ -15,6 +18,12 @@ public class MachineGun extends RangedWeapon {
         setManaCost(1);
         setItemName("Spellbook of Whispers");
         setItemDescription("A mystical tome adorned with intricate runes and faintly glowing symbols, unleashing a flurry of low-damage magical projectiles in quick succession. Mana Cost: " + getManaCost() + ". Base Damage: " + getBaseDamage());
+        try {
+            setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData/advanced_spellbook.png"))));
+
+        } catch (IOException e) {
+            System.out.println("Weapon image not found: " + e);
+        }
     }
 
     @Override
