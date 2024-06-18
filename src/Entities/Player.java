@@ -388,6 +388,10 @@ public class Player extends Entity {
         for (Projectile p: projectiles) {
             p.updateValues();
         }
+
+        if (getY() < 10000000) { // Fall off the map
+            getStats().doDamage(1000000000);
+        }
     }
 
     @Override
