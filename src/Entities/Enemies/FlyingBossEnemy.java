@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * A
+ */
 public class FlyingBossEnemy extends Enemy {
     private final static int defaultHeight = 5000; // asl
     private final static int defaultWidth = 5000;

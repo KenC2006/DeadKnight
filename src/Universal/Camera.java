@@ -46,7 +46,7 @@ public class Camera {
         enabled = true;
         try {
             backgroundImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/cloud_bg.png")));
-        } catch (IOException _) {
+        } catch (IOException e) {
 
         }
     }

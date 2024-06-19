@@ -27,7 +27,7 @@ import java.util.Stack;
  */
 public class Player extends Entity {
     private enum State {IDLE, RUNNING, SWORD_ATTACK, SPEAR_ATTACK, RANGED}
-    private final ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
+    private  ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
     private boolean immune, upPressed, leftRightPressed, jumping;
     private Direction direction;
     private int framesSinceStartedJumping;
