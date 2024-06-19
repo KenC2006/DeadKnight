@@ -10,7 +10,6 @@ import java.util.Arrays;
 
 public class ItemPickup extends Entity {
     public InstantItem item;
-    private boolean collidingWithPlayer = false;
 
     public ItemPickup(Vector2F location, InstantItem.InstantType itemType) {
         super(location.getX(), location.getY(), 1000, 1000);
@@ -20,7 +19,7 @@ public class ItemPickup extends Entity {
 
     public ItemPickup(Vector2F location) {
         super(location.getX(), location.getY(), 1000, 1000);
-        this.item = new InstantItem(location);
+        this.item = new InstantItem(location, InstantItem.InstantType.INTELLIGENCE);
         initialize();
     }
 
@@ -35,10 +34,6 @@ public class ItemPickup extends Entity {
         dist = dist.normalize().multiply(Math.min(1000, 10000000.0 / dist.getLength()));
         setIntendedVX(dist.getX());
         setIntendedVY(dist.getY());
-    }
-
-    public void setCollidingWithPlayer(boolean val) {
-        collidingWithPlayer = val;
     }
 
     public void pickupItem(Player p) {

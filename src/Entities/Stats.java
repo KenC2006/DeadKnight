@@ -64,7 +64,7 @@ public class Stats {
     }
 
     private int getReducedDamage(int initialDamage) {
-        return (int) Math.max(Math.max(initialDamage - damageRemoval, 1) * (1 - defence / (double)(defence + 500)), 1);
+        return (int) Math.max(Math.max(initialDamage - damageRemoval, 1) * (1 - defence / (double) (defence + 500)), 1);
     }
 
     public static int calculateDamage(int baseDamage, Stats attacker, Stats defender) {
@@ -131,5 +131,9 @@ public class Stats {
 
     public void increaseCritRate(double chance) {
         critChance = Math.min(100, critChance + chance);
+    }
+
+    public void increaseDefence(int defence) {
+        this.defence += defence;
     }
 }

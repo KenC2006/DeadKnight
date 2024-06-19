@@ -243,6 +243,10 @@ public class Entity {
         return new Hitbox(points);
     }
 
+    public void resetStats() {
+        entityStats = new Stats(0, 0);
+    }
+
     private void updatePosition(Vector2F velocity) {
         position.translateInPlace(velocity);
         hitbox.translateInPlace(velocity);

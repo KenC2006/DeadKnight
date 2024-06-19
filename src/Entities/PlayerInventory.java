@@ -18,7 +18,7 @@ public class PlayerInventory {
     private ArrayList<Item> secondarySlot = new ArrayList<>();
     private GameTimer itemSwapCooldown;
     private final Player player;
-    private int intelligence = 1000, selectedPrimary, selectedSecondary;
+    private int intelligence, selectedPrimary, selectedSecondary;
 
     public PlayerInventory(Player p) {
         itemSwapCooldown = new GameTimer(10);
@@ -85,6 +85,7 @@ public class PlayerInventory {
     }
 
     public Weapon getCurrentPrimaryItem() {
+        if (primarySlot.isEmpty()) return null;
         return primarySlot.get(selectedPrimary);
     }
 
@@ -106,6 +107,7 @@ public class PlayerInventory {
     }
 
     public Item getCurrentSecondaryItem() {
+        if (secondarySlot.isEmpty()) return null;
         return secondarySlot.get(selectedSecondary);
     }
 

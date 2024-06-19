@@ -1,14 +1,15 @@
 package Structure;
 
 import Entities.*;
+import Entities.Enemies.FlyingBossEnemy;
 import Entities.Enemies.FlyingEnemy;
 import Entities.Enemies.SummonerBossEnemy;
-import Entities.Enemies.TeleportEnemy;
 import Items.Chest;
 import Items.ItemPickup;
 import Managers.ActionManager;
 import Managers.EnemyManager;
 import RoomEditor.Entrance;
+import RoomEditor.LevelPortal;
 import RoomEditor.Spawn;
 import Universal.Camera;
 
@@ -27,6 +28,7 @@ public class Room {
     private HitboxGroup walls = new HitboxGroup(), entranceHitboxes = new HitboxGroup();
     private ArrayList<Entrance> entrances = new ArrayList<>();
     private ArrayList<ItemPickup> groundedItems = new ArrayList<>();
+    private ArrayList<LevelPortal> levelPortals = new ArrayList<>();
     private ArrayList<Chest> chests = new ArrayList<>();
     private NodeMap nodeMap;
     private ArrayList<Spawn> enemySpawns = new ArrayList<>();
@@ -241,8 +243,8 @@ public class Room {
     }
 
     public void drawRoom(Camera c) {
-//        if (c.isMapCamera()) walls.draw(c);
-        walls.draw(c);
+        if (c.isMapCamera()) walls.draw(c);
+//        walls.draw(c);
         if (background != null) {
             c.drawImage(background, walls.getBoundingBox().getTopLeft(), walls.getBoundingBox().getBottomRight());
         }
@@ -250,7 +252,8 @@ public class Room {
 //        for (Entrance e: entrances) {
 //            e.draw(c);
 //        }
-
+    }
+    public void drawEntities(Camera c) {
         for (ItemPickup item: groundedItems) {
             item.paint(c);
         }
@@ -258,6 +261,11 @@ public class Room {
         for (Chest chest: chests) {
             chest.paint(c);
         }
+
+        for (LevelPortal portal: levelPortals) {
+            portal.paint(c);
+        }
+        nodeMap.drawNodes(c);
     }
 
     public void updateValues(Player player) {
@@ -269,7 +277,10 @@ public class Room {
 
         for (Chest chest: chests) {
             chest.updateValues();
+        }
 
+        for (LevelPortal portal: levelPortals) {
+            portal.updateValues();
         }
 
         ArrayList<Enemy> toAdd = new ArrayList<> ();
@@ -290,6 +301,9 @@ public class Room {
         for (Chest chest: chests) {
             chest.resolveRoomCollisions(loadedRooms);
         }
+        for (LevelPortal portal: levelPortals) {
+            portal.resolveRoomCollisions(loadedRooms);
+        }
         for (Enemy e : enemies) {
             if (!e.isPlayerNear()) continue;
             e.resolveRoomCollisions(loadedRooms);
@@ -303,6 +317,10 @@ public class Room {
         }
         for (Chest chest: chests) {
             player.resolveEntityCollision(chest);
+        }
+
+        for (LevelPortal portal: levelPortals) {
+            player.resolveEntityCollision(portal);
         }
 
         for (Enemy e : enemies) {
@@ -326,6 +344,10 @@ public class Room {
             chest.updateData();
         }
 
+        for (LevelPortal portal: levelPortals) {
+            portal.updateData();
+        }
+
         if (enemies.isEmpty() != cleared) {
             walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
             cleared = enemies.isEmpty();
@@ -345,6 +367,10 @@ public class Room {
                 newItem.setActualVX((int) (Math.random() * 4000 - 2000));
                 newItem.setActualVY((int) (-2000));
                 addItemPickup(newItem);
+
+                if (e instanceof FlyingBossEnemy || e instanceof SummonerBossEnemy) {
+                    addLevelPortal(e.getCenterVector());
+                }
             }
             e.attack(am);
         }
@@ -370,6 +396,14 @@ public class Room {
             c.setOpen(!c.getOpen());
             return;
         }
+    }
+
+    public boolean onPortal() {
+        for (LevelPortal portal: levelPortals) {
+            if (!portal.getCollidingWithPlayer()) continue;
+            return true;
+        }
+        return false;
     }
 
     public Chest getOpenChest() {
@@ -411,6 +445,10 @@ public class Room {
 
     private void addChest(Chest chest) {
         chests.add(chest);
+    }
+
+    private void addLevelPortal(Vector2F location) {
+        levelPortals.add(new LevelPortal(location));
     }
 
     public HitboxGroup getHitbox() {

@@ -7,6 +7,7 @@ import Items.Melee.MeleeWeapon;
 import Items.Ranged.BasicTurret;
 import Items.Ranged.MachineGun;
 import Items.Ranged.RangedWeapon;
+import RoomEditor.LevelPortal;
 import Universal.Camera;
 import Managers.ActionManager;
 import Structure.Room;
@@ -44,6 +45,7 @@ public class Player extends Entity {
     private int frame = 0;
     private GameTimer animationTimer;
     private BufferedImage currentFrame;
+    private boolean dead, generateRooms;
 
     private State playerState;
 
@@ -57,7 +59,7 @@ public class Player extends Entity {
         setDefaultControls();
         getStats().changeBaseHealth(100);
         getStats().changeBaseMana(100);
-        getStats().setMaxJumps(10);
+        getStats().setMaxJumps(1);
         getStats().setManaRegen(10);
         dashCooldownTimer = new GameTimer(30);
         dashLengthTimer = new GameTimer(10);
@@ -112,6 +114,12 @@ public class Player extends Entity {
 
     }
 
+    public void reset() {
+        getStats().heal(10000000);
+        getStats().gainMana(1000000);
+//        resetStats();
+    }
+
     public ArrayList<Integer> getControls() {
         return controls;
     }
@@ -126,6 +134,7 @@ public class Player extends Entity {
         controls.add(KeyEvent.VK_RIGHT);
         controls.add(KeyEvent.VK_LEFT);
         controls.add(KeyEvent.VK_SHIFT);
+        controls.add(KeyEvent.VK_F);
     }
 
     public void updateKeyPresses(ActionManager manager) {
@@ -291,6 +300,12 @@ public class Player extends Entity {
         chest.setCollidingWithPlayer(true);
     }
 
+    public void resolveEntityCollision(LevelPortal portal) {
+        portal.setCollidingWithPlayer(false);
+        if (!portal.collidesWith(this)) return;
+        portal.setCollidingWithPlayer(true);
+    }
+
     @Override
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
         super.resolveRoomCollisions(roomList);
@@ -374,6 +389,11 @@ public class Player extends Entity {
         for (Projectile p: projectiles) {
             p.updateValues();
         }
+
+        if (getY() > 10000000) { // Fall off the map
+            System.out.println("Dies: " + getCenterVector());
+            getStats().doDamage(1000000000);
+        }
     }
 
     @Override
@@ -408,5 +428,21 @@ public class Player extends Entity {
 
     public PlayerInventory getPlayerInventory() {
         return playerInventory;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
+    public boolean generateRooms() {
+        return generateRooms;
+    }
+
+    public void setGenerateRooms(boolean generateRooms) {
+        this.generateRooms = generateRooms;
     }
 }

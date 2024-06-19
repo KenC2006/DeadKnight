@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class InstantItem extends GameItem {
-    public enum InstantType {INTELLIGENCE, MAX_HEALTH, HEALTH, MAX_MANA, MANA, CRIT_RATE, CRIT_DAMAGE}
+    public enum InstantType {INTELLIGENCE, MAX_HEALTH, HEALTH, MAX_MANA, MANA, CRIT_RATE, CRIT_DAMAGE, DEFENCE, DOUBLE_JUMP}
     private ArrayList<InstantType> allTypes = new ArrayList<>(Arrays.asList(InstantType.values()));
     public InstantType itemType;
     public InstantItem(Vector2F location, InstantType itemType) {
@@ -73,17 +73,26 @@ public class InstantItem extends GameItem {
                     setItemName("Instant Mana");
                     setItemDescription("Provides an immediate boost to your current mana. Restores a significant amount of mana instantly, useful for casting spells in urgent situations.");
                     break;
-//                case CRIT_DAMAGE:
-//                    setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/PowerUps/crit_damage_up.png"))));
-//                    setItemName("Crit Damage UP");
-//                    setItemDescription("Increases the damage dealt by critical hits. Enhances the effectiveness of your critical strikes, dealing more damage on successful critical hits.");
-//                    break;
-//                case CRIT_RATE:
-//                    setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/PowerUps/crit_rate_up.png"))));
-//                    setItemName("Crit Rate UP");
-//                    setItemDescription("Increases the likelihood of landing a critical hit. Boosts the chance of performing critical hits, making it more likely to deal extra damage with attacks.");
-//                    break;
-
+                case CRIT_DAMAGE:
+                    setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/PowerUps/crit_damage_up.png"))));
+                    setItemName("Crit Damage UP");
+                    setItemDescription("Increases the damage dealt by critical hits. Enhances the effectiveness of your critical strikes, dealing more damage on successful critical hits.");
+                    break;
+                case CRIT_RATE:
+                    setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/PowerUps/crit_rate_up.png"))));
+                    setItemName("Crit Rate UP");
+                    setItemDescription("Increases the likelihood of landing a critical hit. Boosts the chance of performing critical hits, making it more likely to deal extra damage with attacks.");
+                    break;
+                case DEFENCE:
+                    setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/PowerUps/defence_up.png"))));
+                    setItemName("Defence UP");
+                    setItemDescription("Defense Up: Increases the wearer's overall defense, reducing the damage taken from enemy attacks.");
+                    break;
+                case DOUBLE_JUMP:
+                    setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/PowerUps/extra_jump.png"))));
+                    setItemName("Extra Jump");
+                    setItemDescription("Extra Jump: Grants the ability to perform an additional jump in mid-air, providing enhanced mobility and access to otherwise unreachable areas.");
+                    break;
             }
         } catch (IOException e) {
             System.out.println("Exception: " + e);
@@ -99,7 +108,7 @@ public class InstantItem extends GameItem {
                 p.getStats().changeBaseHealth(5);
                 break;
             case HEALTH:
-                p.getStats().heal(10);
+                p.getStats().heal(20);
                 break;
             case MAX_MANA:
                 p.getStats().changeBaseMana(5);
@@ -112,6 +121,13 @@ public class InstantItem extends GameItem {
                 break;
             case CRIT_RATE:
                 p.getStats().increaseCritRate(1);
+                break;
+            case DEFENCE:
+                p.getStats().increaseDefence(10);
+                break;
+            case DOUBLE_JUMP:
+                p.getStats().setMaxJumps(p.getStats().getMaxJumps() + 1);
+                break;
         }
     }
 

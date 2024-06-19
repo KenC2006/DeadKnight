@@ -24,12 +24,24 @@ public class EntityManager {
     }
 
     public void updateKeyPresses(ActionManager manager) {
-        if (manager.getPressed(KeyEvent.VK_L)) {
-            roomManager.generateLevel(player, levelNumber);
+//        if (manager.getPressed(KeyEvent.VK_L)) {
+//            roomManager.generateLevel(player, levelNumber);
+//        }
+
+        if (manager.getPressed(player.getControls().get(8))) {
+            roomManager.toggleChest();
+
+            if (roomManager.generateLevelFromPortal()) {
+                roomManager.setMinimumRooms(roomManager.getMinimumRooms() + 1);
+                roomManager.generateLevel(player, (int) (Math.random() * 3) + 1);
+            };
         }
 
-        if (manager.getPressed(KeyEvent.VK_F)) {
-            roomManager.toggleChest();
+        if (player.generateRooms()) {
+            roomManager.setMinimumRooms(roomManager.getMinimumRooms() + 1);
+            roomManager.generateLevel(player, (int) (Math.random() * 3) + 1);
+            player.setGenerateRooms(false);
+
         }
 
         openChest = roomManager.getOpenChest();
@@ -56,6 +68,11 @@ public class EntityManager {
         player.updateData();
 
         roomManager.updateData();
+
+        if (player.getStats().getHealth() == 0) {
+            System.out.println("DEAD");
+            player.setDead(true);
+        }
     }
 
     public void followPlayer(Camera c) {
@@ -64,6 +81,7 @@ public class EntityManager {
 
     public void draw(Camera c) {
         roomManager.drawRooms(c);
+        roomManager.drawEntities(c);
         player.paint(c);
     }
 

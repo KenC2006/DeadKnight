@@ -3,15 +3,12 @@ package Managers;
 import Entities.Player;
 import Items.Chest;
 import Structure.HitboxGroup;
-import UI.ShopUIContainer;
 import Universal.Camera;
 import RoomEditor.Entrance;
 import Structure.Room;
 import Structure.Vector2F;
 import Universal.GameTimer;
 
-import javax.xml.stream.events.EntityReference;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -22,22 +19,23 @@ public class RoomManager {
     private Deque<Room> toGenerateNeighbours;
     private int renderDistance = 200000;
     private GameTimer teleportCooldown;
-    private int setNumber, maxRooms;
+    private int setNumber, minimumRooms = 5;
+    private final int MAXIMUM_NUMBER_OF_ROOMS = 50;
 
     public RoomManager() {
         enemyManager = new EnemyManager();
         teleportCooldown = new GameTimer(20);
-        possibleBiomeRooms = new ArrayList<>();
 
     }
 
     public void generateLevel(Player p, int setNumber) {
+        possibleBiomeRooms = new ArrayList<>();
         this.setNumber = setNumber;
         loadRoomsFromFile(setNumber);
         do {
             generateRooms();
             System.out.println("Generated " + allRooms.size() + " rooms");
-        } while (allRooms.size() < 20);
+        } while (allRooms.size() < minimumRooms);
         setupRooms(p);
     }
 
@@ -46,7 +44,6 @@ public class RoomManager {
             for (Room room : allRooms) {
                 if (!room.isRevealed()) continue;
                 room.drawRoom(c);
-                enemyManager.drawEnemies(room.getEnemies(), c);
             }
 
         } else {
@@ -56,6 +53,25 @@ public class RoomManager {
 //                if (room == null) System.out.println(roomsToDraw);
                 assert room != null;
                 room.drawRoom(c);
+            }
+        }
+    }
+
+    public void drawEntities(Camera c) {
+        if (c.isMapCamera()) {
+            for (Room room : allRooms) {
+                if (!room.isRevealed()) continue;
+                room.drawEntities(c);
+                enemyManager.drawEnemies(room.getEnemies(), c);
+            }
+
+        } else {
+            ArrayList<Room> roomsToDraw = new ArrayList<>(loadedRooms);
+//            if (loadedRooms.isEmpty()) return;
+            for (Room room : roomsToDraw) {
+//                if (room == null) System.out.println(roomsToDraw);
+                assert room != null;
+                room.drawEntities(c);
                 enemyManager.drawEnemies(room.getEnemies(), c);
             }
         }
@@ -90,7 +106,7 @@ public class RoomManager {
         loadRoom(startingRoom);
 
         toGenerateNeighbours.add(startingRoom);
-        while (!toGenerateNeighbours.isEmpty() && (!(setNumber == 1 || setNumber == 3) || allRooms.size() < 30)) {
+        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < MAXIMUM_NUMBER_OF_ROOMS) {
 //        while (!toGenerateNeighbours.isEmpty() && allRooms.size() < 30) {
             generateAttached(toGenerateNeighbours.pollFirst());
         }
@@ -141,29 +157,29 @@ public class RoomManager {
                     }
 
                     if (collides) continue;
-                    if (setNumber == 1 || setNumber == 3) {
-                        connectingEntrance.setConnected(true, e);
-                        compatibleRooms.add(testRoom);
-                        connectedEntrance.add(connectingEntrance);
-
-                        break;
-
-                    } else if (setNumber == 2) {
-                        if (allRooms.size() < 30) {
-                            connectingEntrance.setConnected(true, e);
-                            compatibleRooms.add(testRoom);
-                            connectedEntrance.add(connectingEntrance);
-
-                            break;
-                        } else {
-                            if (Math.random() > (Math.pow(numberOfEntrances, 1 + allRooms.size() / 15.0)) * 0.01) {
+//                    if (setNumber == 1 || setNumber == 3) {
+//                        connectingEntrance.setConnected(true, e);
+//                        compatibleRooms.add(testRoom);
+//                        connectedEntrance.add(connectingEntrance);
+//
+//                        break;
+//
+//                    } else if (setNumber == 2) {
+//                        if (allRooms.size() < 30) {
+//                            connectingEntrance.setConnected(true, e);
+//                            compatibleRooms.add(testRoom);
+//                            connectedEntrance.add(connectingEntrance);
+//
+//                            break;
+//                        } else {
+                            if (Math.random() > (Math.pow(numberOfEntrances, 1 + 4.0 * allRooms.size() / minimumRooms)) * 0.01) {
                                 connectingEntrance.setConnected(true, e);
                                 compatibleRooms.add(testRoom);
                                 connectedEntrance.add(connectingEntrance);
 
                                 break;
-                            }
-                        }
+//                            }
+//                        }
                     }
                 }
             }
@@ -181,6 +197,13 @@ public class RoomManager {
         for (Room r: getLoadedRooms()) {
             r.toggleChest();
         }
+    }
+
+    public boolean generateLevelFromPortal() {
+        for (Room r: getLoadedRooms()) {
+            if (r.onPortal()) return true;
+        }
+        return false;
     }
 
     public Chest getOpenChest() {
@@ -203,7 +226,7 @@ public class RoomManager {
     	int numOfRooms = 0;
     	if (setNumber == 1) numOfRooms = 23;
     	if (setNumber == 2) numOfRooms = 17;
-    	if (setNumber == 3) numOfRooms = 19;
+    	if (setNumber == 3) numOfRooms = 20;
     	for (int i = 1; i <= numOfRooms; i++) {
 //        for (File f: Objects.requireNonNull(new File("res/Rooms/Set" + setNumber).listFiles())) {
             try {
@@ -266,5 +289,13 @@ public class RoomManager {
 
     public EnemyManager getEnemyManager() {
         return enemyManager;
+    }
+
+    public int getMinimumRooms() {
+        return minimumRooms;
+    }
+
+    public void setMinimumRooms(int minimumRooms) {
+        this.minimumRooms = Math.min(minimumRooms, MAXIMUM_NUMBER_OF_ROOMS);
     }
 }
