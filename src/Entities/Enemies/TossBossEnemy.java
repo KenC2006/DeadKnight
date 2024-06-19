@@ -134,7 +134,7 @@ public class TossBossEnemy extends Enemy {
 
     public void paint(Camera c) {
         super.paint(c);
-        c.drawCoordinate(centerWalkLoc);
+//        c.drawCoordinate(centerWalkLoc);
         for (Projectile p : new ArrayList<>(projectiles)) {
             p.paint(c);
         }

@@ -265,7 +265,6 @@ public class Room {
         for (LevelPortal portal: levelPortals) {
             portal.paint(c);
         }
-        nodeMap.drawNodes(c);
     }
 
     public void updateValues(Player player) {

@@ -314,7 +314,7 @@ public class NodeMap {
 
     public void drawNodes(Camera c) {
         for (Vector2F n : nodes) {
-            c.drawCoordinate(n.getTranslated(translateOffset));
+//            c.drawCoordinate(n.getTranslated(translateOffset));
 
             if (edges.get(n) == null) {
                 continue;
