@@ -38,6 +38,10 @@ public class FlyingBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * maintain distance between enemy and player
+     *
+     */
     @Override
     public void followPlayer() {
 //        System.out.println("s");
@@ -77,6 +81,10 @@ public class FlyingBossEnemy extends Enemy {
 
     }
 
+    /**
+     * deal with player and enemy related information such as dealing damage and checking projectile conditions
+     * @param player
+     */
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
@@ -110,6 +118,10 @@ public class FlyingBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * despawn projectile if hit room wall
+     * @param roomList
+     */
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
         super.resolveRoomCollisions(roomList);
         for (Projectile p: projectiles) {
@@ -117,6 +129,9 @@ public class FlyingBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * control enemy movement with timer
+     */
     public void updateValues() {
         super.updateValues();
         if (moveTimer.isReady()) {

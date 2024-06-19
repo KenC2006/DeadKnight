@@ -35,6 +35,9 @@ public class FlyingEnemy extends Enemy {
         }
     }
 
+    /**
+     * control enemy movement
+     */
     @Override
     public void followPlayer() {
 //        int xDistToPlayer = getPlayerPos().getXDistance(getBottomPos())/1000;
@@ -74,6 +77,10 @@ public class FlyingEnemy extends Enemy {
     public void attack(ActionManager am) {
     }
 
+    /**
+     * update player-enemy related changes
+     * @param player
+     */
     @Override
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
@@ -94,6 +101,10 @@ public class FlyingEnemy extends Enemy {
         resolveEntityCollision(player);
     }
 
+    /**
+     * deal with projectile and player collisions
+     * @param player
+     */
     public void resolveEntityCollision(Player player) {
         for (Projectile p: projectiles) {
             if (player.collidesWith(p)) {
@@ -103,6 +114,10 @@ public class FlyingEnemy extends Enemy {
         }
     }
 
+    /**
+     * deal with room and projectile collisions
+     * @param roomList
+     */
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
         super.resolveRoomCollisions(roomList);
         for (Projectile p: projectiles) {
@@ -110,6 +125,9 @@ public class FlyingEnemy extends Enemy {
         }
     }
 
+    /**
+     * update enemy information such as projectile location and enemy location
+     */
     public void updateValues() {
         super.updateValues();
         followPlayer();
