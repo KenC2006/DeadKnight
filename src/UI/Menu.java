@@ -2,7 +2,6 @@ package UI;
 
 import Entities.Player;
 import Managers.ActionManager;
-import Universal.GameTimer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -20,7 +19,7 @@ public class Menu extends UI implements ActionListener {
     private final ArrayList<JButton> controlButtons = new ArrayList<>();
     private final JButton start = new JButton("Start");
     private final JButton controls = new JButton("Controls");
-    private BufferedImage gameIcon= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/gameIcon.png")));;
+    private BufferedImage gameIcon= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/gameIcon.png")));
 
     private final JButton resetControls = new JButton("Reset Default Controls");
     private final JButton returnToMenu = new JButton("Return To Menu");
@@ -30,7 +29,7 @@ public class Menu extends UI implements ActionListener {
     private boolean controlsOn = false;
 
     private boolean menuOn = true, waitingForPlayer;
-    private JPanel panel;
+    private final JPanel panel;
 
     private String text = "Dead Knight";
 
