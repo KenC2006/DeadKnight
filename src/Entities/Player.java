@@ -117,6 +117,10 @@ public class Player extends Entity {
     public void reset() {
         getStats().heal(10000000);
         getStats().gainMana(1000000);
+        setActualVX(0);
+        setActualVY(0);
+        setIntendedVX(0);
+        setIntendedVY(0);
 //        resetStats();
     }
 

@@ -52,6 +52,7 @@ public class InstantItem extends GameItem {
                     setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/intelligence.png"))));
                     setItemName("Intelligence");
                     setItemDescription("A special currency earned by defeating enemies. Used to unlock advanced abilities, purchase rare items, and upgrade character attributes, reflecting the knowledge gained from overcoming foes.");
+
                     break;
                 case MAX_HEALTH:
                     setImageIcon(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Items/PowerUps/health_up.png"))));

@@ -4,9 +4,12 @@ import Entities.Entity;
 import Entities.Player;
 import Structure.Vector2F;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ItemPickup extends Entity {
     public InstantItem item;
@@ -44,7 +47,14 @@ public class ItemPickup extends Entity {
     private void initialize() {
         switch (item.getInstantType()) {
             case INTELLIGENCE:
-                setDefaultColour(Color.YELLOW); break;
+                setDefaultColour(Color.YELLOW);
+                try {
+                    addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/intelligence.png"))));
+
+                } catch (IOException e) {
+                    System.out.println("Intelligence image not found: " + e);
+                }
+            break;
             case MAX_HEALTH:
                 setDefaultColour(Color.GREEN.darker()); break;
             case HEALTH:
