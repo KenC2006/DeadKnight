@@ -32,12 +32,19 @@ public class SummonerBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * teleport the enemty to the nearst node
+     */
     @Override
     public void followPlayer() {
         setX(teleportOption.getX());
         setY(teleportOption.getY() - defaultHeight);
     }
 
+    /**
+     * get nearst node to the player to teleport to
+     * @param graph
+     */
     @Override
     public void generatePath(NodeMap graph) {
         // get random node in room
@@ -54,6 +61,10 @@ public class SummonerBossEnemy extends Enemy {
 
     }
 
+    /**
+     * deal with player-related info such as dealing collision damage
+     * @param player
+     */
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
@@ -61,6 +72,9 @@ public class SummonerBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * controls when to teleport and summon enemies
+     */
     public void updateValues() {
         super.updateValues();
         super.changeShouldAddEnemy(false);

@@ -258,7 +258,6 @@ public class Room {
         for (Chest chest: chests) {
             chest.paint(c);
         }
-        nodeMap.drawNodes(c);
     }
 
     public void updateValues(Player player) {

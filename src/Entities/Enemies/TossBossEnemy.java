@@ -32,6 +32,10 @@ public class TossBossEnemy extends Enemy {
         centerWalkLoc = new Vector2F();
     }
 
+    /**
+     * controls the boss's ability to shoot
+     * @param player
+     */
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
 //        sword.doCollisionCheck(this, player);
@@ -45,6 +49,9 @@ public class TossBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * makes the boss walk left and right
+     */
     @Override
     public void followPlayer() {
 //        System.out.println(getCenterVector() + " " + (new Vector2F(centerWalkLoc.getX(), 0)));
@@ -78,6 +85,9 @@ public class TossBossEnemy extends Enemy {
 
     }
 
+    /**
+     * controls boss movement
+     */
     public void updateValues() {
         super.updateValues();
         if (moveTimer.isReady()) {
@@ -97,6 +107,10 @@ public class TossBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * translate coordinate-related information of this boss
+     * @param offset
+     */
     public void translateEnemy(Vector2F offset) {
         super.translateEnemy(offset);
         centerWalkLoc = new Vector2F(getCenterX() + offset.getX(), getCenterY() + offset.getY());

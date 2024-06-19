@@ -7,6 +7,12 @@ public class Edge implements Comparable<Edge> {
     Double dist;
     Vector2F node1, node2;
 
+    /**
+     * stores two points and the distance between them
+     * @param first
+     * @param second
+     * @param third
+     */
     public Edge(Double first, Vector2F second, Vector2F third) {
         dist = first;
         node1 = second;

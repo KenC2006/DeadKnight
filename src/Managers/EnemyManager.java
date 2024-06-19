@@ -13,6 +13,11 @@ public class EnemyManager {
 
     }
 
+    /**
+     * @param x
+     * @param y
+     * @return randomly selected enemy type
+     */
     public Enemy createEnemy(int x, int y) {
         int rn = (int)(Math.random() * 100);
 //        return new TossBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 500);
@@ -27,6 +32,11 @@ public class EnemyManager {
         }
     }
 
+    /**
+     * @param x
+     * @param y
+     * @return randomly selected boss type
+     */
     public Enemy createBoss(int x, int y) {
         int rn = (int)(Math.random() * 100);
         if (rn > 70) {
@@ -48,10 +58,15 @@ public class EnemyManager {
         if (e instanceof FlyingBossEnemy) return new FlyingBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         if (e instanceof SummonerBossEnemy) return new SummonerBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
         if (e instanceof TossBossEnemy) return new TossBossEnemy(e.getX(), e.getY(), e.getStats().getHealth());
-        System.out.println("poop!");
+        System.out.println("Enemy type does not exist");
         return null;
     }
 
+    /**
+     * handle moving enemies between rooms
+     * @param loadedRooms
+     * @param cur_room
+     */
     public void updateEnemyRoomLocations(ArrayList<Room> loadedRooms, Room cur_room) {
         ArrayList<Integer> toRemove = new ArrayList<Integer>();
         for (int i = 0; i < cur_room.getEnemies().size(); i++) {

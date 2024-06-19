@@ -50,42 +50,20 @@ public abstract class Enemy extends Entity {
 
     }
 
-    private void startWander() {
-        if (getOnLeft()) {
-            stopXMovement();
-
-            if (Math.random() < 0.2 && isGrounded()) {
-                jump();
-            } else {
-                moveX(defaultWalkSpeed * 10);
-
-            }
-
-        } else if (getOnRight()) {
-            stopXMovement();
-
-            if (Math.random() < 0.2 && isGrounded()) {
-                jump();
-            } else {
-                moveX(-defaultWalkSpeed * 10);
-
-            }
-        } else if (Math.random() < 0.01) {
-            stopXMovement();
-            if (Math.random() < 0.5) {
-                moveX(defaultWalkSpeed * 5);
-            } else {
-                moveX(defaultWalkSpeed * 5);
-            }
-        }
-    }
-
+    /**
+     * modifies player position and enemy pathfinding
+     * @param nodeMap
+     * @param player
+     */
     public void updateValues(NodeMap nodeMap, Player player) {
         updateEnemyPos(nodeMap);
         generatePath(nodeMap);
         updateValues();
     }
 
+    /**
+     * deals with despawning the enemy based on health and if too far out map
+     */
     public void updateValues() {
         super.updateValues();
         if (getStats().getHealth() <= 0) {
@@ -97,6 +75,10 @@ public abstract class Enemy extends Entity {
         }
     }
 
+    /**
+     * updates player dependant information such as player location
+     * @param player
+     */
     public void updatePlayerInfo(Player player) {
         playerPos = player.getCenterVector();
 //        System.out.println("updatePlayerInfo" + playerPos);
@@ -104,14 +86,14 @@ public abstract class Enemy extends Entity {
 //        System.out.println(isPlayerNear);
     }
 
+    /**
+     * translates enemy postion
+     * @param offset
+     */
     public void translateEnemy(Vector2F offset) {
         translateOffset = new Vector2F(offset);
         setX(getX() + offset.getX());
         setY(getY() + offset.getY());
-    }
-
-    public Vector2F getTranslateOffset() {
-        return translateOffset;
     }
 
     public ArrayList<Vector2F> getPath() {
@@ -132,40 +114,6 @@ public abstract class Enemy extends Entity {
 
     public Vector2F getPlayerPos() {
         return playerPos;
-    }
-
-    public String getType() {
-        return "Enemy";
-    }
-
-    public int getSightRadius() {
-        return sightRadius;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public static int getEnemyCount() {
-        return enemyCount;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public int getPrevState() {
-        return prevState;
-    }
-
-    // use this method to change agro of enemy
-    public void updatePhase(int newPhase) {
-        prevState = state;
-        state = newPhase;
-    }
-
-    public void updatePrevPhase() {
-        prevState = state;
     }
 
     public void moveX(int xChange) {

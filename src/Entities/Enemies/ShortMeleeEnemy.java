@@ -35,25 +35,20 @@ public class ShortMeleeEnemy extends Enemy {
         }
     }
 
-    public String getType() {
-        return "MELEE";
-    }
-
-    public void startDashLeft() {
-        isDashing = true;
-        setIntendedVX(getVX() + 10000);
-    }
-    public void startDashRight() {
-        isDashing = true;
-        setIntendedVX(getVX() - 10000);
-    }
-
+    /**
+     * modify player-related info such as sword collisions
+     * @param player
+     */
     @Override
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         sword.doCollisionCheck(this, player);
     }
-    int n = 0;
+
+    /**
+     * given an ordered list of nodes, walk towards the next node
+     * and jump if needed
+     */
     public void followPlayer() {
         if (getPath().isEmpty()) {
             return;
@@ -79,6 +74,11 @@ public class ShortMeleeEnemy extends Enemy {
 
     }
 
+    /**
+     * create a path of nodes for the enemy to follow to reach
+     * the player
+     * @param graph
+     */
     public void generatePath(NodeMap graph) {
         if (getPathTimer().isReady()) {
             getPathTimer().reset();
@@ -139,6 +139,10 @@ public class ShortMeleeEnemy extends Enemy {
         sword.setLocation(getCenterVector());
     }
 
+    /**
+     * Deal with determining when to swing sword and which direction
+     * @param am
+     */
     public void attack(ActionManager am) {
         if (getPlayerPos().getEuclideanDistance(getBottomPos()) < 50000000) {
             //swing at the player
@@ -166,10 +170,5 @@ public class ShortMeleeEnemy extends Enemy {
     public void paint(Camera c) {
         super.paint(c);
         sword.draw(c);
-//        for (int i = 0; i < getPath().size() - 1; i++) {
-//            if (i + 1 >= getPath().size()) break;
-//            if (getPath().get(i) == null || getPath().get(i+1) == null) continue;
-//            c.drawLine(getPath().get(i), getPath().get(i + 1), Color.RED);
-//        }
     }
 }

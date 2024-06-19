@@ -31,6 +31,9 @@ public class TeleportEnemy extends Enemy {
         }
     }
 
+    /**
+     * teleport ranomdly to a node in the room nodemap
+     */
     @Override
     public void followPlayer() {
         if (getPlayerPos().getEuclideanDistance(new Vector2F(getX(), getY())) > 300000000) {
@@ -40,6 +43,9 @@ public class TeleportEnemy extends Enemy {
     }
 
     @Override
+    /**
+     * get a random node as the next teleport option
+     */
     public void generatePath(NodeMap graph) {
         ArrayList<Vector2F> options = graph.getEdges().get(graph.getNearestNode(getPlayerPos().getTranslated(graph.getTranslateOffset().getNegative())));
         if (options == null || getPlayerPos().getEuclideanDistance(getBottomPos()) < 300000000) return;
@@ -57,6 +63,11 @@ public class TeleportEnemy extends Enemy {
 
     }
 
+    /**
+     * deal with player-related information handling
+     * such as dealing collision damage
+     * @param player
+     */
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
@@ -64,6 +75,9 @@ public class TeleportEnemy extends Enemy {
         }
     }
 
+    /**
+     * controls when to teleport
+     */
     public void updateValues() {
         super.updateValues();
         if (teleportTimer.isReady() && getPlayerPos().getEuclideanDistance(getBottomPos())/1000000 < 3000) {

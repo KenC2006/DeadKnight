@@ -23,6 +23,13 @@ public class KDTree {
         root = insertRec(root, point, 0);
     }
 
+    /**
+     * determine where point should be within the KDTree and insert their
+     * @param node
+     * @param point
+     * @param depth
+     * @return
+     */
     private KDNode insertRec(KDNode node, Vector2F point, int depth) {
         if (node == null) {
             return new KDNode(point);
@@ -49,6 +56,11 @@ public class KDTree {
         return node;
     }
 
+    /**
+     * get nearest point within the KDTree to given point
+     * @param target
+     * @return
+     */
     public Vector2F findNearest(Vector2F target) {
         target = new Vector2F(target.getX(), target.getY());
         return findNearestRec(root, target, 0, null);
