@@ -155,7 +155,8 @@ public class Room {
             cleared = false;
         }
 
-        // Load chest spawns from file
+        int nHazards = Integer.parseInt(in.nextLine()); // UNUSED
+
         int nChestSpawns = Integer.parseInt(in.nextLine());
         for (int i = 0; i < nChestSpawns; i++) {
             String[] temp = in.nextLine().trim().split(" ");
@@ -347,9 +348,7 @@ public class Room {
         }
 
         for (Enemy e : enemies) {
-            if (!e.isPlayerNear()) {
-                continue;
-            }
+            if (!e.isPlayerNear()) continue;
             e.resolveRoomCollisions(loadedRooms);
         }
     }
@@ -404,9 +403,7 @@ public class Room {
         }
 
         for (Enemy e : enemies) {
-            if (!e.isPlayerNear()) {
-                continue;
-            }
+            if (!e.isPlayerNear()) continue;
             e.updateData();
         }
     }
@@ -417,9 +414,7 @@ public class Room {
      */
     public void updateEnemies(ActionManager am) {
         for (Enemy e : enemies) {
-            if (!e.isPlayerNear()) {
-                continue;
-            }
+            if (!e.isPlayerNear()) continue;
             if (e.getToDelete()) {
                 ItemPickup newItem = new ItemPickup(e.getCenterVector());
                 newItem.setActualVX((int) (Math.random() * 4000 - 2000));
@@ -439,13 +434,9 @@ public class Room {
      * Closes entrances of the room that are not connected to other rooms.
      */
     public void closeEntrances() {
-        if (setNumber == 2 || setNumber == 3) {
-            return;
-        }
+        if (setNumber == 2 || setNumber == 3) return;
         for (Entrance e: entrances) {
-            if (e.isConnected()) {
-                continue;
-            }
+            if (e.isConnected()) continue;
             e.getHitbox().setColour(Color.GREEN);
             walls.addHitbox(new Hitbox(e.getHitbox()));
         }
@@ -471,9 +462,7 @@ public class Room {
      */
     public boolean onPortal() {
         for (LevelPortal portal: levelPortals) {
-            if (!portal.getCollidingWithPlayer()) {
-                continue;
-            }
+            if (!portal.getCollidingWithPlayer()) continue;
             return true;
         }
         return false;
@@ -485,9 +474,7 @@ public class Room {
      */
     public Chest getOpenChest() {
         for (Chest c: chests) {
-            if (c.getOpen()) {
-                return c;
-            }
+            if (c.getOpen()) return c;
         }
         return null;
     }
@@ -516,9 +503,7 @@ public class Room {
         this.revealed = true;
         walls.setColour(enemies.isEmpty() ? Color.GREEN : Color.RED);
         for (Entrance e: entrances) {
-            if (!e.isConnected()) {
-                continue;
-            }
+            if (!e.isConnected()) continue;
             e.getConnectedEntrance().getParentRoom().setRevealed(true);
         }
     }
@@ -548,14 +533,14 @@ public class Room {
     }
 
 
-/**
- * Adds a chest to the room.
- *
- * @param chest The chest to add.
- */
-private void addChest(Chest chest) {
-    chests.add(chest);
-}
+    /**
+     * Adds a chest to the room.
+     *
+     * @param chest The chest to add.
+     */
+    private void addChest(Chest chest) {
+        chests.add(chest);
+    }
 
     /**
      * Adds a level portal to the room at a specified location.
@@ -670,8 +655,7 @@ private void addChest(Chest chest) {
      * @return True if there is an intersection, false otherwise.
      */
     public boolean intersects(Room other) {
-        return walls.intersects(other.walls) || walls.intersects(other.entranceHitboxes) ||
-                entranceHitboxes.intersects(other.walls) || entranceHitboxes.intersects(other.entranceHitboxes);
+        return walls.intersects(other.walls) || walls.intersects(other.entranceHitboxes) || entranceHitboxes.intersects(other.walls) || entranceHitboxes.intersects(other.entranceHitboxes);
     }
 
     /**
@@ -681,8 +665,7 @@ private void addChest(Chest chest) {
      * @return True if there is an intersection, false otherwise.
      */
     public boolean intersects(Room other, boolean equality) {
-        return walls.intersects(other.walls, equality) || walls.intersects(other.entranceHitboxes, equality) ||
-                entranceHitboxes.intersects(other.walls, equality) || entranceHitboxes.intersects(other.entranceHitboxes, equality);
+        return walls.intersects(other.walls, equality) || walls.intersects(other.entranceHitboxes, equality) || entranceHitboxes.intersects(other.walls, equality) || entranceHitboxes.intersects(other.entranceHitboxes, equality);
     }
 
     /**

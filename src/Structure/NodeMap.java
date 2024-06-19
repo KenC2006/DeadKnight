@@ -60,10 +60,16 @@ public class NodeMap {
 
         // Load grid and nodes
         loadGrid(room);
-        loadNodes(new Vector2F(playerSpawn.getX() / 1000 + 500, playerSpawn.getY() / 1000 + 500), room);
-
-        // Remove duplicate nodes using HashSet
-        HashSet<Vector2F> set = new HashSet<Vector2F>(nodes);
+        loadNodes(new Vector2F(playerSpawn.getX()/1000 + 500, playerSpawn.getY()/1000 + 500), room);
+//        loadNodes(new Vector2F(room.getCenterRelativeToRoom().getX() + 250, room.getCenterRelativeToRoom().getY() + 250), room);
+        nodes.add(new Vector2F(playerSpawn.getX(), playerSpawn.getY()));
+//        int idx = 0;
+//        while (idx < nodes.size()) {
+//            System.out.println(nodes);
+//            loadNodes(new Vector2F(nodes.get(idx).getX() + gridOffset, nodes.get(idx).getY() + gridOffset), room);
+//            idx++;
+//        }
+        HashSet<Vector2F> set = new HashSet<Vector2F> (nodes);
         nodes.clear();
         nodes.addAll(set);
 
@@ -99,9 +105,20 @@ public class NodeMap {
      */
     private void loadGrid(Room room) {
         for (Hitbox hitbox : room.getHitbox().getHitboxes()) {
-            for (int i = hitbox.getTop() / 1000; i < hitbox.getBottom() / 1000; i++) {
-                for (int j = hitbox.getLeft() / 1000; j <= hitbox.getRight() / 1000; j++) {
-                    grid[i + gridOffset][j + gridOffset] = 'X'; // Marking hitbox areas on the grid
+            for (int i = hitbox.getTop()/1000; i < hitbox.getBottom()/1000; i++) {
+                for (int j = hitbox.getLeft()/1000; j <= hitbox.getRight()/1000; j++) {
+//                        System.out.printf("%d %d\n", i, j);
+                    grid[i+gridOffset][j+gridOffset] = 'X'; // since array index must be > 0
+                }
+            }
+        }
+
+        for (Entrance e : room.getEntrances()) {
+            for (int i = e.getHitbox().getTop()/1000; i < e.getHitbox().getBottom()/1000; i++) {
+                for (int j = e.getHitbox().getLeft()/1000; j <= e.getHitbox().getRight()/1000; j++) {
+//                        System.out.printf("%d %d\n", i, j);
+                    if (grid[i+gridOffset][j+gridOffset] == 'X') continue;
+                    grid[i+gridOffset][j+gridOffset] = 'E'; // since array index must be > 0
                 }
             }
         }
@@ -265,59 +282,52 @@ public class NodeMap {
         Queue<Vector2F> q = new LinkedList<>();
         q.add(start);
 
-        // Calculate original coordinates based on grid offset
-        Vector2F ogStart = new Vector2F((start.getX() - gridOffset) * 1000, (start.getY() - gridOffset) * 1000);
+        Vector2F cur_node, ogCur_node, ogStart = new Vector2F((start.getX() - gridOffset) * 1000, (start.getY() - gridOffset) * 1000);
 
-        // Initialize visited array for grid positions
-        boolean[][] visited = new boolean[1001][1001];
-        visited[start.getX()][start.getY()] = true;
-
+        boolean[][] v = new boolean[1001][1001];
+        v[start.getX()][start.getY()] = true;
         while (!q.isEmpty()) {
-            Vector2F curNode = q.remove();
-            Vector2F ogCurNode = new Vector2F((curNode.getX() - gridOffset) * 1000, (curNode.getY() - gridOffset) * 1000);
+            cur_node = q.remove();
+            ogCur_node = new Vector2F((cur_node.getX() - gridOffset) * 1000, (cur_node.getY() - gridOffset) * 1000);
 
-            // Skip nodes based on distance and coordinate differences
-            if (curNode.getEuclideanDistance(start) > 500) {
+            if (cur_node.getEuclideanDistance(start) > 500) {
                 continue;
             }
-            if (Math.abs(curNode.getXDistance(start)) > 20) {
+            if (Math.abs(cur_node.getXDistance(start)) > 20) {
                 continue;
             }
-            if (curNode.getYDistance(start) > 20) {
+            if (cur_node.getYDistance(start) > 20) {
                 continue;
             }
 
-            // Connect nodes if conditions are met and no room intersections occur
-            if (grid[curNode.getY()][curNode.getX()] == 'V' && curNode.getX() != start.getX()) {
-                if (!doesIntersectRoom(new Line(ogCurNode, ogStart), room)) {
-                    edges.computeIfAbsent(ogCurNode, k -> new ArrayList<>()).add(ogStart);
+            if (grid[ cur_node.getY()][ cur_node.getX()] == 'V' && cur_node.getX() != start.getX()) {
+//                nodes.add(ogCur_node);
+                if (!doesIntersectRoom(new Line(ogCur_node, ogStart), room)) {
+//                    System.out.println("connecting " + ogCur_node + " " + ogCur_node);
+                    edges.computeIfAbsent(new Vector2F(ogCur_node), k -> new ArrayList<>()).add(new Vector2F(ogStart));
                 }
+
             }
 
-            // Explore neighboring nodes in the grid
-            if (curNode.getY() + 1 < 1000 &&
-                    grid[curNode.getY() + 1][curNode.getX()] != 'X' &&
-                    !visited[curNode.getY() + 1][curNode.getX()]) {
-                q.add(new Vector2F(curNode.getX(), curNode.getY() + 1));
-                visited[curNode.getY() + 1][curNode.getX()] = true;
+            if (grid[cur_node.getY()+1][cur_node.getX()] != 'X' &&
+                    !v[cur_node.getY()+1][cur_node.getX()]) {
+                q.add(new Vector2F(cur_node.getX(), cur_node.getY() + 1));
+                v[cur_node.getY()+1][cur_node.getX()] = true;
             }
-            if (curNode.getY() - 1 >= 0 &&
-                    grid[curNode.getY() - 1][curNode.getX()] != 'X' &&
-                    !visited[curNode.getY() - 1][curNode.getX()]) {
-                q.add(new Vector2F(curNode.getX(), curNode.getY() - 1));
-                visited[curNode.getY() - 1][curNode.getX()] = true;
+            if (grid[cur_node.getY()-1][cur_node.getX()] != 'X' &&
+                    !v[cur_node.getY()-1][cur_node.getX()]) {
+                q.add(new Vector2F(cur_node.getX(), cur_node.getY() - 1));
+                v[cur_node.getY()-1][cur_node.getX()] = true;
             }
-            if (curNode.getX() + 1 < 1000 &&
-                    grid[curNode.getY()][curNode.getX() + 1] != 'X' &&
-                    !visited[curNode.getY()][curNode.getX() + 1]) {
-                q.add(new Vector2F(curNode.getX() + 1, curNode.getY()));
-                visited[curNode.getY()][curNode.getX() + 1] = true;
+            if (grid[cur_node.getY()][cur_node.getX() + 1] != 'X' &&
+                    !v[cur_node.getY()][cur_node.getX() + 1]) {
+                q.add(new Vector2F(cur_node.getX() + 1, cur_node.getY()));
+                v[cur_node.getY()][cur_node.getX() + 1] = true;
             }
-            if (curNode.getX() - 1 >= 0 &&
-                    grid[curNode.getY()][curNode.getX() - 1] != 'X' &&
-                    !visited[curNode.getY()][curNode.getX() - 1]) {
-                q.add(new Vector2F(curNode.getX() - 1, curNode.getY()));
-                visited[curNode.getY()][curNode.getX() - 1] = true;
+            if (grid[cur_node.getY()][cur_node.getX() - 1] != 'X' &&
+                    !v[cur_node.getY()][cur_node.getX() - 1]) {
+                q.add(new Vector2F(cur_node.getX() - 1, cur_node.getY()));
+                v[cur_node.getY()][cur_node.getX() - 1] = true;
             }
         }
     }

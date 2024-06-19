@@ -60,7 +60,7 @@ public class RoomEditor extends JFrame {
                 // Deleting selected object
                 if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && grid.getSelected() != null) grid.delete();
 
-                // Undo last move
+                if (grid.getWalls().isEmpty() && grid.getEntrances().isEmpty() && grid.getEnemySpawns().isEmpty() && grid.getPlayerSpawns().isEmpty() && grid.getItemSpawns().isEmpty()) return;
                 if (e.getKeyCode() == KeyEvent.VK_Z) {
                     grid.undoLastMove();
                 }
@@ -89,9 +89,8 @@ public class RoomEditor extends JFrame {
 
                         // Save entrances
                         fw.write(grid.getEntrances().size() + "\n");
-                        for (Entrance entrance : grid.getEntrances()) {
-                            fw.write((entrance.getLocation().getX() - ox) + " " + (entrance.getLocation().getY() - oy) + " " +
-                                    (entrance.getConnection().getX() - ox) + " " + (entrance.getConnection().getY() - oy) + "\n");
+                        for (Entrance entrance: grid.getEntrances()) {
+                            fw.write((entrance.getLocation().getX() - ox) + " " + ( entrance.getLocation().getY() - oy) + " " + ( entrance.getConnection().getX() - ox) + " " + ( entrance.getConnection().getY() - oy) + "\n");
                         }
 
                         // Save player spawns

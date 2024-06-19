@@ -76,21 +76,10 @@ public class Edge implements Comparable<Edge> {
     @Override
     public int compareTo(Edge o) {
         if (o == this) return 0;
-
-        // Compare based on distance
-        int distCompare = Double.compare(o.getDist(), this.getDist());
-        if (distCompare != 0) {
-            return distCompare;
-        }
-
-        // If distances are equal, compare nodes
-        int node1Compare = o.getNode1().compareTo(this.getNode1());
-        if (node1Compare != 0) {
-            return node1Compare;
-        }
-
-        // Compare second nodes if the first nodes are equal
-        return o.getNode2().compareTo(this.getNode2());
+        if (o.getDist() < getDist()) return 1;
+        if (Objects.equals(o.getDist(), getDist()) && o.getNode1().compareTo(getNode1()) != 0) return o.getNode1().compareTo(getNode1());
+        if (Objects.equals(o.getDist(), getDist()) && o.getNode1() == getNode1()) return o.getNode2().compareTo(getNode2());
+        return -1;
     }
 
     /**
@@ -105,9 +94,7 @@ public class Edge implements Comparable<Edge> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Edge edge = (Edge) o;
-        return Objects.equals(dist, edge.dist) &&
-                Objects.equals(node1, edge.node1) &&
-                Objects.equals(node2, edge.node2);
+        return Objects.equals(dist, edge.dist) && Objects.equals(node1, edge.node1) && Objects.equals(node2, edge.node2);
     }
 
     /**
