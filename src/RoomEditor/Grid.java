@@ -14,6 +14,11 @@ import java.util.Scanner;
 import java.util.Stack;
 
 
+/**
+ * The Grid class represents a graphical editor for creating and editing game rooms or levels.
+ * It provides functionalities to add walls, hazards, entrances, spawns, and manage them interactively.
+ * Users can load existing configurations from files and manipulate entities spawns as well as properties of rooms
+ */
 public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private final int TILES_PER_HEIGHT = 100 * 1000;
     private Vector2F p1 = null, p2 = null, highlighted = new Vector2F();
@@ -34,10 +39,10 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
     private File fileToSave;
 
     public Grid(File roomStorage) {
+
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
-
-        dropDown = new JComboBox<>(Objects.requireNonNull(roomStorage.listFiles()));
+        dropDown = new JComboBox<>(Objects.requireNonNull(roomStorage.listFiles())); //Loads the dropDown menu for loading created rooms
         dropDown.setFocusable(false);
         this.add(dropDown);
         dropDown.setVisible(true);
