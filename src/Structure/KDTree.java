@@ -1,55 +1,60 @@
 package Structure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 
+/**
+ * Represents a KD-Tree data structure for efficiently finding nearest neighbors in 2D space.
+ */
 public class KDTree {
 
-    private KDNode root;
-    private int k = 2;
+    private KDNode root; // Root node of the KD-Tree
+    private int k = 2;   // Number of dimensions (here, 2D)
 
+    /**
+     * Constructs a KD-Tree from a list of 2D points.
+     *
+     * @param points The list of 2D points to construct the KD-Tree from.
+     */
     public KDTree(ArrayList<Vector2F> points) {
-//        System.out.println("creating new kdTree =============");
         for (Vector2F point : points) {
-//            System.out.print("new " + point + ", ");
             insert(new Vector2F(point.getX(), point.getY()));
         }
-//        System.out.println();
     }
-    
+
+    /**
+     * Inserts a new point into the KD-Tree.
+     *
+     * @param point The 2D point to be inserted into the KD-Tree.
+     */
     public void insert(Vector2F point) {
         root = insertRec(root, point, 0);
     }
 
     /**
-     * determine where point should be within the KDTree and insert their
-     * @param node
-     * @param point
-     * @param depth
-     * @return
+     * Recursive helper method to insert a point into the KD-Tree.
+     *
+     * @param node  The current node in the KD-Tree.
+     * @param point The 2D point to be inserted.
+     * @param depth The current depth in the KD-Tree.
+     * @return The updated node after insertion.
      */
     private KDNode insertRec(KDNode node, Vector2F point, int depth) {
         if (node == null) {
             return new KDNode(point);
         }
 
-        int cur_dimension = depth % 2;
+        int cur_dimension = depth % 2; // Alternates between x and y dimensions (2D)
 
         if (cur_dimension == 0) {
             if (point.getX() < node.point.getX()) {
                 node.left = insertRec(node.left, point, depth + 1);
-            }
-            else {
+            } else {
                 node.right = insertRec(node.right, point, depth + 1);
             }
-        }
-        else if (cur_dimension == 1) {
+        } else if (cur_dimension == 1) {
             if (point.getY() < node.point.getY()) {
                 node.left = insertRec(node.left, point, depth + 1);
-            }
-            else {
+            } else {
                 node.right = insertRec(node.right, point, depth + 1);
             }
         }
@@ -57,15 +62,25 @@ public class KDTree {
     }
 
     /**
-     * get nearest point within the KDTree to given point
-     * @param target
-     * @return
+     * Finds the nearest point in the KD-Tree to a given target point.
+     *
+     * @param target The target point for which nearest neighbor is to be found.
+     * @return The nearest neighbor point found in the KD-Tree.
      */
     public Vector2F findNearest(Vector2F target) {
-        target = new Vector2F(target.getX(), target.getY());
+        target = new Vector2F(target.getX(), target.getY()); // Create a copy to avoid modification
         return findNearestRec(root, target, 0, null);
     }
 
+    /**
+     * Recursive helper method to find the nearest neighbor point in the KD-Tree.
+     *
+     * @param root   The current root node in the KD-Tree.
+     * @param target The target point for which nearest neighbor is to be found.
+     * @param depth  The current depth in the KD-Tree.
+     * @param best   The current best nearest neighbor found so far.
+     * @return The nearest neighbor point found in the KD-Tree.
+     */
     private Vector2F findNearestRec(KDNode root, Vector2F target, int depth, Vector2F best) {
         if (root == null) {
             return best;
@@ -80,8 +95,9 @@ public class KDTree {
             best_dist = cur_dist;
         }
 
-        int cur_dimension = depth % k;
+        int cur_dimension = depth % k; // Alternates between x and y dimensions (2D)
         KDNode next_node, other_node;
+
         if (cur_dimension == 0) {
             next_node = (target.getX() < root.point.getX()) ? root.left : root.right;
             other_node = (next_node == root.left) ? root.right : root.left;
@@ -91,8 +107,7 @@ public class KDTree {
             if (target.getXDistance(root.point) < best_dist) {
                 bestPoint = findNearestRec(other_node, target, depth + 1, bestPoint);
             }
-        }
-        else  {
+        } else {
             next_node = (target.getY() < root.point.getY()) ? root.left : root.right;
             other_node = (next_node == root.left) ? root.right : root.left;
 
@@ -105,16 +120,19 @@ public class KDTree {
         return bestPoint;
     }
 
+    /**
+     * Represents a node in the KD-Tree.
+     */
     private class KDNode {
+        int dimension = 2; // Number of dimensions (here, 2D)
+        Vector2F point;    // Point stored in the node
+        KDNode left, right; // Left and right child nodes
 
-        int dimension = 2;
-        Vector2F point;
-        KDNode left, right;
-
-        public KDNode(int x, int y) {
-            point = new Vector2F(x, y);
-        }
-        
+        /**
+         * Constructs a KDNode with a given 2D point.
+         *
+         * @param point The 2D point to be stored in the node.
+         */
         public KDNode(Vector2F point) {
             this.point = new Vector2F(point);
         }

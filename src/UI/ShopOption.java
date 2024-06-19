@@ -9,8 +9,8 @@ import java.awt.image.BufferedImage;
  * The ShopOption class represents an option in the shop, holding an item for sale and its cost.
  */
 public class ShopOption {
-    private final GameItem soldItem;
-    private final int costToPurchase;
+    private GameItem soldItem;
+    private int costToPurchase;
 
     /**
      * Constructs a ShopOption with the specified item and cost.

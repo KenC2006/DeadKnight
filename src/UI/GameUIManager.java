@@ -8,11 +8,11 @@ import java.awt.*;
 import java.io.IOException;
 
 public class GameUIManager {
-    private final PlayerUI playerUI;
+    private PlayerUI playerUI;
     private boolean menuOpen;
-    private final Menu menu;
+    private Menu menu;
     private Chest shop;
-    private final EntityManager em;
+    private EntityManager em;
 
     public GameUIManager(EntityManager entityManager, JPanel panel) throws IOException {
         playerUI = new PlayerUI(entityManager.getPlayer());

@@ -2,37 +2,56 @@ package Structure;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a convex shape defined by a list of vertices.
+ */
 public class ConvexShape {
-    private ArrayList<Vector2F> points;
-    private Vector2F topLeft = new Vector2F(), bottomRight = new Vector2F();
-    private int pointCount = 0;
-    // SOURCE https://github.com/upasee/Chan-s-Algorithm/blob/master/chan/Point.java
-    // SOURCE https://github.com/ClaymoreAdrendamar/Separating-Axis-Theorem/blob/master/Java/Collisions.java
+    private ArrayList<Vector2F> points; // List of vertices defining the convex shape
+    private Vector2F topLeft = new Vector2F(); // Top-left corner of the bounding box
+    private Vector2F bottomRight = new Vector2F(); // Bottom-right corner of the bounding box
+    private int pointCount = 0; // Number of points in the convex shape
 
+    /**
+     * Constructs a convex shape from a list of points using Jarvis March algorithm.
+     * @param points The list of points defining the convex shape
+     */
     public ConvexShape(ArrayList<Vector2F> points) {
-        this.points = jarvisMarch(points);
-        topLeft.copy(points.get(0));
-        bottomRight.copy(points.get(0));
+        this.points = jarvisMarch(points); // Apply Jarvis March to get the convex hull
+        topLeft.copy(points.get(0)); // Initialize top-left corner with the first point
+        bottomRight.copy(points.get(0)); // Initialize bottom-right corner with the first point
         for (Vector2F c : points) {
-            topLeft.setX(Math.min(topLeft.getX(), c.getX()));
-            topLeft.setY(Math.min(topLeft.getY(), c.getY()));
-            bottomRight.setX(Math.max(bottomRight.getX(), c.getX()));
-            bottomRight.setY(Math.max(bottomRight.getY(), c.getY()));
-            pointCount++;
+            topLeft.setX(Math.min(topLeft.getX(), c.getX())); // Update top-left X coordinate
+            topLeft.setY(Math.min(topLeft.getY(), c.getY())); // Update top-left Y coordinate
+            bottomRight.setX(Math.max(bottomRight.getX(), c.getX())); // Update bottom-right X coordinate
+            bottomRight.setY(Math.max(bottomRight.getY(), c.getY())); // Update bottom-right Y coordinate
+            pointCount++; // Increment point count
         }
     }
 
+    /**
+     * Retrieves the list of points defining the convex shape.
+     * @return The list of points
+     */
     public ArrayList<Vector2F> getPoints() {
         return points;
     }
 
+    /**
+     * Retrieves the number of points in the convex shape.
+     * @return The number of points
+     */
     public int getPointCount() {
         return pointCount;
     }
 
+    /**
+     * Applies the Jarvis March algorithm to find the convex hull of a set of points.
+     * @param points The list of points to find the convex hull for
+     * @return The list of points representing the convex hull
+     */
     private ArrayList<Vector2F> jarvisMarch(ArrayList<Vector2F> points) {
         ArrayList<Vector2F> results = new ArrayList<>();
-        Vector2F maxPoint = findFurthestPoint(points);
+        Vector2F maxPoint = findFurthestPoint(points); // Find the point furthest from origin
         results.add(new Vector2F(maxPoint));
         Vector2F pivot = new Vector2F(maxPoint), best = new Vector2F(maxPoint);
         int count = 0;
@@ -40,37 +59,53 @@ public class ConvexShape {
             count++;
             for (Vector2F candidate: points) {
                 if (candidate.getX() == pivot.getX() && candidate.getY() == pivot.getY()) continue; // Skip if comparing to pivot point
-                int rotation = orientation(pivot, best, candidate); // Check if points are cw (-1), ccw (1), or colinear (0) (checking if candidate is further cw than best)
+                int rotation = orientation(pivot, best, candidate); // Check orientation (cw, ccw, colinear)
                 long dist = compare(pivot.getEuclideanDistance(candidate), pivot.getEuclideanDistance(best));
-                if (rotation == -1 || rotation == 0 && dist == 1) best.copy(candidate); // get the point furthest most rotated point from the pivot (if same rotation get closest)
+                if (rotation == -1 || rotation == 0 && dist == 1) best.copy(candidate); // Choose the furthest most rotated point from the pivot
             }
-            if (best.getManhattanDistance(maxPoint) == 0) break; // Done when made a full loop back to starting point
+            if (best.getManhattanDistance(maxPoint) == 0) break; // Stop when a full loop back to starting point is made
 
             if (count > 100) {
-                System.out.println("BROKEN");
+                System.out.println("BROKEN"); // Debugging output if the loop seems broken
                 for (Vector2F p: points) {
                     System.out.println(p);
                 }
-                System.exit(-1);
-
+                System.exit(-1); // Exit if something goes wrong
             }
 
-            results.add(new Vector2F(best));
+            results.add(new Vector2F(best)); // Add the best candidate to results
             pivot.copy(best); // Set next pivot to candidate
         }
         return results;
     }
 
+    /**
+     * Compares two long integers.
+     * @param a The first long integer
+     * @param b The second long integer
+     * @return 0 if equal, 1 if a > b, -1 if a < b
+     */
     private int compare(long a, long b) {
         if (a == b) return 0;
         return a > b ? 1 : -1;
     }
 
+    /**
+     * Determines the orientation of three points (cw, ccw, colinear).
+     * @param a The first point
+     * @param b The second point
+     * @param c The third point
+     * @return -1 if cw, 1 if ccw, 0 if colinear
+     */
     private int orientation(Vector2F a, Vector2F b, Vector2F c) {
         return compare(((long) (b.getX() - a.getX()) * (c.getY() - a.getY())) - ((long) (b.getY() - a.getY()) *(c.getX() - a.getX())), 0);
-
     }
 
+    /**
+     * Finds the furthest point from the origin in a list of points.
+     * @param points The list of points
+     * @return The point furthest from the origin
+     */
     private Vector2F findFurthestPoint(ArrayList<Vector2F> points) {
         Vector2F max = new Vector2F(points.get(0));
         for (Vector2F p: points) {
@@ -79,6 +114,11 @@ public class ConvexShape {
         return max;
     }
 
+    /**
+     * Checks if this convex shape intersects with another convex shape.
+     * @param other The other convex shape to check intersection with
+     * @return true if intersects, false otherwise
+     */
     public boolean intersects(ConvexShape other) {
         ArrayList<Vector2F> axis = new ArrayList<>();
         axis.addAll(getAxis());
@@ -92,6 +132,12 @@ public class ConvexShape {
         return true;
     }
 
+    /**
+     * Checks if this convex shape intersects with another convex shape.
+     * @param other The other convex shape to check intersection with
+     * @param equality Whether to check for exact equality in overlap
+     * @return true if intersects, false otherwise
+     */
     public boolean intersects(ConvexShape other, boolean equality) {
         ArrayList<Vector2F> axis = new ArrayList<>();
         axis.addAll(getAxis());
@@ -102,7 +148,6 @@ public class ConvexShape {
             Projection pB = other.getProjection(v);
             if (equality) {
                 if (!pA.equalityOverlap(pB)) return false;
-
             } else {
                 if (!pA.overlap(pB)) return false;
             }
@@ -110,6 +155,11 @@ public class ConvexShape {
         return true;
     }
 
+    /**
+     * Projects this convex shape onto a given axis.
+     * @param axis The axis to project onto
+     * @return The projection of this shape onto the axis
+     */
     private Projection getProjection(Vector2F axis) {
         long min = axis.dotProduct(points.get(0));
         long max = min;
@@ -121,6 +171,10 @@ public class ConvexShape {
         return new Projection(min, max);
     }
 
+    /**
+     * Computes the list of axes (normals) for the edges of this convex shape.
+     * @return The list of axes
+     */
     public ArrayList<Vector2F> getAxis() {
         ArrayList<Vector2F> axis = new ArrayList<>();
         for (int i = 0; i < points.size(); i++) {
@@ -130,10 +184,18 @@ public class ConvexShape {
         return axis;
     }
 
+    /**
+     * Retrieves the top-left corner of the bounding box of this convex shape.
+     * @return The top-left corner vector
+     */
     public Vector2F getTopLeft() {
         return topLeft;
     }
 
+    /**
+     * Retrieves the bottom-right corner of the bounding box of this convex shape.
+     * @return The bottom-right corner vector
+     */
     public Vector2F getBottomRight() {
         return bottomRight;
     }

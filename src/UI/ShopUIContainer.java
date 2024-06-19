@@ -14,11 +14,11 @@ import java.util.List;
  * It handles drawing the shop interface and managing user interactions with shop items.
  */
 public class ShopUIContainer {
-    private final ArrayList<ShopOption> options;
+    private ArrayList<ShopOption> options;
     private int margin = 20;
     private Vector2F mouseLocation = new Vector2F(0, 0);
     private boolean mousePressed;
-    private final Chest parent;
+    private Chest parent;
 
     /**
      * Constructs a ShopUIContainer with a reference to the parent Chest.

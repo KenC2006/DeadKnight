@@ -15,21 +15,21 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Menu extends UI implements ActionListener {
-    private final ArrayList<JButton> uiButtons = new ArrayList<>();
-    private final ArrayList<JButton> controlButtons = new ArrayList<>();
-    private final JButton start = new JButton("Start");
-    private final JButton controls = new JButton("Controls");
+    private ArrayList<JButton> uiButtons = new ArrayList<>();
+    private ArrayList<JButton> controlButtons = new ArrayList<>();
+    private JButton start = new JButton("Start");
+    private JButton controls = new JButton("Controls");
     private BufferedImage gameIcon= ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/gameIcon.png")));
 
-    private final JButton resetControls = new JButton("Reset Default Controls");
-    private final JButton returnToMenu = new JButton("Return To Menu");
+    private JButton resetControls = new JButton("Reset Default Controls");
+    private JButton returnToMenu = new JButton("Return To Menu");
 
     private JButton currentButton;
-    private final Player player;
+    private Player player;
     private boolean controlsOn = false;
 
     private boolean menuOn = true, waitingForPlayer;
-    private final JPanel panel;
+    private JPanel panel;
 
     private String text = "Dead Knight";
 

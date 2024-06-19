@@ -9,7 +9,6 @@ import Managers.ActionManager;
 import Structure.Hitbox;
 import Structure.Line;
 import Structure.Vector2F;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -22,12 +21,12 @@ import java.util.Objects;
  * zooming, and other camera operations. Use arrow keys to move the camera.
  */
 public class Camera {
-    private final Vector2F offset = new Vector2F(-1000, -1000), targetOffset = new Vector2F(offset);
+    private Vector2F offset = new Vector2F(-1000, -1000), targetOffset = new Vector2F(offset);
     private Vector2F absoluteOffset = new Vector2F();
-    private final Vector2F topLeftLocation = new Vector2F();
+    private Vector2F topLeftLocation = new Vector2F();
     private Graphics2D graphics;
     private double scaling, initialScaling;
-    private final double renderScaling;
+    private double renderScaling;
     private int renderWidth, renderHeight;
     private boolean isMapCamera, centered, enabled;
     private Vector2F translatedMouseCoords = new Vector2F();
