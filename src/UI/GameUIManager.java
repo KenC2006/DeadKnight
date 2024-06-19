@@ -1,5 +1,4 @@
 package UI;
-import Entities.Player;
 import Items.Chest;
 import Managers.ActionManager;
 import Managers.EntityManager;
@@ -9,11 +8,11 @@ import java.awt.*;
 import java.io.IOException;
 
 public class GameUIManager {
-    private PlayerUI playerUI;
+    private final PlayerUI playerUI;
     private boolean menuOpen;
-    private Menu menu;
+    private final Menu menu;
     private Chest shop;
-    private EntityManager em;
+    private final EntityManager em;
 
     public GameUIManager(EntityManager entityManager, JPanel panel) throws IOException {
         playerUI = new PlayerUI(entityManager.getPlayer());
