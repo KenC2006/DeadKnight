@@ -46,5 +46,9 @@ public class HitDisplay {
     public static void setMainGameCamera(Camera c) {
         mainGameCamera = c;
     }
+
+    public static void clear() {
+        allHitDisplays.clear();
+    }
 }
 

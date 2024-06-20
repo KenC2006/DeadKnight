@@ -45,9 +45,10 @@ public class GameUIManager {
 
         if (em.getPlayer().isDead()) {
             menu.setMenuOn(true);
+            HitDisplay.clear();
             playerStatsUI.setEnabled(false);
         }
-        em.getPlayer().setDead(false);
+//        em.getPlayer().setDead(false);
 
         if (!getMenuEnabled()) {
             playerStatsUI.updateKeyPresses(manager);

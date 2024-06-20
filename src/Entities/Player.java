@@ -445,7 +445,7 @@ public class Player extends Entity {
 
     public void setDead(boolean dead) {
         this.dead = dead;
-        if (dead) getStats().setDeathCount(getStats().getDeathCount() + 0.5);
+        if (dead) getStats().setDeathCount(getStats().getDeathCount() + 1);
     }
 
     public boolean generateRooms() {

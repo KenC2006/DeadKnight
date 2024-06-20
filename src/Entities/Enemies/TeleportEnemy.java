@@ -20,8 +20,10 @@ public class TeleportEnemy extends Enemy {
 
     private final static int defaultHeight = 5000; // asl
     private final static int defaultWidth = 1000;
+    private int baseFireCount, fireCount;
     private Vector2F teleportOption = new Vector2F();
-    private GameTimer shootTimer = new GameTimer(60);
+    private GameTimer shootTimer = new GameTimer(120);
+    private GameTimer miniFireTimer = new GameTimer(5);
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 
@@ -36,6 +38,7 @@ public class TeleportEnemy extends Enemy {
         } catch (IOException e) {
             System.out.println("Enemy image not found: " + e);
         }
+        baseFireCount = 5;
     }
 
     /**
@@ -84,6 +87,12 @@ public class TeleportEnemy extends Enemy {
 
         if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
             shootTimer.reset();
+            fireCount = baseFireCount;
+        }
+
+        if (fireCount > 0 && miniFireTimer.isReady()) {
+            miniFireTimer.reset();
+            fireCount -= 1;
             Projectile newProjectile = new Projectile(getCenterVector(), new Vector2F(1000, 1000), velocity.multiply(3), 1);
             try {
                 newProjectile.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/enemy_projectile.png"))));

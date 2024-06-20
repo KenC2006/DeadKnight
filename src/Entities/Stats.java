@@ -42,7 +42,7 @@ public class Stats {
         manaRegenerationTimer = new GameTimer(values.get("Mana Regen Time"));
     }
 
-    public double getDeathCount() {
+    public int getDeathCount() {
         return deathCount;
     }
 

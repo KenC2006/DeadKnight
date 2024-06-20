@@ -143,7 +143,7 @@ public class EntityManager {
 
         roomManager.updateData();
 
-        if (player.getStats().getHealth() == 0) {
+        if (player.getStats().getHealth() == 0 && !player.isDead()) {
             System.out.println("DEAD");
             player.setDead(true);
         }
