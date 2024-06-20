@@ -20,7 +20,6 @@ import java.util.Objects;
  *     <li>Provide a description of the basic sword weapon.</li>
  *     <li>Load and set the image icon for the basic sword weapon.</li>
  * </ul>
- * </p>
  */
 public class BasicSword extends MeleeWeapon {
 

@@ -30,7 +30,6 @@ import java.util.Scanner;
  *     <li>Toggle hitboxes on/off based on the weapon's activation state.</li>
  *     <li>Update the state of the weapon, such as cooldowns and hitbox visibility.</li>
  * </ul>
- * </p>
  */
 public class MeleeWeapon extends Weapon {
     private GameTimer swingCooldownTimer, swingLengthTimer;

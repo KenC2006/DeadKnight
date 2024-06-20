@@ -20,7 +20,6 @@ import java.util.Objects;
  *     <li>Provide a description of the basic spear weapon.</li>
  *     <li>Load and set the image icon for the basic spear weapon.</li>
  * </ul>
- * </p>
  */
 public class BasicSpear extends MeleeWeapon {
 
