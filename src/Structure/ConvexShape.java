@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 /**
  * Represents a convex shape defined by a list of vertices.
+ * Source - Chan's Algorithm for computing a Convex Hull: <a href="https://github.com/upasee/Chan-s-Algorithm">https://github.com/upasee/Chan-s-Algorithm</a>
+ * Source - Separating Axis Theorem to detect collision between two Convex Hulls: <a href="https://github.com/ClaymoreAdrendamar/Separating-Axis-Theorem/tree/master">https://github.com/ClaymoreAdrendamar/Separating-Axis-Theorem/tree/master</a>
  */
 public class ConvexShape {
     private ArrayList<Vector2F> points; // List of vertices defining the convex shape

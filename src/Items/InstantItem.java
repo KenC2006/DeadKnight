@@ -14,37 +14,71 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Represents an instant item that can be used to modify player stats or abilities instantly.
+ */
 public class InstantItem extends GameItem {
     public enum InstantType {INTELLIGENCE, MAX_HEALTH, HEALTH, MAX_MANA, MANA, CRIT_RATE, CRIT_DAMAGE, DEFENCE, DOUBLE_JUMP}
     private ArrayList<InstantType> allTypes = new ArrayList<>(Arrays.asList(InstantType.values()));
     public InstantType itemType;
+
+    /**
+     * Constructs an InstantItem with a specific type.
+     *
+     * @param location The initial location of the item.
+     * @param itemType The type of instant item to be created.
+     */
     public InstantItem(Vector2F location, InstantType itemType) {
         super(location, ItemType.STAT);
         this.itemType = itemType;
         initializeItem();
     }
 
+    /**
+     * Constructs an InstantItem with a random type.
+     *
+     * @param location The initial location of the item.
+     */
     public InstantItem(Vector2F location) {
         super(location, ItemType.STAT);
         this.itemType = getRandomType();
         initializeItem();
     }
 
+    /**
+     * Activates the instant item.
+     *
+     * @param dir   The direction or type of activation (not used for InstantItem).
+     * @param ac    The action manager handling the activation (not used for InstantItem).
+     * @param owner The entity that owns or uses the item (not used for InstantItem).
+     * @return Always returns false since InstantItem does not perform activation actions.
+     */
     @Override
-    public boolean activate(ActivationType dir, ActionManager ac, Entity owner) {
+    public boolean activate(Weapon.ActivationType dir, ActionManager ac, Entity owner) {
         return false;
     }
 
+    /**
+     * Updates the state of the instant item (not used for InstantItem).
+     */
     @Override
     public void update() {
-
+        // No implementation needed for InstantItem
     }
 
+    /**
+     * Draws the instant item on the screen (not used for InstantItem).
+     *
+     * @param c The camera object used for rendering (not used for InstantItem).
+     */
     @Override
     public void draw(Camera c) {
-
+        // No implementation needed for InstantItem
     }
 
+    /**
+     * Initializes the properties of the instant item based on its type.
+     */
     private void initializeItem() {
         try {
             switch (itemType) {
@@ -100,6 +134,11 @@ public class InstantItem extends GameItem {
         }
     }
 
+    /**
+     * Uses the instant item, applying its effect to the player.
+     *
+     * @param p The player who uses the instant item.
+     */
     public void use(Player p) {
         switch (itemType) {
             case INTELLIGENCE:
@@ -134,10 +173,20 @@ public class InstantItem extends GameItem {
         }
     }
 
+    /**
+     * Retrieves the type of the instant item.
+     *
+     * @return The type of the instant item.
+     */
     public InstantType getInstantType() {
         return itemType;
     }
 
+    /**
+     * Generates a random instant item type from the available types.
+     *
+     * @return A randomly selected instant item type.
+     */
     private InstantType getRandomType() {
         int size = allTypes.size();
         return allTypes.get((int) (Math.random() * size));

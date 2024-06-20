@@ -12,26 +12,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Represents an item pickup entity that can be collected by the player.
+ */
 public class ItemPickup extends Entity {
     public InstantItem item;
 
+    /**
+     * Constructs an item pickup at a specified location with a given item type.
+     *
+     * @param location The initial location of the item pickup.
+     * @param itemType The type of instant item this pickup will contain.
+     */
     public ItemPickup(Vector2F location, InstantItem.InstantType itemType) {
         super(location.getX(), location.getY(), 1000, 1000);
         item = new InstantItem(location, itemType);
         initialize();
     }
 
+    /**
+     * Constructs an item pickup at a specified location with a default item type (Intelligence).
+     *
+     * @param location The initial location of the item pickup.
+     */
     public ItemPickup(Vector2F location) {
         super(location.getX(), location.getY(), 1000, 1000);
         this.item = new InstantItem(location, InstantItem.InstantType.INTELLIGENCE);
         initialize();
     }
 
-    @Override
-    public void updateValues() {
-        super.updateValues();
-    }
-
+    /**
+     * Updates the values of the item pickup entity.
+     *
+     * @param p The player entity used to calculate movement towards the player.
+     */
     public void updateValues(Player p) {
         super.updateValues();
         Vector2F dist = new Vector2F(p.getCenterX() - getCenterX(), p.getCenterY() - getCenterY());
@@ -40,12 +54,20 @@ public class ItemPickup extends Entity {
         setIntendedVY(dist.getY());
     }
 
+    /**
+     * Handles the pickup of the item by the player.
+     *
+     * @param p The player who picks up the item.
+     */
     public void pickupItem(Player p) {
         p.addItem(item);
         HitDisplay.createHitDisplay(p.getCenterVector(), 1, Color.YELLOW);
         markToDelete(true);
     }
 
+    /**
+     * Initializes the item pickup entity, setting its default appearance based on the item type.
+     */
     private void initialize() {
         switch (item.getInstantType()) {
             case INTELLIGENCE:
@@ -69,5 +91,4 @@ public class ItemPickup extends Entity {
 
         setImageOffset(new Vector2F(0, 0));
     }
-
 }

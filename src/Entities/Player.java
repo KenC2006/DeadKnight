@@ -4,8 +4,6 @@ import Items.*;
 import Items.Melee.BasicSpear;
 import Items.Melee.BasicSword;
 import Items.Melee.MeleeWeapon;
-import Items.Ranged.BasicTurret;
-import Items.Ranged.MachineGun;
 import Items.Ranged.RangedWeapon;
 import RoomEditor.LevelPortal;
 import Universal.Camera;
@@ -20,41 +18,42 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Stack;
 
 /**
- * WASD TO MOVE PLAYER
+ * Represents the player character in the game, handling movement, actions, inventory, and interactions.
+ * Supports various weapons and abilities controlled through keyboard and mouse inputs.
  */
 public class Player extends Entity {
+    public enum Direction {LEFT, RIGHT, UP, DOWN}
     private enum State {IDLE, RUNNING, SWORD_ATTACK, SPEAR_ATTACK, RANGED}
-    private  ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
-    private boolean immune, upPressed, leftRightPressed, jumping;
+
+    private final ArrayList<Integer> CONTROLS = new ArrayList<>();
+    private boolean immune, upPressed, leftRightPressed, jumping, dead, generateRooms;
+    private int framesSinceStartedJumping, framesPassed, lastUpPressed, frame = 0;
     private Direction direction;
-    private int framesSinceStartedJumping;
-    private int framesPassed, lastUpPressed;
-    private PlayerInventory playerInventory;
-    private final ArrayList<Integer> controls = new ArrayList<>();
-    private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
+    private State playerState;
     private Vector2F mouseLocation = new Vector2F();
+    private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer, animationTimer, immunityTimer;
+    private PlayerInventory playerInventory;
+    private BufferedImage currentFrame;
+    private ArrayList<Projectile> projectiles = new ArrayList<>(); // TO BE PASSED BY REFERENCE TO PLAYER WEAPONS
     private ArrayList<BufferedImage> idleFrames;
     private ArrayList<BufferedImage> runFrames;
     private ArrayList<BufferedImage> swordFrames;
     private ArrayList<BufferedImage> spearFrames;
     private ArrayList<BufferedImage> rangedFrames;
-    private int frame = 0;
-    private GameTimer animationTimer;
-    private BufferedImage currentFrame;
-    private boolean dead, generateRooms;
 
-    private State playerState;
-
+    /**
+     * Constructs a new Player instance at specified coordinates.
+     *
+     * @param x Initial x-coordinate of the player
+     * @param y Initial y-coordinate of the player
+     */
     public Player(int x, int y){
         super(x, y, 1000, 2000);
         playerInventory = new PlayerInventory(this);
         playerInventory.addPrimaryItem(new BasicSword());
-//        playerInventory.addPrimaryItem(new BasicSpear(new Vector2F(x, y)));
-//        playerInventory.addPrimaryItem(new BasicTurret(new Vector2F(x, y), projectiles));
-//        playerInventory.addPrimaryItem(new MachineGun(new Vector2F(x, y), projectiles));
+
         setDefaultControls();
         getStats().changeBaseHealth(100);
         getStats().changeBaseMana(100);
@@ -65,6 +64,7 @@ public class Player extends Entity {
         dashCooldownTimer = new GameTimer(30);
         dashLengthTimer = new GameTimer(10);
         dashImmunityTimer = new GameTimer(15);
+        immunityTimer = new GameTimer(5);
         playerState = State.IDLE;
 
         animationTimer = new GameTimer(4);
@@ -115,6 +115,9 @@ public class Player extends Entity {
 
     }
 
+    /**
+     * Resets the player's state, health, mana, and velocity to initial values.
+     */
     public void reset() {
         getStats().heal(10000000);
         getStats().gainMana(1000000);
@@ -122,38 +125,49 @@ public class Player extends Entity {
         setActualVY(0);
         setIntendedVX(0);
         setIntendedVY(0);
-//        resetStats();
     }
 
+    /**
+     * Retrieves the list of keyboard controls mapped to player actions.
+     *
+     * @return ArrayList of integer key codes representing player controls
+     */
     public ArrayList<Integer> getControls() {
-        return controls;
+        return CONTROLS;
     }
 
+    /**
+     * Sets default keyboard controls for player actions.
+     */
     public void setDefaultControls(){
-        controls.clear();
-        controls.add(KeyEvent.VK_W);
-        controls.add(KeyEvent.VK_D);
-        controls.add(KeyEvent.VK_A);
-        controls.add(KeyEvent.VK_E);
-        controls.add(KeyEvent.VK_Q);
-        controls.add(KeyEvent.VK_RIGHT);
-        controls.add(KeyEvent.VK_LEFT);
-        controls.add(KeyEvent.VK_SHIFT);
-        controls.add(KeyEvent.VK_F);
+        CONTROLS.clear();
+        CONTROLS.add(KeyEvent.VK_W);
+        CONTROLS.add(KeyEvent.VK_D);
+        CONTROLS.add(KeyEvent.VK_A);
+        CONTROLS.add(KeyEvent.VK_E);
+        CONTROLS.add(KeyEvent.VK_Q);
+        CONTROLS.add(KeyEvent.VK_RIGHT);
+        CONTROLS.add(KeyEvent.VK_LEFT);
+        CONTROLS.add(KeyEvent.VK_SHIFT);
+        CONTROLS.add(KeyEvent.VK_F);
     }
 
+    /**
+     * Updates player actions based on current keyboard and mouse inputs.
+     *
+     * @param manager ActionManager instance handling keyboard and mouse inputs
+     */
     public void updateKeyPresses(ActionManager manager) {
         int dx = 0;
         framesPassed++;
         if (isGrounded()) getStats().resetJumps();
         if (isHittingCeiling()) framesSinceStartedJumping -= 10;
 
-        if (manager.getPressed(controls.get(0))) {
+        if (manager.getPressed(CONTROLS.get(0))) {
             if (!upPressed) {
                 upPressed = true;
                 if (getStats().canJump()) {
                     jumping = true;
-//                    framesSinceTouchedGround -= 10;
                     framesSinceStartedJumping = framesPassed;
                     getStats().jump();
 
@@ -164,7 +178,6 @@ public class Player extends Entity {
                 if (getStats().canJump() && framesPassed - lastUpPressed < 20) {
                     jumping = true;
                     framesSinceStartedJumping = framesPassed;
-//                    framesSinceTouchedGround -= 10;
                     lastUpPressed -= 10;
                     getStats().jump();
                 }
@@ -186,45 +199,47 @@ public class Player extends Entity {
         }
 
         playerState = State.IDLE;
-        if (manager.getPressed(controls.get(1))) {
+        if (manager.getPressed(CONTROLS.get(1))) {
             dx += 500;
             direction = Direction.RIGHT;
 
         }
 
-        if (manager.getPressed(controls.get(2))) {
+        if (manager.getPressed(CONTROLS.get(2))) {
             dx -= 500;
             direction = Direction.LEFT;
         }
 
-        if (manager.getPressed(controls.get(3))) {
+        if (manager.getPressed(CONTROLS.get(3))) {
             playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() + 1);
         }
-        if (manager.getPressed(controls.get(4))) {
+        if (manager.getPressed(CONTROLS.get(4))) {
             playerInventory.setPrimaryIndex(playerInventory.getPrimaryIndex() - 1);
         }
 
         if (manager.isMousePressed()) {
             if (playerInventory.getCurrentPrimaryItem() instanceof RangedWeapon) {
-                playerInventory.usePrimary(ActivationType.UP, manager, this);
+                playerInventory.usePrimary(Weapon.ActivationType.UP, manager, this);
 
             } else {
-                playerInventory.usePrimary(mouseLocation.getX() > getCenterX() ? ActivationType.RIGHT : ActivationType.LEFT, manager, this);
+                playerInventory.usePrimary(mouseLocation.getX() > getCenterX() ? Weapon.ActivationType.RIGHT : Weapon.ActivationType.LEFT, manager, this);
             }
 
             if (mouseLocation.getX() > getCenterX()) direction = Direction.RIGHT;
             else direction = Direction.LEFT;
         }
 
-        if (manager.getPressed(controls.get(5))) {
-            playerInventory.usePrimary(ActivationType.RIGHT, manager, this);
+        if (manager.getPressed(CONTROLS.get(5))) {
+            playerInventory.usePrimary(Weapon.ActivationType.RIGHT, manager, this);
+            direction = Direction.RIGHT;
         }
 
-        if (manager.getPressed(controls.get(6))) {
-            playerInventory.usePrimary(ActivationType.LEFT, manager, this);
+        if (manager.getPressed(CONTROLS.get(6))) {
+            playerInventory.usePrimary(Weapon.ActivationType.LEFT, manager, this);
+            direction = Direction.LEFT;
         }
 
-        if (manager.getPressed(controls.get(7)) && dashCooldownTimer.isReady()) {
+        if (manager.getPressed(CONTROLS.get(7)) && dashCooldownTimer.isReady()) {
             dashCooldownTimer.reset();
             dashLengthTimer.reset();
             dashImmunityTimer.reset();
@@ -250,7 +265,7 @@ public class Player extends Entity {
         }
 
 
-        if (manager.getPressed(controls.get(5)) || manager.getPressed(controls.get(6)) || manager.isMousePressed()) {
+        if (manager.getPressed(CONTROLS.get(5)) || manager.getPressed(CONTROLS.get(6)) || manager.isMousePressed()) {
             if (playerInventory.getCurrentPrimaryItem() instanceof RangedWeapon) {
                 playerState = State.RANGED;
 
@@ -261,7 +276,7 @@ public class Player extends Entity {
                 playerState = State.SWORD_ATTACK;
 
             }
-        } else if ((manager.getPressed(controls.get(7)) && dashCooldownTimer.isReady()) || manager.getPressed(controls.get(2)) || manager.getPressed(controls.get(1))) {
+        } else if ((manager.getPressed(CONTROLS.get(7)) && dashCooldownTimer.isReady()) || manager.getPressed(CONTROLS.get(2)) || manager.getPressed(CONTROLS.get(1))) {
             playerState = State.RUNNING;
         } else {
             playerState = State.IDLE;
@@ -270,6 +285,11 @@ public class Player extends Entity {
         setIntendedVX(dx);
     }
 
+    /**
+     * Adds a game item to the player's inventory. If the item is a STAT type, immediately uses it.
+     *
+     * @param item GameItem instance to add to the player's inventory
+     */
     public void addItem(GameItem item) {
         if (playerInventory.addItem(item)) return;
         if (item.getType() == GameItem.ItemType.STAT) {
@@ -277,11 +297,21 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Retrieves the type of the current primary item equipped by the player.
+     *
+     * @return ItemType of the current primary item, or null if no item is equipped
+     */
     public GameItem.ItemType getPrimaryType() {
         if (playerInventory.getCurrentPrimaryItem() == null) return null;
         return playerInventory.getCurrentPrimaryItem().getType();
     }
 
+    /**
+     * Handles collision resolution between the player and another entity.
+     *
+     * @param e Entity object to resolve collision with
+     */
     public void resolveEntityCollision(Entity e) {
         if (e.collidesWithPlayer(this)) {
             e.setColliding(true);
@@ -299,26 +329,56 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Handles collision resolution between the player and an item pickup.
+     *
+     * @param item ItemPickup object to resolve collision with
+     */
     public void resolveEntityCollision(ItemPickup item) {
         if (!item.collidesWith(this)) return;
-//        resolveEntityCollision((Entity) item);
-            item.pickupItem(this);
-//            item.markToDelete(true);
-//            playerInventory.setIntelligence(playerInventory.getIntelligence()+1);
+        item.pickupItem(this);
     }
 
+    /**
+     * Handles collision resolution between the player and a chest.
+     *
+     * @param chest Chest object to resolve collision with
+     */
     public void resolveEntityCollision(Chest chest) {
         chest.setCollidingWithPlayer(false);
         if (!chest.collidesWith(this)) return;
         chest.setCollidingWithPlayer(true);
     }
 
+    /**
+     * Handles collision resolution between the player and a level portal.
+     *
+     * @param portal LevelPortal object to resolve collision with
+     */
     public void resolveEntityCollision(LevelPortal portal) {
         portal.setCollidingWithPlayer(false);
         if (!portal.collidesWith(this)) return;
         portal.setCollidingWithPlayer(true);
     }
 
+    /**
+     * Inflicts damage on the player if the immunity timer is ready, and resets the immunity timer.
+     *
+     * @param damage   The amount of damage to inflict on the player.
+     * @param attacker The entity responsible for inflicting the damage.
+     */
+    public void damagePlayer(int damage, Entity attacker) {
+        if (immunityTimer.isReady()) {
+            getStats().doDamage(damage, attacker, this);
+            immunityTimer.reset();
+        }
+    }
+
+    /**
+     * Overrides superclass method to resolve collisions between the player and rooms.
+     *
+     * @param roomList List of rooms to check for collision with the player
+     */
     @Override
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
         super.resolveRoomCollisions(roomList);
@@ -332,10 +392,13 @@ public class Player extends Entity {
         }
     }
 
-
+    /**
+     * Paints the player and associated entities on the camera.
+     *
+     * @param c Camera object to draw the player on
+     */
     @Override
     public void paint(Camera c) {
-//      super.paint(c);
         for (Projectile p: new ArrayList<>(projectiles)) { // TODO currently temp fix for when the size of projectiles changes between a frame
             p.paint(c);
         }
@@ -361,7 +424,6 @@ public class Player extends Entity {
 
         switch (playerState) {
             case IDLE:
-//                frame = (frame + 1) % idleFrames.size();
                 if (playerInventory.getCurrentPrimaryItem() instanceof BasicSpear) {
                     frame = 2;
                 } else if (playerInventory.getCurrentPrimaryItem() instanceof RangedWeapon) {
@@ -392,9 +454,12 @@ public class Player extends Entity {
             default:
                 currentFrame = null;
         }
-        //      c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
     }
 
+    /**
+     * Updates the player's values such as inventory and projectiles.
+     * Checks if the player has fallen off the map and initiates death if so.
+     */
     @Override
     public void updateValues() {
         super.updateValues();
@@ -403,12 +468,17 @@ public class Player extends Entity {
             p.updateValues();
         }
 
-        if (getY() > 10000000) { // Fall off the map
+        // Check if player falls off the map and initiate death
+        if (getY() > 100000) {
             System.out.println("Dies: " + getCenterVector());
             getStats().heal(-10000000);
         }
     }
 
+    /**
+     * Updates data related to the player, including inventory position and projectile states.
+     * Removes projectiles that are marked for deletion.
+     */
     @Override
     public void updateData() {
         super.updateData();
@@ -419,39 +489,85 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * Checks if the player is currently immune to damage.
+     *
+     * @return True if the player is immune to damage, false otherwise
+     */
     public boolean isImmune() {
         return immune;
     }
 
+    /**
+     * Retrieves the list of projectiles fired by the player.
+     *
+     * @return ArrayList of Projectile instances representing fired projectiles
+     */
     public ArrayList<Projectile> getProjectiles() {
         return projectiles;
     }
 
+    /**
+     * Retrieves the current mouse location relative to the player character.
+     *
+     * @return Vector2F representing the current mouse location
+     */
     public Vector2F getMouseLocation() {
         return mouseLocation;
     }
 
+    /**
+     * Sets the current mouse location relative to the player character.
+     *
+     * @param mouseLocation New mouse location to set
+     */
     public void setMouseLocation(Vector2F mouseLocation) {
         this.mouseLocation = mouseLocation;
     }
 
+    /**
+     * Retrieves the player's inventory object.
+     *
+     * @return PlayerInventory object representing the player's inventory
+     */
     public PlayerInventory getPlayerInventory() {
         return playerInventory;
     }
 
+    /**
+     * Checks if the player is currently dead.
+     *
+     * @return True if the player is dead, false otherwise
+     */
     public boolean isDead() {
         return dead;
     }
 
+    /**
+     * Sets the player's death status to a specified value.
+     * Updates the player's death count if setting to dead.
+     *
+     * @param dead New death status for the player
+     */
     public void setDead(boolean dead) {
         this.dead = dead;
         if (dead) getStats().setDeathCount(getStats().getDeathCount() + 1);
     }
 
+    /**
+     * Checks if the player should generate new rooms (e.g., after death).
+     *
+     * @return True if the player should generate rooms, false otherwise
+     */
     public boolean generateRooms() {
         return generateRooms;
     }
 
+    /**
+     * Sets whether the player should generate new rooms.
+     *
+     * @param generateRooms True to generate rooms, false otherwise
+     */
     public void setGenerateRooms(boolean generateRooms) {
         this.generateRooms = generateRooms;
     }

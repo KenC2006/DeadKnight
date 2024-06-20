@@ -13,6 +13,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Represents a flying enemy in the game.
+ * <p>
+ * This class extends the Enemy class and provides specific behaviors and attributes
+ * for a basic flying enemy that can move, follow the player, and shoot projectiles.
+ * </p>
+ */
 public class FlyingEnemy extends Enemy {
 
     private final static int defaultHeight = 1500; // asl
@@ -24,6 +31,13 @@ public class FlyingEnemy extends Enemy {
     private GameTimer moveTimer = new GameTimer(15);
     private GameTimer shootTimer = new GameTimer(120);
 
+    /**
+     * Constructs a FlyingEnemy with specified position and health.
+     *
+     * @param x The initial x-coordinate of the enemy.
+     * @param y The initial y-coordinate of the enemy.
+     * @param health The initial health of the enemy.
+     */
     public FlyingEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 25000000);
         setAffectedByGravity(false);
@@ -36,7 +50,11 @@ public class FlyingEnemy extends Enemy {
     }
 
     /**
-     * control enemy movement
+     * Controls the enemy's movement to follow the player.
+     * <p>
+     * This method adjusts the velocity of the enemy to either approach or retreat from the player
+     * based on the distance between them. It also handles random vertical movement.
+     * </p>
      */
     @Override
     public void followPlayer() {
@@ -63,29 +81,59 @@ public class FlyingEnemy extends Enemy {
 //        if (isPlayerNear()) System.out.println(getIntendedVelocity());
     }
 
+    /**
+     * Generates a path for the enemy using the given node map.
+     * <p>
+     * This method is currently not implemented for the FlyingEnemy.
+     * </p>
+     *
+     * @param graph The node map used for pathfinding.
+     */
     @Override
     public void generatePath(NodeMap graph) {
-
-    }
-
-    @Override
-    public void updateEnemyPos(NodeMap graph) {
-
-    }
-
-    @Override
-    public void attack(ActionManager am) {
+        // Not implemented for FlyingEnemy
     }
 
     /**
-     * update player-enemy related changes
-     * @param player
+     * Updates the enemy's position using the given node map.
+     * <p>
+     * This method is currently not implemented for the FlyingEnemy.
+     * </p>
+     *
+     * @param graph The node map used for pathfinding.
+     */
+    @Override
+    public void updateEnemyPos(NodeMap graph) {
+        // Not implemented for FlyingEnemy
+    }
+
+    /**
+     * Executes an attack action using the action manager.
+     * <p>
+     * This method is currently not implemented for the FlyingEnemy.
+     * </p>
+     *
+     * @param am The action manager handling user inputs and actions.
+     */
+    @Override
+    public void attack(ActionManager am) {
+        // Not implemented for FlyingEnemy
+    }
+
+    /**
+     * Updates player-enemy related information, such as dealing damage and checking projectile conditions.
+     * <p>
+     * This method checks for collisions between the player and the enemy's hitbox,
+     * and handles projectile creation and collision resolution.
+     * </p>
+     *
+     * @param player The player entity to interact with.
      */
     @Override
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
-            player.getStats().doDamage(1, this, player);
+            player.damagePlayer(1, this);
         }
         if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
             shootTimer.reset();
@@ -102,8 +150,12 @@ public class FlyingEnemy extends Enemy {
     }
 
     /**
-     * deal with projectile and player collisions
-     * @param player
+     * Resolves collisions between the enemy's projectiles and the player.
+     * <p>
+     * This method checks if any projectiles intersect with the player and processes the hit.
+     * </p>
+     *
+     * @param player The player entity to check for collisions.
      */
     public void resolveEntityCollision(Player player) {
         for (Projectile p: projectiles) {
@@ -114,8 +166,12 @@ public class FlyingEnemy extends Enemy {
     }
 
     /**
-     * deal with room and projectile collisions
-     * @param roomList
+     * Resolves collisions between the enemy's projectiles and room walls.
+     * <p>
+     * This method checks if any projectiles hit room walls and handles the collision.
+     * </p>
+     *
+     * @param roomList The list of rooms to check for collisions.
      */
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
         super.resolveRoomCollisions(roomList);
@@ -125,7 +181,10 @@ public class FlyingEnemy extends Enemy {
     }
 
     /**
-     * update enemy information such as projectile location and enemy location
+     * Updates enemy information such as projectile location and enemy location.
+     * <p>
+     * This method updates the enemy's position and the state of its projectiles.
+     * </p>
      */
     public void updateValues() {
         super.updateValues();
@@ -135,6 +194,12 @@ public class FlyingEnemy extends Enemy {
         }
     }
 
+    /**
+     * Updates the enemy's data and removes any projectiles that should be deleted.
+     * <p>
+     * This method checks for projectiles that need to be removed and updates the state of remaining projectiles.
+     * </p>
+     */
     public void updateData() {
         super.updateData();
         projectiles.removeIf(Entity::getToDelete);
@@ -143,14 +208,32 @@ public class FlyingEnemy extends Enemy {
         }
     }
 
+    /**
+     * Returns the default height of the enemy.
+     *
+     * @return The default height of the enemy.
+     */
     public static int getDefaultHeight() {
         return defaultHeight;
     }
 
+    /**
+     * Returns the default width of the enemy.
+     *
+     * @return The default width of the enemy.
+     */
     public static int getDefaultWidth() {
         return defaultWidth;
     }
 
+    /**
+     * Paints the enemy and its projectiles on the camera.
+     * <p>
+     * This method draws the enemy and all its projectiles on the specified camera.
+     * </p>
+     *
+     * @param c The camera used for drawing.
+     */
     public void paint(Camera c) {
         super.paint(c);
         for (Projectile p : new ArrayList<>(projectiles)) {

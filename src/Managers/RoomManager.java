@@ -251,10 +251,6 @@ public class RoomManager {
 
                     boolean collides = false;
                     for (Room collsionTest: allRooms) {
-//                        if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
-//                            collides = true;
-//                            break;
-//                        }
                         if (setNumber == 1 || setNumber == 3) {
                             if (testRoom.quickIntersect(collsionTest) && testRoom.intersects(collsionTest, true)) {
                                 collides = true;

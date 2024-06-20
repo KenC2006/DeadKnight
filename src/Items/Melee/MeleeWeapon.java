@@ -1,10 +1,6 @@
 package Items.Melee;
 
 import Entities.Entity;
-import Entities.Player;
-import UI.HitDisplay;
-import Entities.Stats;
-import Items.ActivationType;
 import Items.Weapon;
 import Managers.ActionManager;
 import Structure.Hitbox;
@@ -142,6 +138,7 @@ public class MeleeWeapon extends Weapon {
                     kb = -3000;
                 }
                 defender.setActualVX(kb);
+                defender.setActualVY(-1500);
                 defender.getStats().doDamage(getBaseDamage(), attacker, defender);
             }
 
@@ -211,7 +208,7 @@ public class MeleeWeapon extends Weapon {
      * @return True if the activation was successful and false otherwise.
      */
     @Override
-    public boolean activate(ActivationType dir, ActionManager ac, Entity owner) {
+    public boolean activate(Weapon.ActivationType dir, ActionManager ac, Entity owner) {
         if (!(dir == ActivationType.LEFT || dir == ActivationType.RIGHT)) return false;
         if (swingCooldownTimer.isReady()) {
             swingCooldownTimer.reset();

@@ -16,20 +16,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Represents a teleporting enemy in the game.
+ * <p>
+ * This class extends the Enemy class and provides specific behaviors and attributes
+ * for an enemy that can teleport and shoot projectiles at the player.
+ * </p>
+ */
 public class TeleportEnemy extends Enemy {
+    private final static int defaultHeight = 5000; // Default height of the enemy
+    private final static int defaultWidth = 1000;  // Default width of the enemy
 
-    private final static int defaultHeight = 5000; // asl
-    private final static int defaultWidth = 1000;
     private int baseFireCount, fireCount;
-    private Vector2F teleportOption = new Vector2F();
-    private GameTimer shootTimer = new GameTimer(120);
-    private GameTimer miniFireTimer = new GameTimer(5);
-    private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+    private Vector2F teleportOption = new Vector2F(); // Stores the teleport location
+    private GameTimer shootTimer = new GameTimer(120); // Timer for shooting control
+    private GameTimer miniFireTimer = new GameTimer(5); // Timer for mini fire control
+    private ArrayList<Projectile> projectiles = new ArrayList<>(); // List of projectiles fired by the enemy
+    private GameTimer teleportTimer = new GameTimer(180); // Timer for teleport control
 
-
-
-    GameTimer teleportTimer = new GameTimer(180);
-
+    /**
+     * Constructs a TeleportEnemy with specified position and health.
+     *
+     * @param x The initial x-coordinate of the enemy.
+     * @param y The initial y-coordinate of the enemy.
+     * @param health The initial health of the enemy.
+     */
     public TeleportEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 225);
         try {
@@ -42,7 +53,7 @@ public class TeleportEnemy extends Enemy {
     }
 
     /**
-     * teleport ranomdly to a node in the room nodemap
+     * Teleport randomly to a node in the room node map if the player is far enough.
      */
     @Override
     public void followPlayer() {
@@ -52,10 +63,12 @@ public class TeleportEnemy extends Enemy {
         }
     }
 
-    @Override
     /**
-     * get a random node as the next teleport option
+     * Get a random node as the next teleport option.
+     *
+     * @param graph The node map used for determining the teleport location.
      */
+    @Override
     public void generatePath(NodeMap graph) {
         ArrayList<Vector2F> options = graph.getEdges().get(graph.getNearestNode(getPlayerPos().getTranslated(graph.getTranslateOffset().getNegative())));
         if (options == null || getPlayerPos().getEuclideanDistance(getBottomPos()) < 300000000) return;
@@ -65,23 +78,25 @@ public class TeleportEnemy extends Enemy {
 
     @Override
     public void updateEnemyPos(NodeMap graph) {
-
+        // No specific position update logic for this enemy
     }
 
     @Override
     public void attack(ActionManager am) {
-
+        // No specific attack logic for this enemy
     }
 
+
     /**
-     * deal with player-related information handling
-     * such as dealing collision damage
-     * @param player
+     * Deal with player-related information handling, such as dealing collision damage.
+     *
+     * @param player The player entity to interact with.
      */
+    @Override
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
-            player.getStats().doDamage(1, this, player);
+            player.damagePlayer(1, this);
         }
         Vector2F velocity = getPlayerPos().getTranslated(getCenterVector().getNegative()).normalize().multiply(1/5.0);
 
@@ -106,8 +121,9 @@ public class TeleportEnemy extends Enemy {
     }
 
     /**
-     * deal with projectile and player collisions
-     * @param player
+     * Deal with projectile and player collisions.
+     *
+     * @param player The player entity to check collisions with.
      */
     public void resolveEntityCollision(Player player) {
         for (Projectile p: projectiles) {
@@ -118,8 +134,9 @@ public class TeleportEnemy extends Enemy {
     }
 
     /**
-     * deal with room and projectile collisions
-     * @param roomList
+     * Deal with room and projectile collisions.
+     *
+     * @param roomList The list of rooms to check collisions with.
      */
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
         super.resolveRoomCollisions(roomList);
@@ -128,6 +145,9 @@ public class TeleportEnemy extends Enemy {
         }
     }
 
+    /**
+     * Update the data of the enemy and its projectiles.
+     */
     public void updateData() {
         super.updateData();
         projectiles.removeIf(Entity::getToDelete);
@@ -137,7 +157,7 @@ public class TeleportEnemy extends Enemy {
     }
 
     /**
-     * controls when to teleport
+     * Controls when to teleport and update projectile values.
      */
     public void updateValues() {
         super.updateValues();
@@ -151,17 +171,31 @@ public class TeleportEnemy extends Enemy {
         }
     }
 
+    /**
+     * Returns the default height of the enemy.
+     *
+     * @return The default height of the enemy.
+     */
     public static int getDefaultHeight() {
         return defaultHeight;
     }
 
+    /**
+     * Returns the default width of the enemy.
+     *
+     * @return The default width of the enemy.
+     */
     public static int getDefaultWidth() {
         return defaultWidth;
     }
 
+    /**
+     * Paints the enemy and its projectiles on the camera.
+     *
+     * @param c The camera used for drawing.
+     */
     public void paint(Camera c) {
         super.paint(c);
-//        c.drawCoordinate(teleportOption, Color.RED);
         for (Projectile p : new ArrayList<>(projectiles)) {
             p.paint(c);
         }

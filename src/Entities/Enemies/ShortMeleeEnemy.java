@@ -2,9 +2,9 @@ package Entities.Enemies;
 
 import Entities.Enemy;
 import Entities.Player;
-import Items.ActivationType;
 import Items.Melee.MeleeWeapon;
 import Items.Melee.ShortSword;
+import Items.Weapon;
 import Managers.ActionManager;
 import Structure.Edge;
 import Structure.NodeMap;
@@ -15,6 +15,13 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Represents a short-range melee enemy in the game.
+ * <p>
+ * This class extends the Enemy class and provides specific behaviors and attributes
+ * for an enemy that uses a melee weapon to attack the player.
+ * </p>
+ */
 public class ShortMeleeEnemy extends Enemy {
 
     private final static int defaultHeight = 2000; // asl
@@ -23,6 +30,13 @@ public class ShortMeleeEnemy extends Enemy {
     private boolean isDashing, isAttacking, isPlayerFound;
     private MeleeWeapon sword;
 
+    /**
+     * Constructs a ShortMeleeEnemy with specified position and health.
+     *
+     * @param x The initial x-coordinate of the enemy.
+     * @param y The initial y-coordinate of the enemy.
+     * @param health The initial health of the enemy.
+     */
     public ShortMeleeEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 25000000);
         sword = new ShortSword();
@@ -36,8 +50,9 @@ public class ShortMeleeEnemy extends Enemy {
     }
 
     /**
-     * modify player-related info such as sword collisions
-     * @param player
+     * Modify player-related information such as sword collisions.
+     *
+     * @param player The player entity to interact with.
      */
     @Override
     public void updatePlayerInfo(Player player) {
@@ -46,8 +61,10 @@ public class ShortMeleeEnemy extends Enemy {
     }
 
     /**
-     * given an ordered list of nodes, walk towards the next node
-     * and jump if needed
+     * Controls the enemy's movement to follow the player.
+     * <p>
+     * The enemy will move towards the next node in the path and jump if needed.
+     * </p>
      */
     public void followPlayer() {
         if (getPath().isEmpty()) {
@@ -75,9 +92,9 @@ public class ShortMeleeEnemy extends Enemy {
     }
 
     /**
-     * create a path of nodes for the enemy to follow to reach
-     * the player
-     * @param graph
+     * Creates a path of nodes for the enemy to follow to reach the player.
+     *
+     * @param graph The node map used for pathfinding.
      */
     public void generatePath(NodeMap graph) {
         if (getPathTimer().isReady()) {
@@ -129,10 +146,19 @@ public class ShortMeleeEnemy extends Enemy {
         }
     }
 
+    /**
+     * Updates the enemy's position using the node map.
+     *
+     * @param graph The node map used for pathfinding.
+     */
+
     public void updateEnemyPos(NodeMap graph) {
         setPos(graph.getNearestNode(getBottomPos().getTranslated(graph.getTranslateOffset().getNegative())).getTranslated(graph.getTranslateOffset()));
     }
 
+    /**
+     * Updates enemy information such as position and sword location.
+     */
     public void updateValues() {
         super.updateValues();
         followPlayer();
@@ -140,8 +166,9 @@ public class ShortMeleeEnemy extends Enemy {
     }
 
     /**
-     * Deal with determining when to swing sword and which direction
-     * @param am
+     * Deals with determining when to swing the sword and in which direction.
+     *
+     * @param am The action manager handling user inputs and actions.
      */
     public void attack(ActionManager am) {
         if (getPlayerPos().getEuclideanDistance(getBottomPos()) < 50000000) {
@@ -149,23 +176,38 @@ public class ShortMeleeEnemy extends Enemy {
 //            stopXMovement();
 //            System.out.println(getPlayerPos() + " " + getPos() + " " + getPlayerPos().getYDistance(getPos()));
             if (getPlayerPos().getXDistance(getCenterVector()) > 0) {
-                sword.activate(ActivationType.LEFT, am, this);
+                sword.activate(Weapon.ActivationType.LEFT, am, this);
             }
             else {
-                sword.activate(ActivationType.RIGHT, am, this);
+                sword.activate(Weapon.ActivationType.RIGHT, am, this);
             }
         }
         sword.update();
     }
 
+    /**
+     * Returns the default height of the enemy.
+     *
+     * @return The default height of the enemy.
+     */
     public static int getDefaultHeight() {
         return defaultHeight;
     }
 
+    /**
+     * Returns the default width of the enemy.
+     *
+     * @return The default width of the enemy.
+     */
     public static int getDefaultWidth() {
         return defaultWidth;
     }
 
+    /**
+     * Paints the enemy and its sword on the camera.
+     *
+     * @param c The camera used for drawing.
+     */
     @Override
     public void paint(Camera c) {
         super.paint(c);

@@ -2,12 +2,7 @@ package Managers;
 
 import Entities.Player;
 import Items.Chest;
-import Structure.Room;
-import UI.GameUIManager;
-import UI.ShopUIContainer;
 import Universal.Camera;
-
-import java.awt.event.KeyEvent;
 
 /**
  * Manages entities within the game, including the player, rooms, and chests.

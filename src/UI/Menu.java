@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Represents the main menu of the game.
+ */
 public class Menu extends UI implements ActionListener {
     private ArrayList<JButton> uiButtons = new ArrayList<>();
     private ArrayList<JButton> controlButtons = new ArrayList<>();
@@ -33,6 +36,13 @@ public class Menu extends UI implements ActionListener {
 
     private String text = "Dead Knight";
 
+    /**
+     * Constructs a Menu object.
+     *
+     * @param panel  The JPanel where the menu is displayed.
+     * @param player The player associated with the menu.
+     * @throws IOException If there's an error loading the game icon image.
+     */
     public Menu(JPanel panel, Player player) throws IOException {
         this.player = player;
         this.panel = panel;
@@ -62,6 +72,12 @@ public class Menu extends UI implements ActionListener {
         resize();
     }
 
+    /**
+     * Adds a button to the UI with specified styling and behavior.
+     *
+     * @param button  The JButton to add.
+     * @param buttons The list of buttons to add the button to.
+     */
     public void addButton(JButton button, ArrayList<JButton> buttons) {
         button.setForeground(Color.RED);
         if (buttons == controlButtons) button.setVisible(false);
@@ -83,15 +99,25 @@ public class Menu extends UI implements ActionListener {
         button.addActionListener(this);
     }
 
+    /**
+     * Resizes the UI elements based on the panel's current size.
+     */
     public void resize() {
         resizeImages();
         resizeUIButtons();
         resizeControls();
     }
+
+    /**
+     * Resizes the game icon image to fit a proportionate size within the panel.
+     */
     public void resizeImages(){
         gameIcon=resizeImage(gameIcon,panel.getWidth()/7,panel.getWidth()/7);
     }
 
+    /**
+     * Resizes the UI buttons based on the panel's current size.
+     */
     private void resizeUIButtons() {
         for (JButton uiButton : uiButtons) {
             uiButton.setFont(new Font("Times New Roman", Font.BOLD, (panel.getWidth()) / 35));
@@ -102,6 +128,9 @@ public class Menu extends UI implements ActionListener {
         }
     }
 
+    /**
+     * Resizes the control buttons based on the panel's current size.
+     */
     private void resizeControls() {
         for (JButton contolButton : controlButtons) {
             contolButton.setFont(new Font("Times New Roman", Font.BOLD, (panel.getWidth()) / 50));
@@ -113,6 +142,9 @@ public class Menu extends UI implements ActionListener {
 
     }
 
+    /**
+     * Draws the menu UI.
+     */
     public void draw() {
         Graphics2D g = getGraphics();
         if (waitingForPlayer && !player.generateRooms()) {
@@ -134,6 +166,11 @@ public class Menu extends UI implements ActionListener {
         }
     }
 
+    /**
+     * Handles actions performed by buttons in the menu.
+     *
+     * @param e The ActionEvent triggered by the button action.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == start) {
@@ -199,6 +236,11 @@ public class Menu extends UI implements ActionListener {
         }
     }
 
+    /**
+     * Updates the key presses for control configuration.
+     *
+     * @param manager The ActionManager handling key events.
+     */
     public void updateKeyPresses(ActionManager manager) {
         if (manager.isPressed() && currentButton != null) {
             currentButton.setBackground(Color.YELLOW);
@@ -209,10 +251,20 @@ public class Menu extends UI implements ActionListener {
         }
     }
 
+    /**
+     * Checks if the menu is currently active.
+     *
+     * @return true if the menu is active, false otherwise.
+     */
     public boolean isMenuOn() {
         return menuOn;
     }
 
+    /**
+     * Sets the menu state.
+     *
+     * @param menuOn true to set the menu on, false otherwise.
+     */
     public void setMenuOn(boolean menuOn) {
         this.menuOn = menuOn;
         if (menuOn) {

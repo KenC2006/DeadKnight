@@ -1,8 +1,6 @@
 import Managers.CameraManager;
 import Managers.EntityManager;
 import Managers.ActionManager;
-import RoomEditor.RoomEditor;
-import UI.GameState;
 import UI.GameUIManager;
 import Universal.GameTimer;
 
@@ -12,7 +10,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.IOException;
 
-
+/**
+ *  Source for Game Thread: <a href="https://stackoverflow.com/questions/65907092/where-should-i-put-the-game-loop-in-the-swing-app">https://stackoverflow.com/questions/65907092/where-should-i-put-the-game-loop-in-the-swing-app</a>
+ */
 public class GamePanel extends JPanel{
     private final ActionManager actionManager;
     private final EntityManager entityManager;
@@ -27,7 +27,7 @@ public class GamePanel extends JPanel{
         this.setFocusable(true);
         this.setVisible(true);
         this.setSize(size);
-//        new RoomEditor(3);
+//        new RoomEditor(1);
         //UNCOMMENT THE ABOVE TO SEE ROOM EDITOR USED TO CREATE THE BIOMES
         //lots of work put into something players won't see :'(
 
@@ -36,7 +36,7 @@ public class GamePanel extends JPanel{
         cameraManager = new CameraManager(entityManager.getPlayer());
         gameUIManager = new GameUIManager(entityManager,this, cameraManager.getMainCamera());
         actionManager.addPanel(this);
-//        setBackground(new Color(78, 42, 10));
+
         setBackground(Color.BLACK);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent componentEvent) {

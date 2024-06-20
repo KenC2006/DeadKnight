@@ -2,25 +2,36 @@ package UI;
 
 import Entities.Player;
 import Entities.Stats;
-import Items.InstantItem;
 import Managers.ActionManager;
 import Universal.GameTimer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.*;
-import java.util.List;
 
+/**
+ * Manages the UI for displaying player statistics.
+ */
 public class PlayerStatsUI {
     private Player player;
     private boolean enabled;
     private GameTimer menuCooldown;
 
+    /**
+     * Constructs a PlayerStatsUI instance for a specific player.
+     *
+     * @param player The player whose statistics will be displayed.
+     */
     public PlayerStatsUI(Player player) {
         this.player = player;
         menuCooldown = new GameTimer(20);
     }
 
+    /**
+     * Updates the UI based on keyboard input.
+     *
+     * @param ac The ActionManager handling keyboard actions.
+     */
     public void updateKeyPresses(ActionManager ac) {
         if (ac.getPressed(KeyEvent.VK_I) && menuCooldown.isReady()) {
             enabled = !enabled;
@@ -28,13 +39,19 @@ public class PlayerStatsUI {
         }
     }
 
+    /**
+     * Draws the player statistics UI if it is enabled.
+     *
+     * @param g The Graphics2D object to draw on.
+     */
     public void draw(Graphics2D g) {
         if (!enabled) return;
         ArrayList<String> playerStats = getPlayerStats();
         int margin = (int) (Math.min(g.getClipBounds().getHeight(), g.getClipBounds().getWidth()) / 20);
         g.setColor(new Color(128, 64, 0));
         g.fillRect(margin * 6, margin * 2, (int) (g.getClipBounds().getWidth() - margin * 12), (int) (g.getClipBounds().getHeight() - margin * 4));
-
+        g.setColor(new Color(155, 103, 60));
+        g.fillRect(margin * 7, margin * 3, (int) (g.getClipBounds().getWidth() - margin * 14), (int) (g.getClipBounds().getHeight() - margin * 6));
 
         for (int i = 0; i < playerStats.size(); i++) {
             drawCenteredString(g, playerStats.get(i), new Font("Times New Roman", Font.BOLD, margin / 4), (int) (g.getClipBounds().getWidth() / 2), margin * (6 + i) / 2, (int) (g.getClipBounds().getWidth() - margin * 4));
@@ -42,6 +59,11 @@ public class PlayerStatsUI {
         }
     }
 
+    /**
+     * Retrieves and formats the player statistics.
+     *
+     * @return A list of strings containing formatted player statistics.
+     */
     public ArrayList<String> getPlayerStats() {
         Stats playerStats = player.getStats();
         HashMap<String, Integer> values = player.getStats().getAllStats();
@@ -67,7 +89,7 @@ public class PlayerStatsUI {
 
     /**
      * Draws a string centered in the middle of a rectangle.
-     * Credit: <a href="https://stackoverflow.com/questions/27706197/how-can-i-center-graphics-drawstring-in-java">...</a>
+     * Credit: <a href="https://stackoverflow.com/questions/27706197/how-can-i-center-graphics-drawstring-in-java">https://stackoverflow.com/questions/27706197/how-can-i-center-graphics-drawstring-in-java</a>
      *
      * @param g the Graphics instance
      * @param text the String to draw
@@ -117,10 +139,20 @@ public class PlayerStatsUI {
         }
     }
 
+    /**
+     * Checks if the player statistics UI is enabled.
+     *
+     * @return true if the player statistics UI is enabled, false otherwise.
+     */
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Sets whether the player statistics UI is enabled.
+     *
+     * @param enabled true to enable the player statistics UI, false to disable it.
+     */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }

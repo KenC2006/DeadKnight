@@ -110,7 +110,7 @@ public class ShopUIContainer {
 
     /**
      * Draws a string centered in the middle of a rectangle.
-     * Credit: <a href="https://stackoverflow.com/questions/27706197/how-can-i-center-graphics-drawstring-in-java">...</a>
+     * Credit: <a href="https://stackoverflow.com/questions/27706197/how-can-i-center-graphics-drawstring-in-java">https://stackoverflow.com/questions/27706197/how-can-i-center-graphics-drawstring-in-java</a>
      *
      * @param g the Graphics instance
      * @param text the String to draw

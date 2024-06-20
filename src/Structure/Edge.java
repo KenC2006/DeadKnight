@@ -12,7 +12,7 @@ public class Edge implements Comparable<Edge> {
     private Vector2F node2; // Second node of the edge
 
     /**
-     * stores two points and the distance between them
+     * Stores two points and the distance between them
      * @param first
      * @param second
      * @param third

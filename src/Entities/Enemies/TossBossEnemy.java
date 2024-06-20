@@ -18,19 +18,32 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.BlockingDeque;
 
+/**
+ * Represents a toss boss enemy in the game.
+ * <p>
+ * This class extends the Enemy class and provides specific behaviors and attributes
+ * for a boss enemy that can shoot projectiles and move left and right.
+ * </p>
+ */
 public class TossBossEnemy extends Enemy {
-
-    private final static int defaultHeight = 5000; // asl
-    private final static int defaultWidth = 5000;
+    private final static int defaultHeight = 5000; // Default height of the enemy
+    private final static int defaultWidth = 5000;  // Default width of the enemy
 
     private MeleeWeapon sword;
-    private Vector2F centerWalkLoc;
+    private Vector2F centerWalkLoc; // Center location for walking
     private boolean walkingLeft;
-    private GameTimer moveTimer = new GameTimer(60);
-    private GameTimer shootTimer = new GameTimer(15);
-    private GameTimer blastTimer = new GameTimer(450);
-    private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+    private GameTimer moveTimer = new GameTimer(60); // Timer for controlling movement
+    private GameTimer shootTimer = new GameTimer(15); // Timer for controlling shooting
+    private GameTimer blastTimer = new GameTimer(450); // Timer for controlling blasts
+    private ArrayList<Projectile> projectiles = new ArrayList<>(); // List of projectiles fired by the enemy
 
+    /**
+     * Constructs a TossBossEnemy with specified position and health.
+     *
+     * @param x The initial x-coordinate of the enemy.
+     * @param y The initial y-coordinate of the enemy.
+     * @param health The initial health of the enemy.
+     */
     public TossBossEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 'j' + 'o' + 'e');
 //        centerWalkLoc = getCenterVector();
@@ -44,12 +57,13 @@ public class TossBossEnemy extends Enemy {
     }
 
     /**
-     * controls the boss's ability to shoot
-     * @param player
+     * Controls the boss's ability to shoot projectiles.
+     *
+     * @param player The player entity to interact with.
      */
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
-//        sword.doCollisionCheck(this, player);
+        centerWalkLoc = player.getCenterVector();
         if (shootTimer.isReady()) {
             shootTimer.reset();
             Vector2F projVelo = new Vector2F((int) (Math.random() * 800 - 400), -(int)(Math.random() * 500 + 750));
@@ -84,9 +98,9 @@ public class TossBossEnemy extends Enemy {
     }
 
     /**
-     * deal with player-related information handling
-     * such as dealing collision damage
-     * @param player
+     * Deal with projectile and player collisions.
+     *
+     * @param player The player entity to check collisions with.
      */
     public void resolveEntityCollision(Player player) {
         for (Projectile p: projectiles) {
@@ -97,25 +111,10 @@ public class TossBossEnemy extends Enemy {
     }
 
     /**
-     * makes the boss walk left and right
+     * Makes the boss walk left and right.
      */
     @Override
     public void followPlayer() {
-//        System.out.println(getCenterVector() + " " + (new Vector2F(centerWalkLoc.getX(), 0)));
-//        if (getCenterVector().getXDistance(new Vector2F(centerWalkLoc.getX(), 0)) > 10000) {
-//            walkingLeft = false;
-//        }
-//        else if (getCenterVector().getXDistance(new Vector2F(centerWalkLoc.getX(), 0)) < -10000) {
-//            walkingLeft = true;
-//        }
-//
-//        if (walkingLeft) {
-//            setIntendedVX(-100);
-//        }
-//        else {
-//            setIntendedVX(100);
-//        }
-
         if (getCenterVector().getXDistance(new Vector2F(centerWalkLoc.getX(), 0)) > 0) {
             setIntendedVX(-100);
         } else {
@@ -125,21 +124,21 @@ public class TossBossEnemy extends Enemy {
 
     @Override
     public void generatePath(NodeMap graph) {
-
+        // No specific path generation logic for this boss
     }
 
     @Override
     public void updateEnemyPos(NodeMap graph) {
-
+        // No specific position update logic for this boss
     }
 
     @Override
     public void attack(ActionManager am) {
-
+        // No specific attack logic for this boss
     }
 
     /**
-     * controls boss movement
+     * Controls boss movement.
      */
     public void updateValues() {
         super.updateValues();
@@ -153,6 +152,11 @@ public class TossBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * Deal with room and projectile collisions.
+     *
+     * @param roomList The list of rooms to check collisions with.
+     */
     public void resolveRoomCollisions(ArrayList<Room> roomList) {
         super.resolveRoomCollisions(roomList);
         for (Projectile p: projectiles) {
@@ -161,14 +165,17 @@ public class TossBossEnemy extends Enemy {
     }
 
     /**
-     * translate coordinate-related information of this boss
-     * @param offset
+     * Translate coordinate-related information of this boss.
+     *
+     * @param offset The offset to translate the enemy's position by.
      */
     public void translateEnemy(Vector2F offset) {
         super.translateEnemy(offset);
-        centerWalkLoc = new Vector2F(getCenterX() + offset.getX(), getCenterY() + offset.getY());
     }
 
+    /**
+     * Update the data of the boss and its projectiles.
+     */
     public void updateData() {
         super.updateData();
         projectiles.removeIf(Entity::getToDelete);
@@ -177,17 +184,31 @@ public class TossBossEnemy extends Enemy {
         }
     }
 
+    /**
+     * Returns the default height of the enemy.
+     *
+     * @return The default height of the enemy.
+     */
     public static int getDefaultHeight() {
         return defaultHeight;
     }
 
+    /**
+     * Returns the default width of the enemy.
+     *
+     * @return The default width of the enemy.
+     */
     public static int getDefaultWidth() {
         return defaultWidth;
     }
 
+    /**
+     * Paints the enemy and its projectiles on the camera.
+     *
+     * @param c The camera used for drawing.
+     */
     public void paint(Camera c) {
         super.paint(c);
-//        c.drawCoordinate(centerWalkLoc);
         for (Projectile p : new ArrayList<>(projectiles)) {
             p.paint(c);
         }

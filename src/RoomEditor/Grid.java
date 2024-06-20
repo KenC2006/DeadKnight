@@ -292,7 +292,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
             }
         }
 
-        for (Spawn bossSpawn : enemySpawns) {
+        for (Spawn bossSpawn : bossSpawns) {
             if (bossSpawn.getLocation().getManhattanDistance(p1) == 0){
                 selected.setObject(bossSpawn);
                 p1 = null;

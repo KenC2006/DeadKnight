@@ -1,12 +1,27 @@
 package Items.Melee;
 
-import Structure.Vector2F;
-
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * The ShortSword class represents a basic melee weapon, specifically a cracked shortsword,
+ * in a game.
+ *
+ * <p>
+ * This class extends the MeleeWeapon class and initializes specific attributes for the
+ * shortsword, such as base damage, durability, and visual appearance.
+ * </p>
+ */
 public class ShortSword extends MeleeWeapon {
+    /**
+     * Constructs a ShortSword with predefined attributes.
+     *
+     * <p>
+     * This constructor sets the base damage, durability, and image icon for the shortsword.
+     * It also initializes the item name and description based on its condition.
+     * </p>
+     */
     public ShortSword() {
         super(2, 20, 5, "BasicEnemySword");
         setItemName("Cracked Shortsword");
