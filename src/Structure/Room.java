@@ -151,7 +151,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             enemySpawns.add(new Spawn(x, y, Spawn.SpawnType.ENEMY));
-            enemies.add(enemyManager.createEnemy(x, y)); // Create enemy object
+//            enemies.add(enemyManager.createEnemy(x, y)); // Create enemy object
             cleared = false;
         }
 
@@ -172,7 +172,7 @@ public class Room {
             int x = Integer.parseInt(temp[0]);
             int y = Integer.parseInt(temp[1]);
             bossSpawns.add(new Spawn(x, y, Spawn.SpawnType.BOSS));
-            enemies.add(enemyManager.createBoss(x, y)); // Create boss enemy object
+//            enemies.add(enemyManager.createBoss(x, y)); // Create boss enemy object
         }
 
         nodeMap = new NodeMap(this);
@@ -256,7 +256,12 @@ public class Room {
         }
 
         for (Spawn boss: bossSpawns) {
-            enemies.add(enemyManager.createEnemy(getTopLeft().getTranslated(boss.getLocation()).getX(), getTopLeft().getTranslated(boss.getLocation()).getY()));
+            enemies.add(enemyManager.createBoss(getTopLeft().getTranslated(boss.getLocation()).getX(), getTopLeft().getTranslated(boss.getLocation()).getY()));
+        }
+
+        if (enemies.isEmpty() != cleared) {
+            walls.setColour(!visited ? Color.YELLOW : (enemies.isEmpty() ? Color.GREEN : Color.RED));
+            cleared = enemies.isEmpty();
         }
     }
 
@@ -546,7 +551,7 @@ public class Room {
      * Adds a level portal to the room at a specified location.
      * @param location The location where the level portal should be added.
      */
-    private void addLevelPortal(Vector2F location) {
+    public void addLevelPortal(Vector2F location) {
         levelPortals.add(new LevelPortal(location));
     }
 
@@ -640,6 +645,16 @@ public class Room {
     }
 
     /**
+     * Checks if the room intersects with another entity.
+     * @param other The other entity to check intersection with.
+     * @return True if there is an intersection, false otherwise.
+     */
+    public boolean quickIntersect(Entity other) {
+        return walls.quickIntersect(other.getHitbox());
+    }
+
+
+    /**
      * Checks if the room intersects with another room, considering equality.
      * @param other The other room to check intersection with.
      * @param equality Whether to consider equality in the intersection check.
@@ -675,6 +690,10 @@ public class Room {
     @Override
     public String toString() {
         return "ROOM ID: " + getRoomID() + super.toString();
+    }
+
+    public boolean getCleared() {
+        return cleared;
     }
 }
 

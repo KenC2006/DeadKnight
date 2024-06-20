@@ -30,6 +30,8 @@ public class RoomManager {
     private GameTimer teleportCooldown;
     private int setNumber, minimumRooms = 5;
     private final int MAXIMUM_NUMBER_OF_ROOMS = 50;
+    private boolean exitPortalCreated = false;
+    private Room lastTouchedRoom = null;
 
     /**
      * Initializes the RoomManager with default values.
@@ -482,11 +484,14 @@ public class RoomManager {
      */
     public void updateValues(Player player, ActionManager actionManager) {
         ArrayList<Room> nextLoaded = new ArrayList<>();
+        boolean allRoomsCleared = true;
         for (Room r: allRooms) {
             if (Math.abs(r.getAbsoluteCenter().getManhattanDistance(player.getCenterVector())) < renderDistance) {
                 nextLoaded.add(r);
 //                System.out.println(r.getCenterRelativeToRoom() + " " + r.getCenterLocation());
             }
+
+            if (!r.getCleared()) allRoomsCleared = false;
         }
 
         loadedRooms.clear();
@@ -496,6 +501,12 @@ public class RoomManager {
             r.updateValues(player);
             r.updateEnemies(actionManager);
             enemyManager.updateEnemyRoomLocations(loadedRooms, r);
+            if (!r.getCleared()) allRoomsCleared = false;
+            if (r.quickIntersect(player)) lastTouchedRoom = r;
+        }
+
+        if (lastTouchedRoom != null && allRoomsCleared) {
+            lastTouchedRoom.addLevelPortal(player.getCenterVector());
         }
 
     }

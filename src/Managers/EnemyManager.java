@@ -20,7 +20,7 @@ public class EnemyManager {
      */
     public Enemy createEnemy(int x, int y) {
         int rn = (int)(Math.random() * 100);
-//        return new TossBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 500);
+//        return new SummonerBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 500);
         if (rn > 63) {
             return new FlyingEnemy(x - FlyingEnemy.getDefaultWidth()/2, y - FlyingEnemy.getDefaultHeight() + 500, 50);
         }
@@ -39,6 +39,7 @@ public class EnemyManager {
      */
     public Enemy createBoss(int x, int y) {
         int rn = (int)(Math.random() * 100);
+        System.out.println("Spawning Boss: " + rn);
         if (rn > 70) {
             return new FlyingBossEnemy(x - FlyingBossEnemy.getDefaultWidth()/2, y - FlyingBossEnemy.getDefaultHeight() + 500, 500);
         }
