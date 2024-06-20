@@ -69,51 +69,83 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
     }
 
+
+    /**
+     * Shifts all grid elements by a specified vector.
+     *
+     * @param change Vector2F representing the change in position.
+     */
     public void shift(Vector2F change) {
+        // Shift walls
         for (Rectangle wall : walls) {
             wall.setLocation((int) (wall.getX() + change.getX()), (int) (wall.getY() + change.getY()));
         }
+
+        // Shift hazards
         for (Rectangle hazard : hazards) {
             hazard.setLocation((int) (hazard.getX() + change.getX()), (int) (hazard.getY() + change.getY()));
         }
+
+        // Shift entrances
         for (Entrance entrance : entrances) {
             entrance.setRelativeLocation(entrance.getLocation().getTranslated(change));
         }
+
+        // Shift player spawns
         for (Spawn playerSpawn : playerSpawns) {
             playerSpawn.translateInPlace(change);
         }
+
+        // Shift item spawns
         for (Spawn itemSpawn : itemSpawns) {
             itemSpawn.translateInPlace(change);
         }
 
+        // Shift chest spawns
         for (Spawn chestSpawn: chestSpawns) {
             chestSpawn.translateInPlace(change);
         }
 
+        // Shift boss spawns
         for (Spawn bossSpawn: bossSpawns) {
             bossSpawn.translateInPlace(change);
         }
 
+        // Shift enemy spawns
         for (Spawn enemySpawn : enemySpawns) {
             enemySpawn.translateInPlace(change);
-
         }
+
         updateTopLeft();
         repaint();
     }
 
+    /**
+     * @return the list of walls in the grid.
+     */
     public ArrayList<Rectangle> getWalls() {
         return walls;
     }
 
+    /**
+     * @return the stack of recent actions.
+     */
     public Stack<Integer> getStack() {
         return stack;
     }
 
+    /**
+     * @return the list of entrances in the grid.
+     */
     public ArrayList<Entrance> getEntrances() {
         return entrances;
     }
 
+    /**
+     * Paints the grid and its elements.
+     *
+     * @param g the Graphics object used for painting.
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
@@ -270,6 +302,11 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         return null;
     }
 
+    /**
+     * Undoes the last move by removing the last added element from the corresponding list.
+     * It checks the type of the last added element using the stack and removes it from the appropriate list.
+     * Updates the top-left point and repaints the component.
+     */
     public void undoLastMove() {
         if (stack.isEmpty()) return;
         if (stack.get(stack.size() - 1) == 1) {
@@ -296,23 +333,46 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         repaint();
     }
 
+    /**
+     * Retrieves the list of hazards.
+     *
+     * @return an ArrayList of Rectangle objects representing hazards.
+     */
     public ArrayList<Rectangle> getHazards() {
         return hazards;
     }
 
+    /**
+     * Deletes the selected object from the appropriate list.
+     * It checks the type of the selected object and removes it from the corresponding list.
+     * Updates the top-left point and resets the selected object.
+     */
     public void delete() {
-        if (selected.getObject() instanceof Entrance) entrances.remove((Entrance) selected.getObject());
-        else if (selected.getObject() instanceof Spawn) {
+        if (selected.getObject() instanceof Entrance) {
+            entrances.remove((Entrance) selected.getObject());
+        } else if (selected.getObject() instanceof Spawn) {
             switch (((Spawn) selected.getObject()).getType()) {
-                case PLAYER: playerSpawns.remove((Spawn) selected.getObject()); break;
-                case ITEM: itemSpawns.remove((Spawn) selected.getObject()); break;
-                case ENEMY: enemySpawns.remove((Spawn) selected.getObject()); break;
-                case CHEST: chestSpawns.remove((Spawn) selected.getObject()); break;
-                case BOSS: bossSpawns.remove((Spawn) selected.getObject()); break;
+                case PLAYER:
+                    playerSpawns.remove((Spawn) selected.getObject());
+                    break;
+                case ITEM:
+                    itemSpawns.remove((Spawn) selected.getObject());
+                    break;
+                case ENEMY:
+                    enemySpawns.remove((Spawn) selected.getObject());
+                    break;
+                case CHEST:
+                    chestSpawns.remove((Spawn) selected.getObject());
+                    break;
+                case BOSS:
+                    bossSpawns.remove((Spawn) selected.getObject());
+                    break;
             }
-        } else if (hazards.contains(selected.getObject())) hazards.remove((Rectangle) selected.getObject());
-
-        else walls.remove((Rectangle) selected.getObject());
+        } else if (hazards.contains(selected.getObject())) {
+            hazards.remove((Rectangle) selected.getObject());
+        } else {
+            walls.remove((Rectangle) selected.getObject());
+        }
         stack.remove(selected.getObject());
         selected.reset();
         updateTopLeft();
@@ -400,26 +460,56 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         repaint();
     }
 
+    /**
+     * Retrieves the list of player spawn points.
+     *
+     * @return an ArrayList of Spawn objects representing player spawn points.
+     */
     public ArrayList<Spawn> getPlayerSpawns() {
         return playerSpawns;
     }
 
+    /**
+     * Retrieves the list of enemy spawn points.
+     *
+     * @return an ArrayList of Spawn objects representing enemy spawn points.
+     */
     public ArrayList<Spawn> getEnemySpawns() {
         return enemySpawns;
     }
 
+    /**
+     * Retrieves the list of item spawn points.
+     *
+     * @return an ArrayList of Spawn objects representing item spawn points.
+     */
     public ArrayList<Spawn> getItemSpawns() {
         return itemSpawns;
     }
 
+    /**
+     * Retrieves the list of chest spawn points.
+     *
+     * @return an ArrayList of Spawn objects representing chest spawn points.
+     */
     public ArrayList<Spawn> getChestSpawns() {
         return chestSpawns;
     }
 
+    /**
+     * Retrieves the list of boss spawn points.
+     *
+     * @return an ArrayList of Spawn objects representing boss spawn points.
+     */
     public ArrayList<Spawn> getBossSpawns() {
         return bossSpawns;
     }
 
+
+    /**
+     * Resets the current setup by clearing all walls, entrances, spawn points, and hazards.
+     * Also resets the file to be saved, the selected object, the top-left point, and the selected points.
+     */
     public void reset() {
         getWalls().clear();
         getEntrances().clear();
@@ -437,6 +527,7 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         p2 = null;
         repaint();
     }
+
 
     public Vector2F getLeftMostPoint() {
         return topLeftPoint;
@@ -459,68 +550,94 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
         }
     }
 
+    /**
+     * Initializes the dropdown menu to load files. When a file is selected from the dropdown,
+     * this method reads the contents of the file and sets up various elements (walls, entrances,
+     * spawns, hazards) in the application based on the data from the file.
+     */
     public void loadFiles() {
+        // Add an action listener to the dropdown menu
         dropDown.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    // Get the selected file from the dropdown menu
                     File file = (File) Objects.requireNonNull(dropDown.getSelectedItem());
+                    // Create a scanner to read the file
                     Scanner in = new Scanner(file);
+                    // Reset the current setup
                     reset();
+                    // Set the file to be saved later
                     fileToSave = file;
+                    // Read the number of walls from the file
                     int wallNum = in.nextInt();
                     for (int i = 0; i < wallNum; i++) {
+                        // Read wall coordinates and create wall rectangles
                         int x = in.nextInt();
                         int y = in.nextInt();
                         topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
 
                         walls.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
                     }
+                    // Read the number of entrances from the file
                     int entranceNum = in.nextInt();
                     for (int i = 0; i < entranceNum; i++) {
+                        // Read entrance coordinates and create entrance objects
                         Vector2F v1 = new Vector2F(in.nextInt(), in.nextInt()), v2 = new Vector2F(in.nextInt(), in.nextInt());
                         topLeftPoint = v1.getMin(topLeftPoint);
 
                         entrances.add(new Entrance(v1, v2));
                     }
+                    // Read the number of player spawns from the file
                     int playerSpawnNum = in.nextInt();
                     for (int i = 0; i < playerSpawnNum; i++) {
+                        // Read player spawn coordinates and create spawn objects
                         int x = in.nextInt();
                         int y = in.nextInt();
                         playerSpawns.add(new Spawn(x, y, Spawn.SpawnType.PLAYER));
                     }
 
+                    // Read the number of item spawns from the file
                     int itemSpawnNum = in.nextInt();
                     for (int i = 0; i < itemSpawnNum; i++) {
+                        // Read item spawn coordinates and create spawn objects
                         int x = in.nextInt();
                         int y = in.nextInt();
                         itemSpawns.add(new Spawn(x, y, Spawn.SpawnType.ITEM));
                     }
 
+                    // Read the number of enemy spawns from the file
                     int enemySpawnNum = in.nextInt();
                     for (int i = 0; i < enemySpawnNum; i++) {
+                        // Read enemy spawn coordinates and create spawn objects
                         int x = in.nextInt();
                         int y = in.nextInt();
                         enemySpawns.add(new Spawn(x, y, Spawn.SpawnType.ENEMY));
                     }
 
+                    // Read the number of hazards from the file
                     int hazardNum = in.nextInt();
                     for (int i = 0; i < hazardNum; i++) {
+                        // Read hazard coordinates and create hazard rectangles
                         int x = in.nextInt();
                         int y = in.nextInt();
                         topLeftPoint = new Vector2F(x, y).getMin(topLeftPoint);
                         hazards.add(new Rectangle(x, y, (in.nextInt()) - x, (in.nextInt()) - y));
                     }
 
+                    // Read the number of chest spawns from the file
                     int chestSpawnNum = in.nextInt();
                     for (int i = 0; i < chestSpawnNum; i++) {
+                        // Read chest spawn coordinates and create spawn objects
                         int x = in.nextInt();
                         int y = in.nextInt();
                         chestSpawns.add(new Spawn(x, y, Spawn.SpawnType.CHEST));
                     }
 
+                    // Read the number of boss spawns from the file
                     int bossSpawnNum = in.nextInt();
                     for (int i = 0; i < bossSpawnNum; i++) {
+                        // Read boss spawn coordinates and create spawn objects
                         int x = in.nextInt();
                         int y = in.nextInt();
                         bossSpawns.add(new Spawn(x, y, Spawn.SpawnType.BOSS));
@@ -530,22 +647,37 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
                 }
             }
         });
+        // Revalidate the component hierarchy
         revalidate();
     }
 
 
-    @Override
+
+    /**
+     * Handles mouse click events. When the mouse is clicked, this method determines the position
+     * of the click relative to the grid and performs actions based on the current state of the points.
+     * It sets the first point (`p1`) on the first click and the second point (`p2`) on the second click,
+     * then calls the `addRect()` method to add a rectangle between these points.
+     *
+     * @param e the mouse event that occurred when the mouse was clicked
+     */
     public void mouseClicked(MouseEvent e) {
-        int mouseX =  ((e.getX() / scaledBoxSize) * 1000), mouseY =  ((e.getY() / scaledBoxSize) * 1000);
+        // Calculate the x and y coordinates of the mouse click, scaled to the grid
+        int mouseX = ((e.getX() / scaledBoxSize) * 1000), mouseY = ((e.getY() / scaledBoxSize) * 1000);
+
         if (p1 == null) {
+            // If p1 is not set, set it to the current mouse position and set the selected object
             p1 = new Vector2F(mouseX, mouseY);
             selected.setObject(returnSelected());
         } else if (p2 == null) {
+            // If p1 is set but p2 is not, set p2 to the current mouse position and add the rectangle
             p2 = new Vector2F(mouseX, mouseY);
             addRect();
         }
+        // Repaint the grid to reflect any changes
         repaint();
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {

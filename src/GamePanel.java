@@ -21,6 +21,7 @@ public class GamePanel extends JPanel{
     private boolean isRunning = true;
     private boolean gamePaused = false;
 
+
     public GamePanel(Dimension size) throws IOException {
         this.setLayout(null);
         this.setFocusable(true);

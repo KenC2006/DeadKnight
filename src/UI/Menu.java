@@ -86,7 +86,7 @@ public class Menu extends UI implements ActionListener {
     public void resize() {
         resizeImages();
         resizeUIButtons();
-        resizeControlButtons();
+        resizeControls();
     }
     public void resizeImages(){
         gameIcon=resizeImage(gameIcon,panel.getWidth()/7,panel.getWidth()/7);
@@ -102,7 +102,7 @@ public class Menu extends UI implements ActionListener {
         }
     }
 
-    private void resizeControlButtons() {
+    private void resizeControls() {
         for (JButton contolButton : controlButtons) {
             contolButton.setFont(new Font("Times New Roman", Font.BOLD, (panel.getWidth()) / 50));
         }
@@ -110,6 +110,7 @@ public class Menu extends UI implements ActionListener {
             controlButtons.get(i).setSize(panel.getWidth() / 4, panel.getHeight() / 12);
             controlButtons.get(i).setLocation(0, i * controlButtons.get(i).getHeight() + panel.getHeight() / 15);
         }
+
     }
 
     public void draw() {
@@ -131,7 +132,6 @@ public class Menu extends UI implements ActionListener {
             g.drawString(text, textX,(getPanelHeight() - metrics.getHeight()) / 2 + metrics.getAscent());
             g.drawImage(gameIcon,textX+metrics.stringWidth(text),(panel.getHeight()-gameIcon.getHeight())/2,null);
         }
-
     }
 
     @Override
@@ -173,6 +173,7 @@ public class Menu extends UI implements ActionListener {
         }
         if (e.getSource() == returnToMenu) {
             for (JButton button : controlButtons) {
+                if (currentButton !=null) currentButton.setBackground(null);
                 button.setVisible(false);
             }
             for (JButton button : uiButtons) {

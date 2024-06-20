@@ -33,7 +33,6 @@ public class Player extends Entity {
     private int framesSinceStartedJumping;
     private int framesPassed, lastUpPressed;
     private PlayerInventory playerInventory;
-    private int killStreak=0;
     private final ArrayList<Integer> controls = new ArrayList<>();
     private GameTimer dashCooldownTimer, dashLengthTimer, dashImmunityTimer;
     private Vector2F mouseLocation = new Vector2F();
@@ -424,10 +423,6 @@ public class Player extends Entity {
         return immune;
     }
 
-    public int getKillStreak() {
-        return killStreak;
-    }
-
     public ArrayList<Projectile> getProjectiles() {
         return projectiles;
     }
@@ -450,6 +445,7 @@ public class Player extends Entity {
 
     public void setDead(boolean dead) {
         this.dead = dead;
+        if (dead) getStats().setDeathCount(getStats().getDeathCount() + 0.5);
     }
 
     public boolean generateRooms() {

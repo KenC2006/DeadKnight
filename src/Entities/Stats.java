@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Stats {
-    private int health, mana, jumps;
+    private int deathCount, health, mana, jumps;
     private GameTimer jumpTimer, manaRegenerationTimer;
     private HashMap<String, Integer> values;
 
@@ -35,8 +35,24 @@ public class Stats {
 
         heal(baseHealth);
         gainMana(baseMana);
+
+        jumps = 1;
+        deathCount = 0;
         jumpTimer = new GameTimer(10);
         manaRegenerationTimer = new GameTimer(values.get("Mana Regen Time"));
+    }
+
+    public double getDeathCount() {
+        return deathCount;
+    }
+
+    public void setDeathCount(int deathCount) {
+        this.deathCount = deathCount;
+        System.out.println("Death Count: " + deathCount);
+    }
+
+    public void setManaRegen(int time) {
+        manaRegenerationTimer = new GameTimer(time);
     }
 
     public void setMaxJumps(int jumps) {values.put("Max Jumps", jumps);
