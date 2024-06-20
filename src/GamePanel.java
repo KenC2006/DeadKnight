@@ -33,7 +33,7 @@ public class GamePanel extends JPanel{
         actionManager = new ActionManager();
         entityManager = new EntityManager();
         cameraManager = new CameraManager(entityManager.getPlayer());
-        gameUIManager = new GameUIManager(entityManager,this);
+        gameUIManager = new GameUIManager(entityManager,this, cameraManager.getMainCamera());
         actionManager.addPanel(this);
 //        setBackground(new Color(78, 42, 10));
         setBackground(Color.BLACK);

@@ -6,6 +6,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -198,5 +200,6 @@ public class PlayerUI extends UI {
         drawPlayerMana(g);
         drawKillStreakCount(g);
         drawWeaponSlot(g);
+
     }
 }

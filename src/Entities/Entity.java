@@ -18,6 +18,7 @@ public class Entity {
     private Color defaultColour = Color.GREEN;
     private boolean affectedByGravity = true, colliding, grounded, hittingCeiling, onLeft, onRight, destroyedOnWallImpact;
     private boolean toDelete;
+    private Vector2F imageOffset;
     private int frameIndex;
     private GameTimer frameSpeed;
 
@@ -29,6 +30,7 @@ public class Entity {
         entityStats = new Stats(0, 0);
         frames = new ArrayList<>();
         frameSpeed = new GameTimer(5);
+        imageOffset = new Vector2F(1000, 1000);
     }
 
     public Entity(Vector2F position, Vector2F size, Vector2F constantVelocity) {
@@ -39,6 +41,7 @@ public class Entity {
         hitbox = new Hitbox(position, position.getTranslated(size));
         frames = new ArrayList<>();
         frameSpeed = new GameTimer(5);
+        imageOffset = new Vector2F(1000, 1000);
 
 
     }
@@ -60,8 +63,12 @@ public class Entity {
             frameSpeed.reset();
         }
         BufferedImage frame = frames.get(frameIndex);
-        c.drawImage(frame, getLocation().getTranslated(new Vector2F(-1000, -1000)), getLocation().getTranslated(new Vector2F(frame.getWidth() * (getHeight() + 1000) / frame.getHeight(), getHeight() + 1000)));
+        c.drawImage(frame, getLocation().getTranslated(imageOffset.getNegative()), getLocation().getTranslated(new Vector2F(frame.getWidth() * (getHeight() + imageOffset.getY()) / frame.getHeight(), getHeight() + imageOffset.getY())));
 //        c.drawHitbox(new Hitbox(testHitbox), Color.BLUE);
+    }
+
+    public void setImageOffset(Vector2F offset) {
+        imageOffset.copy(offset);
     }
 
     public Entity getSwing() {

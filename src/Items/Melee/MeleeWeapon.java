@@ -1,6 +1,8 @@
 package Items.Melee;
 
 import Entities.Entity;
+import Entities.Player;
+import UI.HitDisplay;
 import Entities.Stats;
 import Items.ActivationType;
 import Items.Weapon;
@@ -140,7 +142,7 @@ public class MeleeWeapon extends Weapon {
                     kb = -3000;
                 }
                 defender.setActualVX(kb);
-                defender.getStats().doDamage(Stats.calculateDamage(getBaseDamage(), attacker.getStats(), defender.getStats()));
+                defender.getStats().doDamage(getBaseDamage(), attacker, defender);
             }
 
         }

@@ -1,9 +1,12 @@
 package Entities.Enemies;
 
 import Entities.Enemy;
+import Entities.Entity;
 import Entities.Player;
+import Entities.Projectile;
 import Managers.ActionManager;
 import Structure.NodeMap;
+import Structure.Room;
 import Structure.Vector2F;
 import Universal.Camera;
 import Universal.GameTimer;
@@ -15,9 +18,13 @@ import java.util.Objects;
 
 public class TeleportEnemy extends Enemy {
 
-    private final static int defaultHeight = 10000; // asl
+    private final static int defaultHeight = 5000; // asl
     private final static int defaultWidth = 1000;
     private Vector2F teleportOption = new Vector2F();
+    private GameTimer shootTimer = new GameTimer(60);
+    private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+
+
 
     GameTimer teleportTimer = new GameTimer(180);
 
@@ -71,7 +78,52 @@ public class TeleportEnemy extends Enemy {
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
-            player.getStats().doDamage(1);
+            player.getStats().doDamage(1, this, player);
+        }
+        Vector2F velocity = getPlayerPos().getTranslated(getCenterVector().getNegative()).normalize().multiply(1/5.0);
+
+        if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
+            shootTimer.reset();
+            Projectile newProjectile = new Projectile(getCenterVector(), new Vector2F(1000, 1000), velocity.multiply(3), 1);
+            try {
+                newProjectile.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/enemy_projectile.png"))));
+
+            } catch (IOException e) {
+                System.out.println("Enemy image not found: " + e);
+            }
+            projectiles.add(newProjectile);
+        }
+        resolveEntityCollision(player);
+    }
+
+    /**
+     * deal with projectile and player collisions
+     * @param player
+     */
+    public void resolveEntityCollision(Player player) {
+        for (Projectile p: projectiles) {
+            if (player.collidesWith(p)) {
+                p.processEntityHit(this, player);
+            }
+        }
+    }
+
+    /**
+     * deal with room and projectile collisions
+     * @param roomList
+     */
+    public void resolveRoomCollisions(ArrayList<Room> roomList) {
+        super.resolveRoomCollisions(roomList);
+        for (Projectile p: projectiles) {
+            p.resolveRoomCollisions(roomList);
+        }
+    }
+
+    public void updateData() {
+        super.updateData();
+        projectiles.removeIf(Entity::getToDelete);
+        for (Projectile p: projectiles) {
+            p.updateData();
         }
     }
 
@@ -84,6 +136,9 @@ public class TeleportEnemy extends Enemy {
             followPlayer();
 //            System.out.println(teleportOption);
             teleportTimer.reset();
+        }
+        for (Projectile p: projectiles) {
+            p.updateValues();
         }
     }
 
@@ -98,5 +153,8 @@ public class TeleportEnemy extends Enemy {
     public void paint(Camera c) {
         super.paint(c);
 //        c.drawCoordinate(teleportOption, Color.RED);
+        for (Projectile p : new ArrayList<>(projectiles)) {
+            p.paint(c);
+        }
     }
 }

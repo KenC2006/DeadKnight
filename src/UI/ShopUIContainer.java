@@ -6,7 +6,9 @@ import Managers.ActionManager;
 import Structure.Vector2F;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -70,7 +72,7 @@ public class ShopUIContainer {
             }
             g2d.fillRect(xLoc, yLoc, itemWidth, itemHeight);
             drawCenteredString(g2d, options.get(i).getTitle(), new Font("Times New Roman", Font.BOLD, margin / 2), xLoc + itemWidth / 2, yLoc + margin, itemWidth);
-            drawCenteredString(g2d, options.get(i).getLore(), new Font("Times New Roman", Font.BOLD, margin / 2), xLoc + itemWidth / 2, yLoc + itemHeight - margin * 5, itemWidth);
+            drawCenteredString(g2d, options.get(i).getLore(), new Font("Times New Roman", Font.BOLD, margin / 3), xLoc + itemWidth / 2, yLoc + itemHeight - margin * 5, itemWidth);
             drawCenteredString(g2d, "Cost: " + options.get(i).getCostToPurchase(), new Font("Times New Roman", Font.BOLD, margin / 2), xLoc + itemWidth / 2, yLoc + itemHeight - margin, itemWidth);
             BufferedImage image = options.get(i).getItemIcon();
 
@@ -124,7 +126,7 @@ public class ShopUIContainer {
         FontMetrics metrics = g.getFontMetrics(font);
         // Determine the X coordinate for the text
 
-        ArrayList<String> words = new ArrayList<>(List.of(text.split(" ")));
+        ArrayList<String> words = new ArrayList<>(Arrays.asList(text.split(" ")));
         while (!words.isEmpty()) {
             ArrayList<String> newWords = new ArrayList<>();
             StringBuilder currentLine = new StringBuilder();

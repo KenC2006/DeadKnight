@@ -68,7 +68,7 @@ public class SummonerBossEnemy extends Enemy {
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
-            player.getStats().doDamage(1);
+            player.getStats().doDamage(1, this, player);
         }
     }
 

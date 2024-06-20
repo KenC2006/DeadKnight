@@ -60,7 +60,9 @@ public class Player extends Entity {
         getStats().changeBaseHealth(100);
         getStats().changeBaseMana(100);
         getStats().setMaxJumps(1);
-        getStats().setManaRegen(10);
+        getStats().changeManaRegenTime(10);
+        getStats().increaseCritRate(5);
+        getStats().increaseCritDamage(10);
         dashCooldownTimer = new GameTimer(30);
         dashLengthTimer = new GameTimer(10);
         dashImmunityTimer = new GameTimer(15);
@@ -204,7 +206,15 @@ public class Player extends Entity {
         }
 
         if (manager.isMousePressed()) {
-            playerInventory.usePrimary(ActivationType.UP, manager, this);
+            if (playerInventory.getCurrentPrimaryItem() instanceof RangedWeapon) {
+                playerInventory.usePrimary(ActivationType.UP, manager, this);
+
+            } else {
+                playerInventory.usePrimary(mouseLocation.getX() > getCenterX() ? ActivationType.RIGHT : ActivationType.LEFT, manager, this);
+            }
+
+            if (mouseLocation.getX() > getCenterX()) direction = Direction.RIGHT;
+            else direction = Direction.LEFT;
         }
 
         if (manager.getPressed(controls.get(5))) {
@@ -396,7 +406,7 @@ public class Player extends Entity {
 
         if (getY() > 10000000) { // Fall off the map
             System.out.println("Dies: " + getCenterVector());
-            getStats().doDamage(1000000000);
+            getStats().heal(-10000000);
         }
     }
 

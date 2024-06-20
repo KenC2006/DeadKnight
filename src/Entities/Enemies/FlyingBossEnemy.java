@@ -64,7 +64,8 @@ public class FlyingBossEnemy extends Enemy {
                 setIntendedVX(velocity.getX());
                 setIntendedVY(velocity.getY());
             } else {
-                setIntendedVY(-1000);
+                setIntendedVX(-velocity.getX() / 2);
+                setIntendedVY(-velocity.getY() / 2);
             }
         }
     }
@@ -91,7 +92,7 @@ public class FlyingBossEnemy extends Enemy {
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
-            player.getStats().doDamage(1);
+            player.getStats().doDamage(1, this, player);
         }
 
         if (getStats().getHealth() > getStats().getMaxHealth()/2) {
@@ -116,7 +117,6 @@ public class FlyingBossEnemy extends Enemy {
         for (Projectile p: projectiles) {
             if (player.collidesWith(p)) {
                 p.processEntityHit(this, player);
-                player.getStats().doDamage(5);
             }
         }
     }

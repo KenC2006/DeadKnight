@@ -85,7 +85,7 @@ public class FlyingEnemy extends Enemy {
     public void updatePlayerInfo(Player player) {
         super.updatePlayerInfo(player);
         if (player.getHitbox().quickIntersect(getHitbox())) {
-            player.getStats().doDamage(1);
+            player.getStats().doDamage(1, this, player);
         }
         if (shootTimer.isReady() && player.getCenterVector().getEuclideanDistance(getCenterVector()) < 400000000) {
             shootTimer.reset();
@@ -109,7 +109,6 @@ public class FlyingEnemy extends Enemy {
         for (Projectile p: projectiles) {
             if (player.collidesWith(p)) {
                 p.processEntityHit(this, player);
-                player.getStats().doDamage(1);
             }
         }
     }

@@ -151,7 +151,7 @@ public class Camera {
             return;
         }
 
-        if (e instanceof ItemPickup) drawHitbox(e.getHitbox());
+//        if (e instanceof ItemPickup) drawHitbox(e.getHitbox());
     }
 
     /**
@@ -417,7 +417,7 @@ public class Camera {
      * @param coords the coordinates to scale and shift
      * @return the scaled and shifted coordinates
      */
-    private Vector2F scaleAndShift(Vector2F coords) {
+    public Vector2F scaleAndShift(Vector2F coords) {
         return new Vector2F((int) scaleAndShiftX(coords.getX()), (int) scaleAndShiftY(coords.getY()));
     }
 

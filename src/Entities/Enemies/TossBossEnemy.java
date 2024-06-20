@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.BlockingDeque;
 
 public class TossBossEnemy extends Enemy {
 
@@ -27,6 +28,7 @@ public class TossBossEnemy extends Enemy {
     private boolean walkingLeft;
     private GameTimer moveTimer = new GameTimer(60);
     private GameTimer shootTimer = new GameTimer(15);
+    private GameTimer blastTimer = new GameTimer(450);
     private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
     public TossBossEnemy(int x, int y, int health) {
@@ -50,17 +52,33 @@ public class TossBossEnemy extends Enemy {
 //        sword.doCollisionCheck(this, player);
         if (shootTimer.isReady()) {
             shootTimer.reset();
-            Vector2F projVelo = new Vector2F(1000, -(int)(Math.random() * 500 + 1000));
-            if (Math.random() > 0.5) projVelo.setX(-1000);
+            Vector2F projVelo = new Vector2F((int) (Math.random() * 800 - 400), -(int)(Math.random() * 500 + 750));
             Projectile newProjectile = new Projectile(getCenterVector(), new Vector2F(2000, 2000), projVelo, 5);
             newProjectile.setAffectedByGravity(true);
-            newProjectile.changeLifeSpan(120);
+            newProjectile.changeLifeSpan(180);
             try {
                 newProjectile.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/enemy_projectile.png"))));
             } catch (IOException e) {
                 System.out.println("Projectile image not found: " + e);
             }
             projectiles.add(newProjectile);
+        }
+
+        if (blastTimer.isReady()) {
+            blastTimer.reset();
+
+            for (int i = 0; i < 40; i++) {
+                Vector2F projVelo = new Vector2F((int) (Math.random() * 1200 - 600), -(int)(Math.random() * 500 + 1000));
+                Projectile newProjectile = new Projectile(getCenterVector(), new Vector2F(2000, 2000), projVelo, 5);
+                newProjectile.setAffectedByGravity(true);
+                newProjectile.changeLifeSpan(180);
+                try {
+                    newProjectile.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/enemy_projectile.png"))));
+                } catch (IOException e) {
+                    System.out.println("Projectile image not found: " + e);
+                }
+                projectiles.add(newProjectile);
+            }
         }
         resolveEntityCollision(player);
     }
@@ -74,7 +92,6 @@ public class TossBossEnemy extends Enemy {
         for (Projectile p: projectiles) {
             if (player.collidesWith(p)) {
                 p.processEntityHit(this, player);
-                player.getStats().doDamage(3);
             }
         }
     }
@@ -85,17 +102,23 @@ public class TossBossEnemy extends Enemy {
     @Override
     public void followPlayer() {
 //        System.out.println(getCenterVector() + " " + (new Vector2F(centerWalkLoc.getX(), 0)));
-        if (getCenterVector().getXDistance(new Vector2F(centerWalkLoc.getX(), 0)) > 10000) {
-            walkingLeft = false;
-        }
-        else if (getCenterVector().getXDistance(new Vector2F(centerWalkLoc.getX(), 0)) < -10000) {
-            walkingLeft = true;
-        }
+//        if (getCenterVector().getXDistance(new Vector2F(centerWalkLoc.getX(), 0)) > 10000) {
+//            walkingLeft = false;
+//        }
+//        else if (getCenterVector().getXDistance(new Vector2F(centerWalkLoc.getX(), 0)) < -10000) {
+//            walkingLeft = true;
+//        }
+//
+//        if (walkingLeft) {
+//            setIntendedVX(-100);
+//        }
+//        else {
+//            setIntendedVX(100);
+//        }
 
-        if (walkingLeft) {
+        if (getCenterVector().getXDistance(new Vector2F(centerWalkLoc.getX(), 0)) > 0) {
             setIntendedVX(-100);
-        }
-        else {
+        } else {
             setIntendedVX(100);
         }
     }

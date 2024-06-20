@@ -106,16 +106,18 @@ public class InstantItem extends GameItem {
                 p.getPlayerInventory().setIntelligence(p.getPlayerInventory().getIntelligence() + 1);
                 break;
             case MAX_HEALTH:
-                p.getStats().changeBaseHealth(5);
+                p.getStats().changeBaseHealth(10);
+                p.getStats().changeHealthMultiplier(1);
                 break;
             case HEALTH:
-                p.getStats().heal(20);
+                p.getStats().heal(p.getStats().getMaxHealth() / 4);
                 break;
             case MAX_MANA:
                 p.getStats().changeBaseMana(5);
+                p.getStats().changeManaMultiplier(1);
                 break;
             case MANA:
-                p.getStats().gainMana(10);
+                p.getStats().gainMana(20);
                 break;
             case CRIT_DAMAGE:
                 p.getStats().increaseCritDamage(5);
@@ -124,7 +126,7 @@ public class InstantItem extends GameItem {
                 p.getStats().increaseCritRate(1);
                 break;
             case DEFENCE:
-                p.getStats().increaseDefence(10);
+                p.getStats().increaseDefence(50);
                 break;
             case DOUBLE_JUMP:
                 p.getStats().setMaxJumps(p.getStats().getMaxJumps() + 1);

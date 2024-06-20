@@ -28,7 +28,7 @@ public class EnemyManager {
             return new ShortMeleeEnemy(x - ShortMeleeEnemy.getDefaultWidth()/2, y - ShortMeleeEnemy.getDefaultHeight() + 500, 50);
         }
         else {
-            return new TeleportEnemy(x - TeleportEnemy.getDefaultWidth()/2, y - TeleportEnemy.getDefaultHeight() + 3000, 50);
+            return new TeleportEnemy(x - TeleportEnemy.getDefaultWidth()/2, y - TeleportEnemy.getDefaultHeight() + 1500, 50);
         }
     }
 
@@ -41,14 +41,18 @@ public class EnemyManager {
         int rn = (int)(Math.random() * 100);
         System.out.println("Spawning Boss: " + rn);
         if (rn > 70) {
-            return new FlyingBossEnemy(x - FlyingBossEnemy.getDefaultWidth()/2, y - FlyingBossEnemy.getDefaultHeight() + 500, 500);
+            return new FlyingBossEnemy(x - FlyingBossEnemy.getDefaultWidth()/2, y - FlyingBossEnemy.getDefaultHeight() + 500, 750);
+//            return new TossBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 500);
+
         }
         else if (rn > 40) {
-            return new TossBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 500);
+            return new TossBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 1500);
 //            return new SummonerBossEnemy(x - SummonerBossEnemy.getDefaultWidth()/2, y - SummonerBossEnemy.getDefaultHeight() + 500, 500);
         }
         else {
-            return new SummonerBossEnemy(x - SummonerBossEnemy.getDefaultWidth()/2, y - SummonerBossEnemy.getDefaultHeight() + 3000, 50);
+//            return new TossBossEnemy(x - TossBossEnemy.getDefaultWidth()/2, y - TossBossEnemy.getDefaultHeight() + 500, 500);
+
+            return new SummonerBossEnemy(x - SummonerBossEnemy.getDefaultWidth()/2, y - SummonerBossEnemy.getDefaultHeight() + 3000, 1000);
         }
     }
 

@@ -1,6 +1,7 @@
 package Entities;
 
 import Structure.Vector2F;
+import UI.HitDisplay;
 import Universal.GameTimer;
 
 import java.awt.*;
@@ -15,6 +16,7 @@ public class Projectile extends Entity {
         lifespan = new GameTimer(120);
         setDefaultColour(Color.CYAN);
         this.baseDamage = damage;
+        setImageOffset(new Vector2F(0, 0));
 
     }
 
@@ -33,9 +35,9 @@ public class Projectile extends Entity {
         defender.setColliding(true);
         markToDelete(true);
         doKB(defender);
-        if (defender instanceof Enemy) {
-            defender.getStats().doDamage(Stats.calculateDamage(baseDamage, attacker.getStats(), defender.getStats()));
-        }
+//        if (defender instanceof Enemy) {
+            defender.getStats().doDamage(baseDamage, attacker, defender);
+//        }
     }
 
 

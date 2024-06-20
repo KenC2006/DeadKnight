@@ -139,5 +139,9 @@ public class CameraManager {
     public boolean isMapOpen() {
         return mapCamera.isEnabled();
     }
+
+    public Camera getMainCamera() {
+        return gameCamera;
+    }
 }
 

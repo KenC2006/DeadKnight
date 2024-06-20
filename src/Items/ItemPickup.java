@@ -3,6 +3,7 @@ package Items;
 import Entities.Entity;
 import Entities.Player;
 import Structure.Vector2F;
+import UI.HitDisplay;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -41,6 +42,7 @@ public class ItemPickup extends Entity {
 
     public void pickupItem(Player p) {
         p.addItem(item);
+        HitDisplay.createHitDisplay(p.getCenterVector(), 1, Color.YELLOW);
         markToDelete(true);
     }
 
@@ -64,6 +66,8 @@ public class ItemPickup extends Entity {
             case MANA:
                 setDefaultColour(Color.BLUE.brighter()); break;
         }
+
+        setImageOffset(new Vector2F(0, 0));
     }
 
 }
