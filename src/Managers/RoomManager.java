@@ -505,8 +505,9 @@ public class RoomManager {
             if (r.quickIntersect(player)) lastTouchedRoom = r;
         }
 
-        if (lastTouchedRoom != null && allRoomsCleared) {
+        if (!exitPortalCreated && lastTouchedRoom != null && allRoomsCleared) {
             lastTouchedRoom.addLevelPortal(player.getCenterVector());
+            exitPortalCreated = true;
         }
 
     }
