@@ -7,7 +7,7 @@ import Universal.GameTimer;
 
 public class Stats {
     private int baseHealth, health, baseMana, mana, damageAddition, damageRemoval, defence, baseJumps, jumps, manaRegen;
-    private double damageMultiplier, healthMultiplier, manaMultiplier, critChance, critDamage;
+    private double damageMultiplier, healthMultiplier, manaMultiplier, critChance, critDamage,deathCount;
     private GameTimer jumpTimer, manaRegenerationTimer;
 
     public Stats(int baseHealth, int baseMana) {
@@ -25,9 +25,19 @@ public class Stats {
         critChance = 0;
         critDamage = 1;
         jumps = 1;
+        deathCount = 0;
         jumpTimer = new GameTimer(10);
         manaRegen = 0;
         manaRegenerationTimer = new GameTimer(manaRegen);
+    }
+
+    public double getDeathCount() {
+        return deathCount;
+    }
+
+    public void setDeathCount(double deathCount) {
+        this.deathCount = deathCount;
+        System.out.println("Death Count: " + deathCount);
     }
 
     public void setManaRegen(int time) {

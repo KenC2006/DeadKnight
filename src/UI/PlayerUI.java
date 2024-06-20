@@ -129,10 +129,10 @@ public class PlayerUI extends UI {
      *
      * @param g the Graphics2D context
      */
-    private void drawKillStreakCount(Graphics2D g) {
+    private void drawDeathCount(Graphics2D g) {
         g.drawImage(killStreakIcon, barWidth + brushStroke * 3, boxHeight, null);
         g.setColor(Color.RED);
-        g.drawString(String.valueOf(player.getKillStreak()), barWidth + barHeight + brushStroke * 5, textY);
+        g.drawString(String.valueOf((int)player.getStats().getDeathCount()), barWidth + barHeight + brushStroke * 5, textY);
         boxHeight += barHeight + brushStroke * 2;
     }
 
@@ -180,23 +180,11 @@ public class PlayerUI extends UI {
      */
     @Override
     public void draw() {
-        if (currentPlayerHealth < player.getStats().getHealth()) {
-            if (hpFill - (player.getStats().getHealth() - currentPlayerHealth) / player.getStats().getMaxHealth() > 0)
-                hpFill -= (player.getStats().getHealth() - currentPlayerHealth) / player.getStats().getMaxHealth();
-            else hpFill = 0;
-            currentPlayerHealth = player.getStats().getHealth();
-        }
-        if (currentPlayerMana < player.getStats().getMana()) {
-            if (manaFill - (player.getStats().getMana() - currentPlayerMana) / player.getStats().getMaxMana() > 0)
-                manaFill -= (player.getStats().getMana() - currentPlayerMana) / player.getStats().getMaxMana();
-            else manaFill = 0;
-            currentPlayerMana = player.getStats().getMana();
-        }
         Graphics2D g = getGraphics();
         drawPlayerHP(g);
         drawIntelligenceCount(g);
         drawPlayerMana(g);
-        drawKillStreakCount(g);
+        drawDeathCount(g);
         drawWeaponSlot(g);
     }
 }
