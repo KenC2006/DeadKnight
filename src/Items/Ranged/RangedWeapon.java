@@ -92,7 +92,6 @@ public class RangedWeapon extends Weapon {
 
         if (ac.isMousePressed() && (owner instanceof Player)) {
             fireCooldownTimer.reset();
-//            System.out.println(owner.getIntendedVelocity());
             Vector2F diff = ((Player) owner).getMouseLocation().getTranslated(owner.getCenterVector().getNegative()).normalize();
             vx = diff.getX();
             vy = diff.getY();

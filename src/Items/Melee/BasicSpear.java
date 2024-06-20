@@ -1,7 +1,5 @@
 package Items.Melee;
 
-import Structure.Vector2F;
-
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Objects;

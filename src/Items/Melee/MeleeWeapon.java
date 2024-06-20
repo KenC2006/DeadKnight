@@ -67,11 +67,6 @@ public class MeleeWeapon extends Weapon {
     public void loadHitboxes(String weaponName) {
         hitboxes = new HashMap<>();
         try {
-//            System.out.println("Fetching: " + "/Items/WeaponData" + filePath);
-//            for (File f: new File("/Rooms").listFiles()) {
-//                System.out.println(f.getName());
-//            }
-//            Scanner in = new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData" + filePath)));
             Scanner in =  new Scanner(Objects.requireNonNull(getClass().getResourceAsStream("/Items/WeaponData/" + weaponName + ".txt")));
 
             ArrayList<Vector2F> points = new ArrayList<>();
@@ -89,19 +84,6 @@ public class MeleeWeapon extends Weapon {
             hitboxes.put(ActivationType.LEFT,  new Hitbox(points));
 
             // TODO handle files with less than 4 hitboxes
-//            points = new ArrayList<>();
-//            for (int i = 0; i < in.nextInt(); i++) {
-//                points.add(new Vector2F(in.nextInt(), in.nextInt()));
-//            }
-//            newHitbox = new Hitbox(points);
-//            hitboxes.put(ActivationType.UP, newHitbox);
-//
-//            points = new ArrayList<>();
-//            for (int i = 0; i < in.nextInt(); i++) {
-//                points.add(new Vector2F(in.nextInt(), in.nextInt()));
-//            }
-//            newHitbox = new Hitbox(points);
-//            hitboxes.put(ActivationType.Direction.DOWN, newHitbox);
 
             for (Hitbox h: hitboxes.values()) {
                 h.setEnabled(false);

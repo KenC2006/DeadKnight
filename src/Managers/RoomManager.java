@@ -97,9 +97,7 @@ public class RoomManager {
 
         } else {
             ArrayList<Room> roomsToDraw = new ArrayList<>(loadedRooms);
-//            if (loadedRooms.isEmpty()) return;
             for (Room room : roomsToDraw) {
-//                if (room == null) System.out.println(roomsToDraw);
                 assert room != null;
                 room.drawRoom(c);
             }
@@ -129,9 +127,7 @@ public class RoomManager {
 
         } else {
             ArrayList<Room> roomsToDraw = new ArrayList<>(loadedRooms);
-//            if (loadedRooms.isEmpty()) return;
             for (Room room : roomsToDraw) {
-//                if (room == null) System.out.println(roomsToDraw);
                 assert room != null;
                 room.drawEntities(c);
                 enemyManager.drawEnemies(room.getEnemies(), c);
@@ -362,7 +358,6 @@ public class RoomManager {
             r.setupRoom();
         }
         allRooms.get(0).spawnPlayer(p);
-//        System.out.println(allRooms.get(0));
     }
 
     /**
@@ -469,7 +464,6 @@ public class RoomManager {
         for (Room r: allRooms) {
             if (Math.abs(r.getAbsoluteCenter().getManhattanDistance(player.getCenterVector())) < renderDistance) {
                 nextLoaded.add(r);
-//                System.out.println(r.getCenterRelativeToRoom() + " " + r.getCenterLocation());
             }
 
             if (!r.getCleared()) allRoomsCleared = false;

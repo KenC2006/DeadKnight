@@ -58,27 +58,19 @@ public class FlyingEnemy extends Enemy {
      */
     @Override
     public void followPlayer() {
-//        int xDistToPlayer = getPlayerPos().getXDistance(getBottomPos())/1000;
-//        int yDistToPlayer = getPlayerPos().getYDistance(getBottomPos())/1000;
-//        Vector2F velocity = new Vector2F(xDistToPlayer, yDistToPlayer).normalize();
         if (!moveTimer.isReady()) return;
         moveTimer.reset();
         velocity = getPlayerPos().getTranslated(getCenterVector().getNegative()).normalize().multiply(1/5.0);
 
-//        stopXMovement();
-//        stopYMovement();
         if (getPlayerPos().getEuclideanDistance(getCenterVector()) > 300000000) {
-            //        System.out.println(getPlayerPos() + " " + velocity);
             if (Math.random() > 0.6) velocity.setY(-velocity.getY());
             setIntendedVX(velocity.getX());
             setIntendedVY(velocity.getY());
         } else {
-            //        System.out.println(getPlayerPos() + " " + velocity);
             if (Math.random() > 0.6) velocity.setY(-velocity.getY());
             setIntendedVX(-velocity.getX());
             setIntendedVY(-velocity.getY());
         }
-//        if (isPlayerNear()) System.out.println(getIntendedVelocity());
     }
 
     /**

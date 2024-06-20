@@ -163,7 +163,6 @@ public class TeleportEnemy extends Enemy {
         super.updateValues();
         if (teleportTimer.isReady() && getPlayerPos().getEuclideanDistance(getBottomPos())/1000000 < 3000) {
             followPlayer();
-//            System.out.println(teleportOption);
             teleportTimer.reset();
         }
         for (Projectile p: projectiles) {

@@ -116,7 +116,6 @@ public class PlayerInventory {
     public void setPrimaryIndex(int selectedPrimary) {
         if (itemSwapCooldown.isReady()) {
             this.selectedPrimary = (selectedPrimary + primarySlot.size()) % primarySlot.size();
-//            System.out.println("Swapped to " +  primarySlot.get(this.selectedPrimary).getItemName());
             itemSwapCooldown.reset();
         }
     }

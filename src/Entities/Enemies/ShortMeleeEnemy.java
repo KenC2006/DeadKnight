@@ -173,8 +173,6 @@ public class ShortMeleeEnemy extends Enemy {
     public void attack(ActionManager am) {
         if (getPlayerPos().getEuclideanDistance(getBottomPos()) < 50000000) {
             //swing at the player
-//            stopXMovement();
-//            System.out.println(getPlayerPos() + " " + getPos() + " " + getPlayerPos().getYDistance(getPos()));
             if (getPlayerPos().getXDistance(getCenterVector()) > 0) {
                 sword.activate(Weapon.ActivationType.LEFT, am, this);
             }

@@ -449,7 +449,6 @@ public class Grid extends JPanel implements MouseListener, MouseMotionListener {
 
         topLeftPoint = p1.getMin(topLeftPoint);
         if (p2 !=null){
-//            System.out.println(topLeftPoint);
             System.out.println((p2.getX() - topLeftPoint.getX())/1000 + " " + (p2.getY() - topLeftPoint.getY())/1000);
         }
 
