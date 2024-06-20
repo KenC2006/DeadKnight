@@ -15,8 +15,8 @@ public class RoomEditor extends JFrame {
     private final Grid grid;
     private static File roomStorage; // Directory to store rooms
 
-    public RoomEditor() {
-        roomStorage = new File("res/Rooms/Set3"); // Default storage directory for rooms
+    public RoomEditor(int setNumber) {
+        roomStorage = new File("res/Rooms/Set" + setNumber); // Default storage directory for rooms
 
         grid = new Grid(roomStorage); // Initialize the grid for room editing with specified storage directory
         add(grid); // Add grid to the frame

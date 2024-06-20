@@ -26,7 +26,7 @@ public class GamePanel extends JPanel{
         this.setFocusable(true);
         this.setVisible(true);
         this.setSize(size);
-//        new RoomEditor();
+//        new RoomEditor(3);
         //UNCOMMENT THE ABOVE TO SEE ROOM EDITOR USED TO CREATE THE BIOMES
         //lots of work put into something players won't see :'(
 

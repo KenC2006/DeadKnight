@@ -269,29 +269,14 @@ public class RoomManager {
                     }
 
                     if (collides) continue;
-//                    if (setNumber == 1 || setNumber == 3) {
-//                        connectingEntrance.setConnected(true, e);
-//                        compatibleRooms.add(testRoom);
-//                        connectedEntrance.add(connectingEntrance);
-//
-//                        break;
-//
-//                    } else if (setNumber == 2) {
-//                        if (allRooms.size() < 30) {
-//                            connectingEntrance.setConnected(true, e);
-//                            compatibleRooms.add(testRoom);
-//                            connectedEntrance.add(connectingEntrance);
-//
-//                            break;
-//                        } else {
-                            if (Math.random() > (Math.pow(numberOfEntrances, 1 + 4.0 * allRooms.size() / minimumRooms)) * 0.01) {
-                                connectingEntrance.setConnected(true, e);
-                                compatibleRooms.add(testRoom);
-                                connectedEntrance.add(connectingEntrance);
 
-                                break;
-//                            }
-//                        }
+                    // Bias towards rooms with less entrances as the map gets larger
+                    if (Math.random() > (Math.pow(numberOfEntrances, 1 + 4.0 * allRooms.size() / minimumRooms)) * 0.01) {
+                        connectingEntrance.setConnected(true, e);
+                        compatibleRooms.add(testRoom);
+                        connectedEntrance.add(connectingEntrance);
+
+                        break;
                     }
                 }
             }

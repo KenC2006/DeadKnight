@@ -28,7 +28,7 @@ public class ShortMeleeEnemy extends Enemy {
         sword = new ShortSword();
         sword.setLocation(getCenterVector());
         try {
-            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/wizard.png"))));
+            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/leaf.png"))));
 
         } catch (IOException e) {
             System.out.println("Enemy image not found: " + e);

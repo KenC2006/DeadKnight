@@ -12,7 +12,10 @@ import Structure.Vector2F;
 import Universal.Camera;
 import Universal.GameTimer;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class TossBossEnemy extends Enemy {
 
@@ -30,6 +33,12 @@ public class TossBossEnemy extends Enemy {
         super(x, y, defaultWidth, defaultHeight, health, 'j' + 'o' + 'e');
 //        centerWalkLoc = getCenterVector();
         centerWalkLoc = new Vector2F();
+        try {
+            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/wizard.png"))));
+
+        } catch (IOException e) {
+            System.out.println("Enemy image not found: " + e);
+        }
     }
 
     /**
@@ -43,9 +52,30 @@ public class TossBossEnemy extends Enemy {
             shootTimer.reset();
             Vector2F projVelo = new Vector2F(1000, -(int)(Math.random() * 500 + 1000));
             if (Math.random() > 0.5) projVelo.setX(-1000);
-            projectiles.add(new Projectile(getCenterVector(), new Vector2F(2000, 2000), projVelo, 5));
-            projectiles.get(projectiles.size()-1).setAffectedByGravity(true);
-            projectiles.get(projectiles.size()-1).changeLifeSpan(120);
+            Projectile newProjectile = new Projectile(getCenterVector(), new Vector2F(2000, 2000), projVelo, 5);
+            newProjectile.setAffectedByGravity(true);
+            newProjectile.changeLifeSpan(120);
+            try {
+                newProjectile.addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/enemy_projectile.png"))));
+            } catch (IOException e) {
+                System.out.println("Projectile image not found: " + e);
+            }
+            projectiles.add(newProjectile);
+        }
+        resolveEntityCollision(player);
+    }
+
+    /**
+     * deal with player-related information handling
+     * such as dealing collision damage
+     * @param player
+     */
+    public void resolveEntityCollision(Player player) {
+        for (Projectile p: projectiles) {
+            if (player.collidesWith(p)) {
+                p.processEntityHit(this, player);
+                player.getStats().doDamage(3);
+            }
         }
     }
 

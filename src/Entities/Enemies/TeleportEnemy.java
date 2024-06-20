@@ -24,7 +24,7 @@ public class TeleportEnemy extends Enemy {
     public TeleportEnemy(int x, int y, int health) {
         super(x, y, defaultWidth, defaultHeight, health, 225);
         try {
-            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/leaf.png"))));
+            addFrame(ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Enemies/wizard.png"))));
 
         } catch (IOException e) {
             System.out.println("Enemy image not found: " + e);

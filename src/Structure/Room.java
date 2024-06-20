@@ -4,6 +4,7 @@ import Entities.*;
 import Entities.Enemies.FlyingBossEnemy;
 import Entities.Enemies.FlyingEnemy;
 import Entities.Enemies.SummonerBossEnemy;
+import Entities.Enemies.TossBossEnemy;
 import Items.Chest;
 import Items.ItemPickup;
 import Managers.ActionManager;
@@ -426,7 +427,7 @@ public class Room {
                 newItem.setActualVY((int) (-2000));
                 addItemPickup(newItem);
 
-                if (e instanceof FlyingBossEnemy || e instanceof SummonerBossEnemy) {
+                if (e instanceof FlyingBossEnemy || e instanceof SummonerBossEnemy || e instanceof TossBossEnemy) {
                     addLevelPortal(e.getCenterVector());
                 }
             }
