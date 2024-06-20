@@ -37,6 +37,8 @@ public class PlayerUI extends UI {
      * @throws IOException if an error occurs while loading icons
      */
     public PlayerUI(Player player) throws IOException {
+        currentPlayerHealth=player.getStats().getHealth();
+        currentPlayerMana = player.getStats().getMaxMana();
         this.player = player;
         intelligenceIcon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/intelligence.png")));
         killStreakIcon = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/skull.png")));
