@@ -51,11 +51,10 @@ public class PlayerStatsUI {
         g.setColor(new Color(128, 64, 0));
         g.fillRect(margin * 6, margin * 2, (int) (g.getClipBounds().getWidth() - margin * 12), (int) (g.getClipBounds().getHeight() - margin * 4));
         g.setColor(new Color(155, 103, 60));
-        g.fillRect(margin * 7, margin * 3, (int) (g.getClipBounds().getWidth() - margin * 14), (int) (g.getClipBounds().getHeight() - margin * 6));
+        g.fillRect((int) (margin * 6.5), (int) (margin * 2.5), (int) (g.getClipBounds().getWidth() - margin * 13), (int) (g.getClipBounds().getHeight() - margin * 5));
 
         for (int i = 0; i < playerStats.size(); i++) {
-            drawCenteredString(g, playerStats.get(i), new Font("Times New Roman", Font.BOLD, margin / 4), (int) (g.getClipBounds().getWidth() / 2), margin * (6 + i) / 2, (int) (g.getClipBounds().getWidth() - margin * 4));
-
+            drawCenteredString(g, playerStats.get(i), new Font("Times New Roman", Font.BOLD, margin / 2), (int) (g.getClipBounds().getWidth() / 2), margin * (6 + i) / 2, (int) (g.getClipBounds().getWidth() - margin * 4));
         }
     }
 
