@@ -32,8 +32,8 @@ public class Stats {
         values.put("Health Multiplier", 100);
         values.put("Mana Multiplier", 100);
         values.put("Base Jumps", 1);
-        values.put("Crit Chance", 0);
-        values.put("Crit Damage", 100);
+        values.put("Crit Chance", 10);
+        values.put("Crit Damage", 150);
         values.put("Max Jumps", 1);
         values.put("Mana Regen Amount", 1);
         values.put("Mana Regen Time", 5);

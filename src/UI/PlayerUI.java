@@ -95,6 +95,9 @@ public class PlayerUI extends UI {
             double fill2 = ((double) player.getStats().getHealth() / player.getStats().getMaxHealth());
             hpFill = (int) ((fill1 - fill2) * barWidth) + hpFill;
             currentPlayerHealth = player.getStats().getHealth();
+        } else if (player.getStats().getHealth() > currentPlayerHealth) {
+        	hpFill = 0;
+            currentPlayerHealth = player.getStats().getHealth();
         }
         if (hpFill > 0) hpFill -= 1;
         drawBar(player.getStats().getHealth(), player.getStats().getMaxHealth(), Color.GREEN, g, hpFill);
@@ -178,6 +181,15 @@ public class PlayerUI extends UI {
         g.drawRoundRect(barWidth / 2 + brushStroke * 2, boxHeight, barWidth / 2 - brushStroke, barHeight * 4, brushStroke, brushStroke);
         boxHeight = brushStroke;
     }
+    
+    /**
+     * Reset the hp bar on death.
+     */
+    public void reset() {
+        currentPlayerHealth = player.getStats().getHealth();
+        currentPlayerMana = player.getStats().getMaxMana();
+    	
+    }
 
     /**
      * Draws the player's UI.
@@ -185,6 +197,7 @@ public class PlayerUI extends UI {
     @Override
     public void draw() {
         Graphics2D g = getGraphics();
+        if (player.isDead()) reset();
         drawPlayerHP(g);
         drawIntelligenceCount(g);
         drawPlayerMana(g);

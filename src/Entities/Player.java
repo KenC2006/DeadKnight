@@ -469,7 +469,7 @@ public class Player extends Entity {
         }
 
         // Check if player falls off the map and initiate death
-        if (getY() > 100000) {
+        if (getY() > 1000000) {
             System.out.println("Dies: " + getCenterVector());
             getStats().heal(-10000000);
         }

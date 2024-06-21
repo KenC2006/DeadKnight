@@ -67,9 +67,12 @@ public class HitDisplay {
         allHitDisplays.removeIf(a -> a.lifespan.isReady());
         for (HitDisplay hitDisplay: allHitDisplays) {
             g.setColor(hitDisplay.color);
-            g.setFont(new Font("Times New Roman", Font.BOLD, (int) hitDisplay.size));
+            Font font = new Font("Times New Roman", Font.BOLD, (int) hitDisplay.size);
+            g.setFont(font);
+            FontMetrics metrics = g.getFontMetrics(font);
+
             Vector2F scaled = mainGameCamera.scaleAndShift(hitDisplay.location);
-            g.drawString("" + hitDisplay.damage, scaled.getX() + hitDisplay.offset.getX(), scaled.getY() + hitDisplay.offset.getY());
+            g.drawString("" + hitDisplay.damage, scaled.getX() - metrics.stringWidth("" + hitDisplay.damage) / 2 + hitDisplay.offset.getX(), scaled.getY() + hitDisplay.offset.getY() + metrics.getHeight() / 4);
             hitDisplay.size = hitDisplay.size * 0.99;
 
         }

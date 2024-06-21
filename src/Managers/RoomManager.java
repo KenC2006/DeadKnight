@@ -28,7 +28,7 @@ public class RoomManager {
     private Deque<Room> toGenerateNeighbours;
     private int renderDistance = 200000;
     private GameTimer teleportCooldown;
-    private int setNumber, minimumRooms = 5;
+    private int setNumber, minimumRooms = 1;
     private final int MAXIMUM_NUMBER_OF_ROOMS = 50;
     private boolean exitPortalCreated = false;
     private Room lastTouchedRoom = null;
@@ -46,7 +46,7 @@ public class RoomManager {
      */
     public RoomManager() {
         enemyManager = new EnemyManager();
-        teleportCooldown = new GameTimer(20);
+        teleportCooldown = new GameTimer(20);   
 
     }
 
