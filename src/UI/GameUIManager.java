@@ -78,6 +78,7 @@ public class GameUIManager {
             menu.setMenuOn(true);
             HitDisplay.clear();
             playerStatsUI.setEnabled(false);
+            em.getPlayer().setDead(false);
         }
 
         if (!getMenuEnabled()) {
