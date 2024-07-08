@@ -1,6 +1,9 @@
 # Final2024
 ICS4U Culminating Assignment 
 
+### Objective:
+#### Defeat all enemies in a level to advance further and make your character stronger!
+
 ### Controls:
 - W to jump
 - A to move left
@@ -15,3 +18,9 @@ ICS4U Culminating Assignment
 - . to zoom in on map / minimap
 - Arrow keys in map view to move around
 - Mouse button down to purchase item chest / attack in pointed direction
+
+#### Controls can be changed on the main menu - simply click the control to be changed and press a key
+
+### To Run Project:
+1) Download the "DeadKnight.jar" and run with JDK 1.8.0
+2) Download src and res folders on java IDE and set res to source root/resource folder
