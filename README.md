@@ -1,5 +1,5 @@
-# Final2024
-ICS4U Culminating Assignment 
+# DeadKnight
+2D rogue-like rpg. [Project for ICS4U]
 
 ### Objective:
 #### Defeat all enemies in a level to advance further and make your character stronger!
